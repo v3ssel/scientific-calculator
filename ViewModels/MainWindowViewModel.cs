@@ -1,4 +1,4 @@
-﻿namespace scientific_calc.ViewModels;
+﻿namespace ScientificCalculator.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {

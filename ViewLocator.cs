@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using scientific_calc.ViewModels;
+using ScientificCalculator.ViewModels;
 
-namespace scientific_calc;
+namespace ScientificCalculator;
 
 public class ViewLocator : IDataTemplate
 {

@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using scientific_calc.ViewModels;
-using scientific_calc.Views;
+using ScientificCalculator.ViewModels;
+using ScientificCalculator.Views;
 
-namespace scientific_calc;
+namespace ScientificCalculator;
 
 public partial class App : Application
 {

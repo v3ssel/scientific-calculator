@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace scientific_calc.Views;
+namespace ScientificCalculator.Views;
 
 public partial class MainWindow : Window
 {

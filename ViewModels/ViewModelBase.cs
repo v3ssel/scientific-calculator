@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace scientific_calc.ViewModels;
+namespace ScientificCalculator.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {
