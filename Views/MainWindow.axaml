@@ -3,11 +3,13 @@
         xmlns:vm="using:ScientificCalculator.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
         x:Class="ScientificCalculator.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ScientificCalculator">
+        Title="Scientific Calculator"
+        Width="400" Height="550"
+        >
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,6 +17,60 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
+    <SplitView
+        Name="main_split"
+        PanePlacement="Right"
+        DisplayMode="CompactOverlay"
+        OpenPaneLength="400">
+        <SplitView.Pane>
+            <Button
+                Name="expand_btn"
+                Click="ExpandButtonClicked"
+                Content="&lt;"
+                Margin="0 10 0 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                FontSize="26"
+                />
+        </SplitView.Pane>
+
+        <StackPanel>
+            <TextBox 
+                Name="input_textbox"
+                Text="{Binding ExpressionInput}"
+                CaretIndex="{Binding ExpressionInputCaretIndex, Mode=TwoWay}"
+                SelectionStart="{Binding ExpressionInputSelectionStart, Mode=TwoWay}"
+                SelectionEnd="{Binding ExpressionInputSelectionEnd, Mode=TwoWay}"
+                Margin="10 10 0 10" 
+                HorizontalAlignment="Stretch" 
+                FontSize="26" 
+                MaxLength="255" 
+                Watermark="Input field.">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                    <MenuItem Header="Clean" Command="{Binding CleanInputAction}"/>
+                    <MenuItem Header="Copy" Command="{Binding CopyInputActionCmd}" CommandParameter="{Binding $parent[Window].Clipboard}"/>
+                    <MenuItem Header="Paste" Command="{Binding PasteInputActionCmd}" CommandParameter="{Binding $parent[Window].Clipboard}"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu> 
+            </TextBox>
+
+            <Button 
+                Name="calculate_btn"
+                Command="{Binding CalculateBtnAction}"
+                HorizontalAlignment="Center" 
+                FontSize="26">Calculate</Button>
+
+            <TextBox 
+                Name="answer_textbox"
+                Text="{Binding AnswerField}"
+                IsReadOnly="true" 
+                Margin="10 10 0 10" 
+                HorizontalAlignment="Stretch" 
+                FontSize="26" 
+                Watermark="Answer field." />
+        </StackPanel>
+
+    </SplitView>
 </Window>
