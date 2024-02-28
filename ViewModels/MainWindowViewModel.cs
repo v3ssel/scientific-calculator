@@ -66,36 +66,52 @@ public class MainWindowViewModel : ViewModelBase
 
     public async Task CopyInputAction(IClipboard clipboard)
     {
-        if (ExpressionInputSelectionStart == ExpressionInputSelectionEnd)
-        {
-            await clipboard.SetTextAsync(ExpressionInput);
-        }
-        else
-        {
-            var start = Math.Min(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
-            var end = Math.Max(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
+        var start = Math.Min(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
+        var end = Math.Max(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
 
-            await clipboard.SetTextAsync(ExpressionInput[start..end]);
-        }
+        await CopyToClipboard(clipboard, ExpressionInput, start, end);
     }
     
     public async Task PasteInputAction(IClipboard clipboard)
     {
-        var clipboard_text = await clipboard.GetTextAsync() ?? "";
-        if (string.IsNullOrEmpty(clipboard_text)) return;
+        var start = Math.Min(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
+        var end = Math.Max(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
+
+        var (res, len) = await PasteFromClipboard(clipboard, ExpressionInput, ExpressionInputCaretIndex, start, end);
         
-        if (ExpressionInputSelectionStart == ExpressionInputSelectionEnd)
+        ExpressionInput = res;
+        ExpressionInputCaretIndex += len;
+    }
+
+    private static async Task CopyToClipboard(IClipboard clipboard, string value, int start = 0, int end = 0)
+    {
+        if (start == end)
         {
-            ExpressionInput = ExpressionInput.Insert(ExpressionInputCaretIndex, clipboard_text);
+            await clipboard.SetTextAsync(value);
         }
         else
         {
-            var start = Math.Min(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
-            var end = Math.Max(ExpressionInputSelectionStart, ExpressionInputSelectionEnd);
+            await clipboard.SetTextAsync(value[start..end]);
+        }
+    }
 
-            ExpressionInput = ExpressionInput.Remove(start, end - start).Insert(start, clipboard_text);
+    private static async Task<(string, int)> PasteFromClipboard(IClipboard clipboard, string value, int caret = 0, int start = 0, int end = 0)
+    {
+
+        var clipboard_text = await clipboard.GetTextAsync() ?? "";
+        if (string.IsNullOrEmpty(clipboard_text)) return ("", 0);
+        
+        string res = "";
+
+        if (start == end)
+        {
+            res = value.Insert(caret, clipboard_text);
+        }
+        else
+        {
+            res = value.Remove(start, end - start).Insert(start, clipboard_text);
         }
         
-        ExpressionInputCaretIndex += clipboard_text.Length;
+        return (res, clipboard_text.Length);
     }
 }
