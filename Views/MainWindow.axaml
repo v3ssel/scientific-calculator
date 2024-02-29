@@ -24,18 +24,28 @@
         IsPaneOpen="{Binding IsSplitViewPaneOpen}"
         PanePlacement="Right"
         DisplayMode="CompactInline"
-        OpenPaneLength="100">
+        OpenPaneLength="150"
+        Background="White"
+        PaneBackground="#FFEE99">
         <SplitView.Pane>
-            <StackPanel>
+            <StackPanel Spacing="10">
                 <Button
                     Command="{Binding ExpandGraphBtnClicked}"
-                    Content="☰"
-                    Margin="5 10 5 5"
+                    Margin="5 10 5 0"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    FontSize="26">
-                    <PathIcon Data="{StaticResource BurgerMenu}"/>
+                    VerticalAlignment="Top">
+                    <PathIcon Data="{StaticResource BurgerMenuIcon}"/>
                 </Button>
+                <ListBox ItemsSource="{Binding SidebarButtons}" SelectedItem="{Binding SelectedSidebarButton}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:SidebarButton}">
+                            <StackPanel Spacing="15" Orientation="Horizontal">
+                                <PathIcon Data="{Binding ButtonIcon}" />
+                                <TextBlock Text="{Binding Label}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <!-- <Button
                     Content="H"
                     Margin="5 5 5 0"
