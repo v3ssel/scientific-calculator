@@ -24,6 +24,7 @@
         DisplayMode="CompactOverlay"
         OpenPaneLength="400">
         <SplitView.Pane>
+            <StackPanel>
             <Button
                 Name="expand_btn"
                 Click="ExpandButtonClicked"
@@ -33,6 +34,16 @@
                 VerticalAlignment="Top"
                 FontSize="26"
                 />
+            <Button
+                Name="history_btn"
+                Content="H"
+                Margin="0 10 0 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                FontSize="26"
+                />
+                
+            </StackPanel>
         </SplitView.Pane>
 
         <StackPanel>
@@ -49,9 +60,9 @@
                 Watermark="Input field.">
                 <TextBox.ContextMenu>
                     <ContextMenu>
-                    <MenuItem Header="Clean" Command="{Binding CleanInputAction}"/>
-                    <MenuItem Header="Copy" Command="{Binding CopyInputActionCmd}" CommandParameter="{Binding $parent[Window].Clipboard}"/>
-                    <MenuItem Header="Paste" Command="{Binding PasteInputActionCmd}" CommandParameter="{Binding $parent[Window].Clipboard}"/>
+                        <MenuItem Header="Clean" Command="{Binding CleanInputAction}" HotKey="Ctrl+X" InputGesture="Ctrl+X"/>
+                        <MenuItem Header="Copy" Command="{Binding CopyInputActionCmd}" CommandParameter="{Binding $parent[Window].Clipboard}" HotKey="Ctrl+C" InputGesture="Ctrl+C"/>
+                        <MenuItem Header="Paste" Command="{Binding PasteInputActionCmd}" CommandParameter="{Binding $parent[Window].Clipboard}" HotKey="Ctrl+V" InputGesture="Ctrl+V"/>
                     </ContextMenu>
                 </TextBox.ContextMenu> 
             </TextBox>
