@@ -38,21 +38,18 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _expressionInputSelectionEnd, value);
     }
 
+    private string _xValue = "";
+    public string XValue
+    {
+        get => _xValue;
+        set => this.RaiseAndSetIfChanged(ref _xValue, value);
+    }
+
     private string _answerField = "";
     public string AnswerField
     {
         get => _answerField;
         set => this.RaiseAndSetIfChanged(ref _answerField, value);
-    }
-
-    public void CalculateBtnAction()
-    {
-        AnswerField = ExpressionInput;
-    }
-
-    public void CleanInputAction()
-    {
-        ExpressionInput = "";
     }
 
     public ReactiveCommand<IClipboard, Unit> CopyInputActionCmd { get; }
@@ -62,6 +59,63 @@ public class MainWindowViewModel : ViewModelBase
     {
         CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
         PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
+    }
+
+    public void CalculateBtnClicked()
+    {
+        AnswerField = ExpressionInput;
+    }
+    
+    public void AllClearBtnClicked()
+    {
+        ExpressionInput = "";
+        AnswerField = "";
+    }
+
+    public void SinBtnClicked()  => InsertAndMoveCaret("sin()", 4);
+    public void CosBtnClicked()  => InsertAndMoveCaret("cos()", 4);
+    public void TanBtnClicked()  => InsertAndMoveCaret("tan()", 4);
+    public void LogBtnClicked()  => InsertAndMoveCaret("log()", 4);
+    public void LnBtnClicked()   => InsertAndMoveCaret("ln()", 3);
+    public void AsinBtnClicked() => InsertAndMoveCaret("asin()", 5);
+    public void AcosBtnClicked() => InsertAndMoveCaret("acos()", 5);
+    public void AtanBtnClicked() => InsertAndMoveCaret("atan()", 5);
+    public void SqrtBtnClicked() => InsertAndMoveCaret("sqrt()", 5);
+
+    public void OneBtnClicked()   => InsertAndMoveCaret("1");
+    public void TwoBtnClicked()   => InsertAndMoveCaret("2");
+    public void ThreeBtnClicked() => InsertAndMoveCaret("3");
+    public void FourBtnClicked()  => InsertAndMoveCaret("4");
+    public void FiveBtnClicked()  => InsertAndMoveCaret("5");
+    public void SixBtnClicked()   => InsertAndMoveCaret("6");
+    public void SevenBtnClicked() => InsertAndMoveCaret("7");
+    public void EightBtnClicked() => InsertAndMoveCaret("8");
+    public void NineBtnClicked()  => InsertAndMoveCaret("9");
+    public void ZeroBtnClicked()  => InsertAndMoveCaret("0");
+    public void DotBtnClicked()   => InsertAndMoveCaret(".");
+    public void XBtnClicked()     => InsertAndMoveCaret("x");
+    
+    public void PlusBtnClicked()  => InsertAndMoveCaret("+");
+    public void MinusBtnClicked() => InsertAndMoveCaret("-");
+    public void MultBtnClicked()  => InsertAndMoveCaret("*");
+    public void DivBtnClicked()   => InsertAndMoveCaret("/");
+    public void PowBtnClicked()   => InsertAndMoveCaret("^");
+    public void ModBtnClicked()   => InsertAndMoveCaret("mod", 3);
+    public void LeftBracketBtnClicked()  => InsertAndMoveCaret("(");
+    public void RightBracketBtnClicked() => InsertAndMoveCaret(")");
+    
+    public void CreditBtnClicked() {/* TODO */}  
+    public void DepositBtnClicked() {/* TODO */} 
+
+    private void InsertAndMoveCaret(string value, int caret_shift = 1)
+    {
+        ExpressionInput = ExpressionInput.Insert(ExpressionInputCaretIndex, value);
+        ExpressionInputCaretIndex += caret_shift;
+    }
+
+    public void CleanInputAction()
+    {
+        ExpressionInput = "";
     }
 
     public async Task CopyInputAction(IClipboard clipboard)
