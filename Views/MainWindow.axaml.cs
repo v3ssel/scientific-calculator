@@ -13,14 +13,11 @@ public partial class MainWindow : Window
     }
 
     public void ExpandButtonClicked(object source, RoutedEventArgs args)
-    {
-    //     Console.WriteLine("Click!");
-    //     Debug.WriteLine("Click!");
-    //     answer_textbox.Text = input_textbox.Text;
-        
+    {   
+        // (source as TextBox).SelectedText
+        // this.DataContext = new
         // if (main_split.IsPaneOpen)
         // {
-            // (source as TextBox).SelectedText
         //     main_split.IsPaneOpen = false;
         //     expand_btn.Content = "<";
         //     expand_btn.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
