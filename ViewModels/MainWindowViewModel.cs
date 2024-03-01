@@ -13,7 +13,6 @@ using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using ReactiveUI;
-using ScientificCalculator.Models;
 using ScientificCalculator.Views;
 
 namespace ScientificCalculator.ViewModels;
