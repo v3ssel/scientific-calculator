@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
              xmlns:vm="using:ScientificCalculator.ViewModels"
              xmlns:views="clr-namespace:ScientificCalculator.Views"
-             x:Class="ScientificCalculator.Views.GraphView"
-             x:DataType="vm:GraphViewModel">
-    Graph!
+             x:Class="ScientificCalculator.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+    Settings!
 </UserControl>

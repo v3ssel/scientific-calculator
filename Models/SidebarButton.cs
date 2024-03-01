@@ -2,15 +2,16 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using ScientificCalculator.ViewModels;
 
 namespace ScientificCalculator.Models;
 
 public class SidebarButton
 {
-    public SidebarButton(Type view_model_type, string icon_resource)
+    public SidebarButton(ViewModelBase view_model_type, string icon_resource)
     {
         ViewModelType = view_model_type;
-        Label = view_model_type.Name.Replace("ViewModel", "");
+        Label = nameof(view_model_type).Replace("ViewModel", "");
 
         if (Application.Current!.TryFindResource(icon_resource, out var icon)
             && icon is StreamGeometry icon_geometry)
@@ -25,6 +26,6 @@ public class SidebarButton
     }
 
     public string Label { get; set; }
-    public Type ViewModelType { get; set; }
+    public ViewModelBase ViewModelType { get; set; }
     public StreamGeometry ButtonIcon { get; set; }
 }

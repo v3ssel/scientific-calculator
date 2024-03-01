@@ -35,38 +35,75 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isSplitViewPaneOpen, value);
     }
 
-    private SidebarButton _selectedSidebarButton;
-    public SidebarButton SelectedSidebarButton
+    private CalculatorViewModel _calculatorContent;
+    public CalculatorViewModel CalculatorContent
     {
-        get => _selectedSidebarButton;
-        set => this.RaiseAndSetIfChanged(ref _selectedSidebarButton, value);
+        get => _calculatorContent;
+        set => this.RaiseAndSetIfChanged(ref _calculatorContent, value);
     }
 
-    private void SelectedSidebarButtonChanged(SidebarButton sidebarButton)
+    private GraphViewModel _graphContent;
+    public GraphViewModel GraphContent
     {
-        var view_model_instance = Activator.CreateInstance(sidebarButton.ViewModelType);    
-        if (view_model_instance is null) return;
-
-        ContentViewModel = (ViewModelBase)view_model_instance;
+        get => _graphContent;
+        set => this.RaiseAndSetIfChanged(ref _graphContent, value);
     }
 
-    public ObservableCollection<SidebarButton> SidebarButtons { get; set; }
+    private HistoryViewModel _historyContent;
+    public HistoryViewModel HistoryContent
+    {
+        get => _historyContent;
+        set => this.RaiseAndSetIfChanged(ref _historyContent, value);
+    }
+
+    private SettingsViewModel _settingsContent;
+    public SettingsViewModel SettingsContent
+    {
+        get => _settingsContent;
+        set => this.RaiseAndSetIfChanged(ref _settingsContent, value);
+    }
+
+    private AboutViewModel _aboutContent;
+    public AboutViewModel AboutContent
+    {
+        get => _aboutContent;
+        set => this.RaiseAndSetIfChanged(ref _aboutContent, value);
+    }
 
     public MainWindowViewModel()
     {
-        _contentViewModel = new CalculatorViewModel();
-        SidebarButtons = new ObservableCollection<SidebarButton>()
-        {
-            new(typeof(CalculatorViewModel), "CalculatorIcon"),
-            new(typeof(GraphViewModel), "GraphIcon"),
-            new(typeof(HistoryViewModel), "HistoryIcon"),
-            new(typeof(SettingsViewModel), "SettingsIcon"),
-            new(typeof(AboutViewModel), "AboutIcon"),
-        };
+        _calculatorContent = new CalculatorViewModel();
+        _graphContent = new GraphViewModel();
+        _historyContent = new HistoryViewModel();
+        _settingsContent = new SettingsViewModel();
+        _aboutContent = new AboutViewModel();
+        
+        _contentViewModel = _calculatorContent;
+    }
 
-        _selectedSidebarButton = SidebarButtons.First();
+    public void CalculatorSidebarButtonClicked()
+    {
+        ContentViewModel = CalculatorContent;
+    }
 
-        this.WhenAnyValue(x => x.SelectedSidebarButton).Subscribe(SelectedSidebarButtonChanged);
+    public void GraphSidebarButtonClicked()
+    {
+        ContentViewModel = GraphContent;
+    }
+    
+    public void HistorySidebarButtonClicked()
+    {
+        ContentViewModel = HistoryContent;
+    }
+    
+    public void SettingsSidebarButtonClicked()
+    {
+        ContentViewModel = SettingsContent;
+    }
+    
+    public void AboutSidebarButtonClicked()
+    {
+        ContentViewModel = AboutContent;
     }
 
     public void ExpandGraphBtnClicked()

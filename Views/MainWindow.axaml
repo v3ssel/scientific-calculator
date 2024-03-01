@@ -7,7 +7,7 @@
         xmlns:views="using:ScientificCalculator.Views"
         x:Class="ScientificCalculator.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Width="400" Height="525"
+        Width="400" Height="520"
         Icon="/Assets/avalonia-logo.ico"
         Title="Scientific Calculator"
         >
@@ -22,31 +22,66 @@
     <SplitView
         Name="main_split"
         IsPaneOpen="{Binding IsSplitViewPaneOpen}"
-        PanePlacement="Right"
         DisplayMode="CompactInline"
-        OpenPaneLength="150"
+        OpenPaneLength="135"
         Background="White"
-        PaneBackground="#FFEE99">
+        PaneBackground="#c0c0c0">
         <SplitView.Pane>
             <StackPanel Spacing="10">
                 <Button
                     Command="{Binding ExpandGraphBtnClicked}"
                     Margin="5 10 5 0"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top">
                     <PathIcon Data="{StaticResource BurgerMenuIcon}"/>
                 </Button>
                 
-                <ListBox ItemsSource="{Binding SidebarButtons}" SelectedItem="{Binding SelectedSidebarButton}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Spacing="15" Orientation="Horizontal">
-                                <PathIcon Data="{Binding ButtonIcon}" />
-                                <TextBlock Text="{Binding Label}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <StackPanel Background="">
+                        <Button Margin="5 0 5 5" Command="{Binding CalculatorSidebarButtonClicked}">
+                            <Button.Content>
+                                <StackPanel Spacing="10" Orientation="Horizontal">
+                                    <PathIcon Data="{StaticResource CalculatorIcon}" />
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Calculator" FontWeight="Medium" FontSize="16"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        
+                        <Button Margin="5 0 5 5" Command="{Binding GraphSidebarButtonClicked}">
+                            <Button.Content>
+                                <StackPanel Spacing="10" Orientation="Horizontal">
+                                    <PathIcon Data="{StaticResource GraphIcon}" />
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Graph" FontWeight="Medium" FontSize="16"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Margin="5 0 5 5" Command="{Binding HistorySidebarButtonClicked}">
+                            <Button.Content>
+                                <StackPanel Spacing="10" Orientation="Horizontal">
+                                    <PathIcon Data="{StaticResource HistoryIcon}" />
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="History" FontWeight="Medium" FontSize="16"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Margin="5 0 5 5" Command="{Binding SettingsSidebarButtonClicked}">
+                            <Button.Content>
+                                <StackPanel Spacing="10" Orientation="Horizontal">
+                                    <PathIcon Data="{StaticResource SettingsIcon}" />
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Settings" FontWeight="Medium" FontSize="16"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Margin="5 0 5 5" Command="{Binding AboutSidebarButtonClicked}">
+                            <Button.Content>
+                                <StackPanel Spacing="10" Orientation="Horizontal">
+                                    <PathIcon Data="{StaticResource AboutIcon}" />
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="About" FontWeight="Medium" FontSize="16"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                </StackPanel>
                 
             </StackPanel>
         </SplitView.Pane>

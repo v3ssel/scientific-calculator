@@ -4,6 +4,6 @@ namespace ScientificCalculator.ViewModels
 {
     public class HistoryViewModel : ViewModelBase
     {
-        public string Description { get; set; } = String.Empty;
+        public string SelectedExpression { get; set; } = String.Empty;
     }
 }

@@ -2,10 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:vm="using:ScientificCalculator.ViewModels"
-             xmlns:views="clr-namespace:ScientificCalculator.Views"
-             x:Class="ScientificCalculator.Views.GraphView"
-             x:DataType="vm:GraphViewModel">
-    Graph!
+             x:Class="ScientificCalculator.Views.AboutView"
+             x:DataType="vm:AboutViewModel">
+    About!
 </UserControl>

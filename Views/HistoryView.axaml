@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+             xmlns:vm="using:ScientificCalculator.ViewModels"
+             x:Class="ScientificCalculator.Views.HistoryView"
+             x:DataType="vm:HistoryViewModel">
+    <Design.DataContext>
+        <vm:HistoryViewModel/>
+    </Design.DataContext>
+
+    <StackPanel>
+        <Border Margin="10" CornerRadius="5" Background="#c0c0c0">
+            <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Text="History" />
+        </Border>
+        <ListBox SelectedItem="{Binding SelectedExpression}">
+            <ListBoxItem>One</ListBoxItem>
+            <ListBoxItem>Two</ListBoxItem>
+            <ListBoxItem>Three</ListBoxItem>
+        </ListBox>
+    </StackPanel>
+</UserControl>
