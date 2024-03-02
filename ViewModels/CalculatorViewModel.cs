@@ -8,7 +8,7 @@ namespace ScientificCalculator.ViewModels
 {
     public class CalculatorViewModel : ViewModelBase
     {
-        private string _expressionInput = "";
+        private string _expressionInput = string.Empty;
         public string ExpressionInput
         {
             get => _expressionInput;
@@ -37,14 +37,14 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _expressionInputSelectionEnd, value);
         }
 
-        private string _xValue = "";
+        private string _xValue = string.Empty;
         public string XValue
         {
             get => _xValue;
             set => this.RaiseAndSetIfChanged(ref _xValue, value);
         }
 
-        private string _answerField = "";
+        private string _answerField = string.Empty;
         public string AnswerField
         {
             get => _answerField;
@@ -54,8 +54,11 @@ namespace ScientificCalculator.ViewModels
         public ReactiveCommand<IClipboard, Unit> CopyInputActionCmd { get; }
         public ReactiveCommand<IClipboard, Unit> PasteInputActionCmd { get; }
 
-        public CalculatorViewModel()
+        private HistoryViewModel _historyViewModel;
+
+        public CalculatorViewModel(HistoryViewModel historyViewModel)
         {
+            _historyViewModel = historyViewModel;
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
         }
@@ -63,6 +66,11 @@ namespace ScientificCalculator.ViewModels
         public void CalculateBtnClicked()
         {
             AnswerField = ExpressionInput;
+            _historyViewModel.HistoryRecords.Add(new Models.HistoryRecord()
+            {
+                Expression = ExpressionInput,
+                Answer = AnswerField
+            });
         }
         
         public void AllClearBtnClicked()

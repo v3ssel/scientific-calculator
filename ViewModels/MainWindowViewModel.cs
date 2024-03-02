@@ -13,6 +13,7 @@ using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using ReactiveUI;
+using ScientificCalculator.Models;
 using ScientificCalculator.Views;
 
 namespace ScientificCalculator.ViewModels;
@@ -71,13 +72,16 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        _calculatorContent = new CalculatorViewModel();
         _graphContent = new GraphViewModel();
         _historyContent = new HistoryViewModel();
         _settingsContent = new SettingsViewModel();
         _aboutContent = new AboutViewModel();
+        _calculatorContent = new CalculatorViewModel(_historyContent);
         
         _contentViewModel = _calculatorContent;
+
+        HistoryContent.WhenAnyValue(x => x.SelectedExpression)
+                      .Subscribe(HistoryValueSelectedAction);
     }
 
     public void CalculatorSidebarButtonClicked()
@@ -108,5 +112,12 @@ public class MainWindowViewModel : ViewModelBase
     public void ExpandGraphBtnClicked()
     {
         IsSplitViewPaneOpen = !IsSplitViewPaneOpen;
+    }
+
+    private void HistoryValueSelectedAction(HistoryRecord x)
+    {
+
+        CalculatorContent.ExpressionInput = x.Expression;
+        ContentViewModel = CalculatorContent;
     }
 }
