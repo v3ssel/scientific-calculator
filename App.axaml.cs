@@ -10,6 +10,10 @@ public partial class App : Application
 {
     public override void Initialize()
     {
+        #if DEBUG
+            this.AttachDevTools();
+        #endif
+
         AvaloniaXamlLoader.Load(this);
     }
 

@@ -10,21 +10,43 @@
         <vm:HistoryViewModel/>
     </Design.DataContext>
 
-    <StackPanel>
-        <Border Margin="10" CornerRadius="5" Background="#c0c0c0">
-            <TextBlock FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Text="History" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.Column="0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                Margin="10"
+                CornerRadius="5"
+                Background="#c0c0c0">
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Text="History" />
         </Border>
-        <ScrollViewer Height="{Binding $parent.Height}">
-            <ListBox ItemsSource="{Binding HistoryRecords}" SelectedItem="{Binding SelectedExpression}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock HorizontalAlignment="Left" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="{Binding Expression}" />
-                            <TextBlock HorizontalAlignment="Right" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" Text="{Binding Answer, StringFormat='= {0}'}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="0" Name="scroll_view_hv">
+            <StackPanel>
+                <TextBlock IsVisible="{Binding !HistoryRecords.Count}" HorizontalAlignment="Center" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="No history found."/>
+                <ListBox ItemsSource="{Binding HistoryRecords}" SelectedItem="{Binding SelectedExpression}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock HorizontalAlignment="Left" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="{Binding Expression}" />
+                                <TextBlock HorizontalAlignment="Right" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" Text="{Binding Answer, StringFormat='= {0}'}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
         </ScrollViewer>
-    </StackPanel>
+    </Grid>
 </UserControl>
