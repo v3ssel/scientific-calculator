@@ -6,7 +6,8 @@
              xmlns:vm="using:ScientificCalculator.ViewModels"
              xmlns:views="clr-namespace:ScientificCalculator.Views"
              x:Class="ScientificCalculator.Views.CalculatorView"
-             x:DataType="vm:CalculatorViewModel">
+             x:DataType="vm:CalculatorViewModel"
+             >
   
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -14,8 +15,23 @@
         <vm:CalculatorViewModel/>
     </Design.DataContext>
 
-    <StackPanel>
-        <TextBox 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBox
+            Grid.Row="0" Grid.Column="0" 
             Name="input_textbox"
             Text="{Binding ExpressionInput}"
             CaretIndex="{Binding ExpressionInputCaretIndex, Mode=TwoWay}"
@@ -36,8 +52,11 @@
         </TextBox>
 
         <Grid
+            Grid.Row="1" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*,*"
             RowDefinitions="Auto,Auto"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
             <Button  Grid.Row="0" Grid.Column="0" Content="sin"  Command="{Binding SinBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="cos"  Command="{Binding CosBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
@@ -52,8 +71,11 @@
         </Grid>
 
         <Grid
+            Grid.Row="2" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
             <Button  Grid.Row="0" Grid.Column="0" Content="1" Command="{Binding OneBtnClicked}"   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="2" Command="{Binding TwoBtnClicked}"   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
@@ -70,8 +92,11 @@
         </Grid>
 
         <Grid
+            Grid.Row="3" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
             <Button  Grid.Row="0" Grid.Column="0" Content="4" Command="{Binding FourBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="5" Command="{Binding FiveBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
@@ -88,8 +113,11 @@
         </Grid>
 
         <Grid
+            Grid.Row="4" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
             <Button  Grid.Row="0" Grid.Column="0" Content="7" Command="{Binding SevenBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="8" Command="{Binding EightBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
@@ -103,8 +131,11 @@
         </Grid>
 
         <Grid
+            Grid.Row="5" Grid.Column="0" 
             ColumnDefinitions="2*,2*,2*,*,*"
             RowDefinitions="Auto"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
             <Button  Grid.Row="0" Grid.Column="0" Content="X"  Command="{Binding XBtnClicked}"         VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="0"  Command="{Binding ZeroBtnClicked}"      VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
@@ -113,7 +144,8 @@
             <Button  Grid.Row="0" Grid.Column="4" Content="="  Command="{Binding CalculateBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="18"/>
         </Grid>
 
-        <TextBox 
+        <TextBox
+            Grid.Row="6" Grid.Column="0" 
             Name="answer_textbox"
             Text="{Binding AnswerField}"
             IsReadOnly="true" 
@@ -121,5 +153,5 @@
             HorizontalAlignment="Stretch" 
             FontSize="26" 
             Watermark="Answer field." />
-    </StackPanel>
+    </Grid>
 </UserControl>
