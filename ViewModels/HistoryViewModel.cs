@@ -8,6 +8,13 @@ namespace ScientificCalculator.ViewModels
 {
     public class HistoryViewModel : ViewModelBase
     {
+        private HistoryRecord? _lastClickedRecord;
+        public HistoryRecord? LastClickedRecord
+        {
+            get => _lastClickedRecord;
+            set => this.RaiseAndSetIfChanged(ref _lastClickedRecord, value);
+        }
+
         private HistoryRecord _selectedExpression; 
         public HistoryRecord SelectedExpression
         {
@@ -21,6 +28,12 @@ namespace ScientificCalculator.ViewModels
         {
             _selectedExpression = new HistoryRecord();
             HistoryRecords = new ObservableCollection<HistoryRecord>();
+        }
+
+        public void DeleteHistoryRecord()
+        {
+            if (LastClickedRecord is not null && HistoryRecords.Contains(LastClickedRecord))
+                HistoryRecords.Remove(LastClickedRecord);
         }
     }
 }
