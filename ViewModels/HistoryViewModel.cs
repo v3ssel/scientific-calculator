@@ -35,5 +35,10 @@ namespace ScientificCalculator.ViewModels
             if (LastClickedRecord is not null && HistoryRecords.Contains(LastClickedRecord))
                 HistoryRecords.Remove(LastClickedRecord);
         }
+
+        public void DeleteAllHistory()
+        {
+            HistoryRecords.Clear();
+        }
     }
 }

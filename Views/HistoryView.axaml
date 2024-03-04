@@ -50,9 +50,12 @@
                     HorizontalAlignment="Stretch"
                     Margin="5 5 5 0"
                     CornerRadius="5"
-                    Background="#c0c0c0">
-                <Button VerticalAlignment="Center"
-                        HorizontalAlignment="Center">
+                    Background="#c0c0c0"
+                    >
+                <Button Background="#c0c0c0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Command="{Binding DeleteAllHistory}">
                     <PathIcon Data="{StaticResource DeleteIcon}"/>
                 </Button>
             </Border>
