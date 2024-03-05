@@ -29,15 +29,41 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _foregroundColor, value);
         }
 
+        private IBrush _firstBackgroundBrush = Brushes.White;
+        public IBrush FirstBackgroundBrush
+        {
+            get => _firstBackgroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
+        }
+
+        private Avalonia.Media.Color _firstBackgroundColor = Colors.White;
+        public Avalonia.Media.Color FirstBackgroundColor
+        {
+            get => _firstBackgroundColor;
+            set => this.RaiseAndSetIfChanged(ref _firstBackgroundColor, value);
+        }
+
+        private IBrush _secondBackgroundBrush = Brushes.Silver;
+        public IBrush SecondBackgroundBrush
+        {
+            get => _secondBackgroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
+        }
+
+        private Avalonia.Media.Color _secondBackgroundColor = Colors.Silver;
+        public Avalonia.Media.Color SecondBackgroundColor
+        {
+            get => _secondBackgroundColor;
+            set => this.RaiseAndSetIfChanged(ref _secondBackgroundColor, value);
+        }
+
         public SettingsViewModel()
         {
-            // var cp = new ColorPicker();
-            // Color c = cp.Color;
-            // var a = new SolidColorBrush();
-            
-            _logsRotationPeriod = 0;
+            _logsRotationPeriod = 1;
             
             this.WhenAnyValue(x => x.ForegroundColor).Subscribe(x => ForegroundBrush = new SolidColorBrush(x));
+            this.WhenAnyValue(x => x.FirstBackgroundColor).Subscribe(x => FirstBackgroundBrush = new SolidColorBrush(x));
+            this.WhenAnyValue(x => x.SecondBackgroundColor).Subscribe(x => SecondBackgroundBrush = new SolidColorBrush(x));
         }
 
         public void SaveHistoryOptionClicked()

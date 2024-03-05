@@ -24,6 +24,12 @@ public class MainWindowViewModel : ViewModelBase
     public delegate void ForegroundBrushChangedEventHandler(IBrush brush);
     public event ForegroundBrushChangedEventHandler ForegroundBrushChanged;
 
+    public delegate void FirstBackgroundBrushChangedEventHandler(IBrush brush);
+    public event FirstBackgroundBrushChangedEventHandler FirstBackgroundBrushChanged;
+
+    public delegate void SecondBackgroundBrushChangedEventHandler(IBrush brush);
+    public event SecondBackgroundBrushChangedEventHandler SecondBackgroundBrushChanged;
+
     private ViewModelBase _contentViewModel;
 
     public ViewModelBase ContentViewModel
@@ -44,6 +50,20 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _foregroundBrush;
         set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
+    }
+    
+    private IBrush _firstBackgroundBrush = Brushes.White;
+    public IBrush FirstBackgroundBrush
+    {
+        get => _firstBackgroundBrush;
+        set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
+    }
+
+    private IBrush _secondBackgroundBrush = Brushes.Silver;
+    public IBrush SecondBackgroundBrush
+    {
+        get => _secondBackgroundBrush;
+        set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
     }
 
     private CalculatorViewModel _calculatorContent;
@@ -98,13 +118,37 @@ public class MainWindowViewModel : ViewModelBase
         ForegroundBrushChanged += CalculatorContent.ForegroundBrushChangedAction;
         ForegroundBrushChanged += HistoryContent.ForegroundBrushChangedAction;
         
+        FirstBackgroundBrushChanged += FirstBackgroundBrushChangedAction;
+        FirstBackgroundBrushChanged += CalculatorContent.FirstBackgroundBrushChangedAction;
+        FirstBackgroundBrushChanged += HistoryContent.FirstBackgroundBrushChangedAction;
+
+        SecondBackgroundBrushChanged += SecondBackgroundBrushChangedAction;
+        SecondBackgroundBrushChanged += CalculatorContent.SecondBackgroundBrushChangedAction;
+        SecondBackgroundBrushChanged += HistoryContent.SecondBackgroundBrushChangedAction;
+
         SettingsContent.WhenAnyValue(x => x.ForegroundBrush)
                        .Subscribe(x => ForegroundBrushChanged?.Invoke(x));
+
+        SettingsContent.WhenAnyValue(x => x.FirstBackgroundBrush)
+                       .Subscribe(x => FirstBackgroundBrushChanged?.Invoke(x));
+                       
+        SettingsContent.WhenAnyValue(x => x.SecondBackgroundBrush)
+                       .Subscribe(x => SecondBackgroundBrushChanged?.Invoke(x));
     }
 
     public void ForegroundBrushChangedAction(IBrush brush)
     {
         ForegroundBrush = brush;
+    }
+    
+    public void FirstBackgroundBrushChangedAction(IBrush brush)
+    {
+        FirstBackgroundBrush = brush;
+    }
+
+    public void SecondBackgroundBrushChangedAction(IBrush brush)
+    {
+        SecondBackgroundBrush = brush;
     }
 
     public void CalculatorSidebarButtonClicked()

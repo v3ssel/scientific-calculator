@@ -16,6 +16,20 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
         }
 
+        private IBrush _firstBackgroundBrush = Brushes.White;
+        public IBrush FirstBackgroundBrush
+        {
+            get => _firstBackgroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
+        }
+
+        private IBrush _secondBackgroundBrush = Brushes.Silver;
+        public IBrush SecondBackgroundBrush
+        {
+            get => _secondBackgroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
+        }
+
         private string _expressionInput = string.Empty;
         public string ExpressionInput
         {
@@ -67,6 +81,7 @@ namespace ScientificCalculator.ViewModels
         public CalculatorViewModel(HistoryViewModel historyViewModel)
         {
             _historyViewModel = historyViewModel;
+
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
         }
@@ -75,6 +90,7 @@ namespace ScientificCalculator.ViewModels
         public CalculatorViewModel()
         {
             _historyViewModel = new HistoryViewModel();
+
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
         }
@@ -133,6 +149,16 @@ namespace ScientificCalculator.ViewModels
         public void ForegroundBrushChangedAction(IBrush brush)
         {
             ForegroundBrush = brush;
+        }
+
+        public void FirstBackgroundBrushChangedAction(IBrush brush)
+        {
+            FirstBackgroundBrush = brush;
+        }
+
+        public void SecondBackgroundBrushChangedAction(IBrush brush)
+        {
+            SecondBackgroundBrush = brush;
         }
 
         private void InsertAndMoveCaret(string value, int caret_shift = 1)

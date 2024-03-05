@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
@@ -38,6 +39,7 @@ public partial class MainWindow : Window
         }
     }
 
+    // debug
     public void ExpandButtonClicked(object source, RoutedEventArgs args)
     {   
         // (source as TextBox).SelectedText

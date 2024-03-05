@@ -24,7 +24,7 @@
         PaneClosing="PaneClosingEvent"
         DisplayMode="CompactInline"
         OpenPaneLength="135"
-        PaneBackground="#c0c0c0">
+        PaneBackground="{Binding SecondBackgroundBrush}">
         <SplitView.Pane>
             <StackPanel Spacing="10">
                 <Button

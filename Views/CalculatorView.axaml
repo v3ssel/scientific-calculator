@@ -21,12 +21,13 @@
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Background" Value="#c0c0c0"/>
+            <Setter Property="Background" Value="{Binding SecondBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{Binding ForegroundBrush}"/>
         </Style>
     </UserControl.Styles>
 
     <Grid
+        Background="{Binding FirstBackgroundBrush}"
         HorizontalAlignment="Stretch" 
         VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -45,14 +46,14 @@
 
         <TextBox
             Grid.Row="0" Grid.Column="0" 
-            Name="input_textbox"
             Text="{Binding ExpressionInput}"
             CaretIndex="{Binding ExpressionInputCaretIndex, Mode=TwoWay}"
             SelectionStart="{Binding ExpressionInputSelectionStart, Mode=TwoWay}"
             SelectionEnd="{Binding ExpressionInputSelectionEnd, Mode=TwoWay}"
-            Margin="10 10 5 5" 
+            Margin="5" 
             FontSize="26" 
             MaxLength="255" 
+            Foreground="{Binding ForegroundBrush}"
             Watermark="Input field.">
             <TextBox.ContextMenu>
                 <ContextMenu>
@@ -67,7 +68,7 @@
             Grid.Row="1" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*,*"
             RowDefinitions="Auto,Auto"
-            Margin="10 5 5 5">
+            Margin="5">
             <Button  Grid.Row="0" Grid.Column="0" Content="sin"  Command="{Binding SinBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="cos"  Command="{Binding CosBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
             <Button  Grid.Row="0" Grid.Column="2" Content="tan"  Command="{Binding TanBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
@@ -77,14 +78,14 @@
             <Button  Grid.Row="1" Grid.Column="1" Content="acos" Command="{Binding AcosBtnClicked}" Classes="BtnStyle" FontSize="20"/>
             <Button  Grid.Row="1" Grid.Column="2" Content="atan" Command="{Binding AtanBtnClicked}" Classes="BtnStyle" FontSize="20"/>
             <Button  Grid.Row="1" Grid.Column="3" Content="sqrt" Command="{Binding SqrtBtnClicked}" Classes="BtnStyle" FontSize="20"/>
-            <TextBox Grid.Row="1" Grid.Column="4" Watermark="x"  Text="{Binding XValue}"            Classes="BtnStyle" FontSize="20"/>
+            <TextBox Grid.Row="1" Grid.Column="4" Watermark="x"  Text="{Binding XValue}"            Classes="BtnStyle" FontSize="20" Foreground="{Binding ForegroundBrush}"/>
         </Grid>
 
         <Grid
             Grid.Row="2" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
-            Margin="10 5 5 5">
+            Margin="5">
             <Button  Grid.Row="0" Grid.Column="0" Content="1" Command="{Binding OneBtnClicked}"   Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="2" Command="{Binding TwoBtnClicked}"   Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="2" Content="3" Command="{Binding ThreeBtnClicked}" Classes="BtnStyle" FontSize="45"/>
@@ -102,7 +103,7 @@
             Grid.Row="3" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
-            Margin="10 5 5 5">
+            Margin="5">
             <Button  Grid.Row="0" Grid.Column="0" Content="4" Command="{Binding FourBtnClicked}" Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="5" Command="{Binding FiveBtnClicked}" Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="2" Content="6" Command="{Binding SixBtnClicked}"  Classes="BtnStyle" FontSize="45"/>
@@ -120,7 +121,7 @@
             Grid.Row="4" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
-            Margin="10 5 5 5">
+            Margin="5">
             <Button  Grid.Row="0" Grid.Column="0" Content="7" Command="{Binding SevenBtnClicked}" Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="8" Command="{Binding EightBtnClicked}" Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="2" Content="9" Command="{Binding NineBtnClicked}"  Classes="BtnStyle" FontSize="45"/>
@@ -136,7 +137,7 @@
             Grid.Row="5" Grid.Column="0" 
             ColumnDefinitions="2*,2*,2*,*,*"
             RowDefinitions="Auto"
-            Margin="10 5 5 5">
+            Margin="5">
             <Button  Grid.Row="0" Grid.Column="0" Content="X"  Command="{Binding XBtnClicked}"         Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="1" Content="0"  Command="{Binding ZeroBtnClicked}"      Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="2" Content="."  Command="{Binding DotBtnClicked}"       Classes="BtnStyle" FontSize="45"/>
@@ -146,11 +147,11 @@
 
         <TextBox
             Grid.Row="6" Grid.Column="0" 
-            Name="answer_textbox"
             Text="{Binding AnswerField}"
             IsReadOnly="true" 
-            Margin="10 5 5 5"
-            FontSize="26" 
+            Margin="5"
+            FontSize="26"
+            Foreground="{Binding ForegroundBrush}"
             Watermark="Answer field." />
     </Grid>
 </UserControl>

@@ -16,6 +16,20 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
         }
 
+        private IBrush _firstBackgroundBrush = Brushes.White;
+        public IBrush FirstBackgroundBrush
+        {
+            get => _firstBackgroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
+        }
+
+        private IBrush _secondBackgroundBrush = Brushes.Silver;
+        public IBrush SecondBackgroundBrush
+        {
+            get => _secondBackgroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
+        }
+
         private HistoryRecord? _lastClickedRecord;
         public HistoryRecord? LastClickedRecord
         {
@@ -52,6 +66,16 @@ namespace ScientificCalculator.ViewModels
         public void ForegroundBrushChangedAction(IBrush brush)
         {
             ForegroundBrush = brush;
+        }
+
+        public void FirstBackgroundBrushChangedAction(IBrush brush)
+        {
+            FirstBackgroundBrush = brush;
+        }
+
+        public void SecondBackgroundBrushChangedAction(IBrush brush)
+        {
+            SecondBackgroundBrush = brush;
         }
     }
 }
