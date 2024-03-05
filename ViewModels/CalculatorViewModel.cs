@@ -2,12 +2,20 @@ using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
+using Avalonia.Media;
 using ReactiveUI;
 
 namespace ScientificCalculator.ViewModels
 {
     public class CalculatorViewModel : ViewModelBase
     {
+        private IBrush _foregroundBrush = Brushes.Black;
+        public IBrush ForegroundBrush
+        {
+            get => _foregroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
+        }
+
         private string _expressionInput = string.Empty;
         public string ExpressionInput
         {
@@ -62,6 +70,14 @@ namespace ScientificCalculator.ViewModels
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
         }
+       
+        // design
+        public CalculatorViewModel()
+        {
+            _historyViewModel = new HistoryViewModel();
+            CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
+            PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
+        }
 
         public void CalculateBtnClicked()
         {
@@ -112,7 +128,12 @@ namespace ScientificCalculator.ViewModels
         public void RightBracketBtnClicked() => InsertAndMoveCaret(")");
         
         public void CreditBtnClicked() {/* TODO */}  
-        public void DepositBtnClicked() {/* TODO */} 
+        public void DepositBtnClicked() {/* TODO */}
+
+        public void ForegroundBrushChangedAction(IBrush brush)
+        {
+            ForegroundBrush = brush;
+        }
 
         private void InsertAndMoveCaret(string value, int caret_shift = 1)
         {
@@ -158,22 +179,16 @@ namespace ScientificCalculator.ViewModels
 
         private static async Task<(string, int)> PasteFromClipboard(IClipboard clipboard, string value, int caret = 0, int start = 0, int end = 0)
         {
-
             var clipboard_text = await clipboard.GetTextAsync() ?? "";
             if (string.IsNullOrEmpty(clipboard_text)) return ("", 0);
             
-            string res = "";
 
             if (start == end)
             {
-                res = value.Insert(caret, clipboard_text);
-            }
-            else
-            {
-                res = value.Remove(start, end - start).Insert(start, clipboard_text);
+                return (value.Insert(caret, clipboard_text), clipboard_text.Length);
             }
             
-            return (res, clipboard_text.Length);
+            return (value.Remove(start, end - start).Insert(start, clipboard_text), clipboard_text.Length);
         }
     }
 }

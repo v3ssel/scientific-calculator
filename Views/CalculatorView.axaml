@@ -15,7 +15,20 @@
         <vm:CalculatorViewModel/>
     </Design.DataContext>
 
-    <Grid>
+    <UserControl.Styles>
+        <Style Selector="Button.BtnStyle">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="#c0c0c0"/>
+            <Setter Property="Foreground" Value="{Binding ForegroundBrush}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid
+        HorizontalAlignment="Stretch" 
+        VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -38,7 +51,6 @@
             SelectionStart="{Binding ExpressionInputSelectionStart, Mode=TwoWay}"
             SelectionEnd="{Binding ExpressionInputSelectionEnd, Mode=TwoWay}"
             Margin="10 10 5 5" 
-            HorizontalAlignment="Stretch" 
             FontSize="26" 
             MaxLength="255" 
             Watermark="Input field.">
@@ -55,39 +67,34 @@
             Grid.Row="1" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*,*"
             RowDefinitions="Auto,Auto"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
-            <Button  Grid.Row="0" Grid.Column="0" Content="sin"  Command="{Binding SinBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="0" Grid.Column="1" Content="cos"  Command="{Binding CosBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="0" Grid.Column="2" Content="tan"  Command="{Binding TanBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="0" Grid.Column="3" Content="log"  Command="{Binding LogBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="0" Grid.Column="4" Content="ln"   Command="{Binding LnBtnClicked}"   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="1" Grid.Column="0" Content="asin" Command="{Binding AsinBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="1" Grid.Column="1" Content="acos" Command="{Binding AcosBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="1" Grid.Column="2" Content="atan" Command="{Binding AtanBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <Button  Grid.Row="1" Grid.Column="3" Content="sqrt" Command="{Binding SqrtBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
-            <TextBox Grid.Row="1" Grid.Column="4" Watermark="x"  Text="{Binding XValue}"            VerticalContentAlignment="Center" HorizontalContentAlignment="Left"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="20"/>
+            <Button  Grid.Row="0" Grid.Column="0" Content="sin"  Command="{Binding SinBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="0" Grid.Column="1" Content="cos"  Command="{Binding CosBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="0" Grid.Column="2" Content="tan"  Command="{Binding TanBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="0" Grid.Column="3" Content="log"  Command="{Binding LogBtnClicked}"  Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="0" Grid.Column="4" Content="ln"   Command="{Binding LnBtnClicked}"   Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="1" Grid.Column="0" Content="asin" Command="{Binding AsinBtnClicked}" Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="1" Grid.Column="1" Content="acos" Command="{Binding AcosBtnClicked}" Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="1" Grid.Column="2" Content="atan" Command="{Binding AtanBtnClicked}" Classes="BtnStyle" FontSize="20"/>
+            <Button  Grid.Row="1" Grid.Column="3" Content="sqrt" Command="{Binding SqrtBtnClicked}" Classes="BtnStyle" FontSize="20"/>
+            <TextBox Grid.Row="1" Grid.Column="4" Watermark="x"  Text="{Binding XValue}"            Classes="BtnStyle" FontSize="20"/>
         </Grid>
 
         <Grid
             Grid.Row="2" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
-            <Button  Grid.Row="0" Grid.Column="0" Content="1" Command="{Binding OneBtnClicked}"   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="1" Content="2" Command="{Binding TwoBtnClicked}"   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="2" Content="3" Command="{Binding ThreeBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="0" Content="1" Command="{Binding OneBtnClicked}"   Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="1" Content="2" Command="{Binding TwoBtnClicked}"   Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="2" Content="3" Command="{Binding ThreeBtnClicked}" Classes="BtnStyle" FontSize="45"/>
             <Grid Grid.Row="0" Grid.Column="3"
                 ColumnDefinitions="*,*"
                 RowDefinitions="Auto,Auto">
-                <Button  Grid.Row="0" Grid.Column="0" Content="+" Command="{Binding PlusBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="0" Grid.Column="1" Content="-" Command="{Binding MinusBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="1" Grid.Column="0" Content="*" Command="{Binding MultBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="1" Grid.Column="1" Content="/" Command="{Binding DivBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-
+                <Button  Grid.Row="0" Grid.Column="0" Content="+" Command="{Binding PlusBtnClicked}"  Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="0" Grid.Column="1" Content="-" Command="{Binding MinusBtnClicked}" Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="1" Grid.Column="0" Content="*" Command="{Binding MultBtnClicked}"  Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="1" Grid.Column="1" Content="/" Command="{Binding DivBtnClicked}"   Classes="BtnStyle" FontSize="18"/>
             </Grid>
         </Grid>
 
@@ -95,20 +102,17 @@
             Grid.Row="3" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
-            <Button  Grid.Row="0" Grid.Column="0" Content="4" Command="{Binding FourBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="1" Content="5" Command="{Binding FiveBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="2" Content="6" Command="{Binding SixBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="0" Content="4" Command="{Binding FourBtnClicked}" Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="1" Content="5" Command="{Binding FiveBtnClicked}" Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="2" Content="6" Command="{Binding SixBtnClicked}"  Classes="BtnStyle" FontSize="45"/>
             <Grid Grid.Row="0" Grid.Column="3"
                 ColumnDefinitions="*,*"
                 RowDefinitions="Auto,Auto">
-                <Button  Grid.Row="0" Grid.Column="0" Content="^" Command="{Binding PowBtnClicked}"          VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="0" Grid.Column="1" Content="%" Command="{Binding ModBtnClicked}"          VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="1" Grid.Column="0" Content="(" Command="{Binding LeftBracketBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="1" Grid.Column="1" Content=")" Command="{Binding RightBracketBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="18"/>
-
+                <Button  Grid.Row="0" Grid.Column="0" Content="^" Command="{Binding PowBtnClicked}"          Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="0" Grid.Column="1" Content="%" Command="{Binding ModBtnClicked}"          Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="1" Grid.Column="0" Content="(" Command="{Binding LeftBracketBtnClicked}"  Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="1" Grid.Column="1" Content=")" Command="{Binding RightBracketBtnClicked}" Classes="BtnStyle" FontSize="18"/>
             </Grid>
         </Grid>
 
@@ -116,17 +120,15 @@
             Grid.Row="4" Grid.Column="0" 
             ColumnDefinitions="*,*,*,*"
             RowDefinitions="Auto"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
-            <Button  Grid.Row="0" Grid.Column="0" Content="7" Command="{Binding SevenBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="1" Content="8" Command="{Binding EightBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="2" Content="9" Command="{Binding NineBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="0" Content="7" Command="{Binding SevenBtnClicked}" Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="1" Content="8" Command="{Binding EightBtnClicked}" Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="2" Content="9" Command="{Binding NineBtnClicked}"  Classes="BtnStyle" FontSize="45"/>
             <Grid Grid.Row="0" Grid.Column="3"
                 ColumnDefinitions="*"
                 RowDefinitions="Auto,Auto">
-                <Button  Grid.Row="0" Grid.Column="0" Content="Credit"  Command="{Binding CreditBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="18"/>
-                <Button  Grid.Row="1" Grid.Column="0" Content="Deposit" Command="{Binding DepositBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="18"/>
+                <Button  Grid.Row="0" Grid.Column="0" Content="Credit"  Command="{Binding CreditBtnClicked}"  Classes="BtnStyle" FontSize="18"/>
+                <Button  Grid.Row="1" Grid.Column="0" Content="Deposit" Command="{Binding DepositBtnClicked}" Classes="BtnStyle" FontSize="18"/>
             </Grid>
         </Grid>
 
@@ -134,14 +136,12 @@
             Grid.Row="5" Grid.Column="0" 
             ColumnDefinitions="2*,2*,2*,*,*"
             RowDefinitions="Auto"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
             Margin="10 5 5 5">
-            <Button  Grid.Row="0" Grid.Column="0" Content="X"  Command="{Binding XBtnClicked}"         VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="1" Content="0"  Command="{Binding ZeroBtnClicked}"      VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="2" Content="."  Command="{Binding DotBtnClicked}"       VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="45"/>
-            <Button  Grid.Row="0" Grid.Column="3" Content="AC" Command="{Binding AllClearBtnClicked}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="18"/>
-            <Button  Grid.Row="0" Grid.Column="4" Content="="  Command="{Binding CalculateBtnClicked}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="18"/>
+            <Button  Grid.Row="0" Grid.Column="0" Content="X"  Command="{Binding XBtnClicked}"         Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="1" Content="0"  Command="{Binding ZeroBtnClicked}"      Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="2" Content="."  Command="{Binding DotBtnClicked}"       Classes="BtnStyle" FontSize="45"/>
+            <Button  Grid.Row="0" Grid.Column="3" Content="AC" Command="{Binding AllClearBtnClicked}"  Classes="BtnStyle" FontSize="18"/>
+            <Button  Grid.Row="0" Grid.Column="4" Content="="  Command="{Binding CalculateBtnClicked}" Classes="BtnStyle" FontSize="18"/>
         </Grid>
 
         <TextBox
@@ -149,8 +149,7 @@
             Name="answer_textbox"
             Text="{Binding AnswerField}"
             IsReadOnly="true" 
-            Margin="10 5 5 5" 
-            HorizontalAlignment="Stretch" 
+            Margin="10 5 5 5"
             FontSize="26" 
             Watermark="Answer field." />
     </Grid>

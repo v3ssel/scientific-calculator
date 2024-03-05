@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -20,6 +21,9 @@ namespace ScientificCalculator.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    public delegate void ForegroundBrushChangedEventHandler(IBrush brush);
+    public event ForegroundBrushChangedEventHandler ForegroundBrushChanged;
+
     private ViewModelBase _contentViewModel;
 
     public ViewModelBase ContentViewModel
@@ -33,6 +37,13 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _isSplitViewPaneOpen;
         set => this.RaiseAndSetIfChanged(ref _isSplitViewPaneOpen, value);
+    }
+
+    private IBrush _foregroundBrush = Brushes.Black;
+    public IBrush ForegroundBrush
+    {
+        get => _foregroundBrush;
+        set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
     }
 
     private CalculatorViewModel _calculatorContent;
@@ -82,6 +93,18 @@ public class MainWindowViewModel : ViewModelBase
 
         HistoryContent.WhenAnyValue(x => x.SelectedExpression)
                       .Subscribe(HistoryValueSelectedAction);
+
+        ForegroundBrushChanged += ForegroundBrushChangedAction;
+        ForegroundBrushChanged += CalculatorContent.ForegroundBrushChangedAction;
+        ForegroundBrushChanged += HistoryContent.ForegroundBrushChangedAction;
+        
+        SettingsContent.WhenAnyValue(x => x.ForegroundBrush)
+                       .Subscribe(x => ForegroundBrushChanged?.Invoke(x));
+    }
+
+    public void ForegroundBrushChangedAction(IBrush brush)
+    {
+        ForegroundBrush = brush;
     }
 
     public void CalculatorSidebarButtonClicked()

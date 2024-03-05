@@ -17,7 +17,6 @@
         <vm:CalculatorViewModel/>
     </Design.DataContext>
 
-
     <SplitView
         Name="main_split"
         IsPaneOpen="{Binding IsSplitViewPaneOpen}"
@@ -25,7 +24,6 @@
         PaneClosing="PaneClosingEvent"
         DisplayMode="CompactInline"
         OpenPaneLength="135"
-        Background="White"
         PaneBackground="#c0c0c0">
         <SplitView.Pane>
             <StackPanel Spacing="10">
@@ -34,54 +32,54 @@
                     Margin="5 10 5 0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top">
-                    <PathIcon Data="{StaticResource BurgerMenuIcon}"/>
+                    <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource BurgerMenuIcon}"/>
                 </Button>
                 
-                <StackPanel Background="">
-                        <Button Margin="5 0 5 5" Command="{Binding CalculatorSidebarButtonClicked}">
-                            <Button.Content>
-                                <StackPanel Spacing="10" Orientation="Horizontal">
-                                    <PathIcon Data="{StaticResource CalculatorIcon}" />
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Calculator" FontWeight="Medium" FontSize="16"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        
-                        <Button Margin="5 0 5 5" Command="{Binding GraphSidebarButtonClicked}">
-                            <Button.Content>
-                                <StackPanel Spacing="10" Orientation="Horizontal">
-                                    <PathIcon Data="{StaticResource GraphIcon}" />
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Graph" FontWeight="Medium" FontSize="16"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                <StackPanel>
+                    <Button Margin="5 0 5 5" Command="{Binding CalculatorSidebarButtonClicked}">
+                        <Button.Content>
+                            <StackPanel Spacing="10" Orientation="Horizontal">
+                                <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource CalculatorIcon}" />
+                                <TextBlock Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Calculator" FontWeight="Medium" FontSize="16"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    
+                    <Button Margin="5 0 5 5" Command="{Binding GraphSidebarButtonClicked}">
+                        <Button.Content>
+                            <StackPanel Spacing="10" Orientation="Horizontal">
+                                <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource GraphIcon}" />
+                                <TextBlock Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Graph" FontWeight="Medium" FontSize="16"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
 
-                        <Button Margin="5 0 5 5" Command="{Binding HistorySidebarButtonClicked}">
-                            <Button.Content>
-                                <StackPanel Spacing="10" Orientation="Horizontal">
-                                    <PathIcon Data="{StaticResource HistoryIcon}" />
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="History" FontWeight="Medium" FontSize="16"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                    <Button Margin="5 0 5 5" Command="{Binding HistorySidebarButtonClicked}">
+                        <Button.Content>
+                            <StackPanel Spacing="10" Orientation="Horizontal">
+                                <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource HistoryIcon}" />
+                                <TextBlock Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" Text="History" FontWeight="Medium" FontSize="16"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
 
-                        <Button Margin="5 0 5 5" Command="{Binding SettingsSidebarButtonClicked}">
-                            <Button.Content>
-                                <StackPanel Spacing="10" Orientation="Horizontal">
-                                    <PathIcon Data="{StaticResource SettingsIcon}" />
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Settings" FontWeight="Medium" FontSize="16"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                    <Button Margin="5 0 5 5" Command="{Binding SettingsSidebarButtonClicked}">
+                        <Button.Content>
+                            <StackPanel Spacing="10" Orientation="Horizontal">
+                                <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource SettingsIcon}" />
+                                <TextBlock Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Settings" FontWeight="Medium" FontSize="16"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
 
-                        <Button Margin="5 0 5 5" Command="{Binding AboutSidebarButtonClicked}">
-                            <Button.Content>
-                                <StackPanel Spacing="10" Orientation="Horizontal">
-                                    <PathIcon Data="{StaticResource AboutIcon}" />
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="About" FontWeight="Medium" FontSize="16"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                    <Button Margin="5 0 5 5" Command="{Binding AboutSidebarButtonClicked}">
+                        <Button.Content>
+                            <StackPanel Spacing="10" Orientation="Horizontal">
+                                <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource AboutIcon}" />
+                                <TextBlock Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" Text="About" FontWeight="Medium" FontSize="16"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
                 </StackPanel>
                 
             </StackPanel>

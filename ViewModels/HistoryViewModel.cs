@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Models;
 
@@ -8,6 +9,13 @@ namespace ScientificCalculator.ViewModels
 {
     public class HistoryViewModel : ViewModelBase
     {
+        private IBrush _foregroundBrush = Brushes.Black;
+        public IBrush ForegroundBrush
+        {
+            get => _foregroundBrush;
+            set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
+        }
+
         private HistoryRecord? _lastClickedRecord;
         public HistoryRecord? LastClickedRecord
         {
@@ -39,6 +47,11 @@ namespace ScientificCalculator.ViewModels
         public void DeleteAllHistory()
         {
             HistoryRecords.Clear();
+        }
+
+        public void ForegroundBrushChangedAction(IBrush brush)
+        {
+            ForegroundBrush = brush;
         }
     }
 }

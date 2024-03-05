@@ -39,7 +39,8 @@
                     CornerRadius="5"
                     Background="#c0c0c0">
                 <TextBlock
-                        FontSize="22"
+                        Foreground="{Binding ForegroundBrush}"
+                        FontSize="27"
                         FontWeight="Bold"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
@@ -52,18 +53,19 @@
                     CornerRadius="5"
                     Background="#c0c0c0"
                     >
-                <Button Background="#c0c0c0"
+                <Button Grid.Row="0" Grid.Column="1"
+                        Background="#c0c0c0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         Command="{Binding DeleteAllHistory}">
-                    <PathIcon Data="{StaticResource DeleteIcon}"/>
+                    <PathIcon Foreground="{Binding $parent[UserControl].((vm:HistoryViewModel)DataContext).ForegroundBrush}" Data="{StaticResource DeleteIcon}"/>
                 </Button>
             </Border>
         </Grid>
 
         <ScrollViewer Grid.Row="1" Grid.Column="0">
             <StackPanel>
-                <TextBlock IsVisible="{Binding !HistoryRecords.Count}" HorizontalAlignment="Center" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="No history found."/>
+                <TextBlock IsVisible="{Binding !HistoryRecords.Count}" Foreground="{Binding $parent[UserControl].((vm:HistoryViewModel)DataContext).ForegroundBrush}" HorizontalAlignment="Center" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="No history found."/>
                 <ListBox Name="listBox" ItemsSource="{Binding HistoryRecords}" SelectedItem="{Binding SelectedExpression}">
                     <ListBox.ContextMenu>
                         <ContextMenu>
@@ -74,8 +76,8 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock HorizontalAlignment="Left" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="{Binding Expression}" />
-                                <TextBlock HorizontalAlignment="Right" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" Text="{Binding Answer, StringFormat='= {0}'}" />
+                                <TextBlock HorizontalAlignment="Left"  Foreground="{Binding $parent[UserControl].((vm:HistoryViewModel)DataContext).ForegroundBrush}" FontSize="18" FontWeight="Medium" TextWrapping="Wrap" Text="{Binding Expression}" />
+                                <TextBlock HorizontalAlignment="Right" Foreground="{Binding $parent[UserControl].((vm:HistoryViewModel)DataContext).ForegroundBrush}" FontSize="20" FontWeight="Bold"   TextWrapping="Wrap" Text="{Binding Answer, StringFormat='= {0}'}" />
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
