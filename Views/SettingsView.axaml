@@ -42,116 +42,90 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel
+            <CheckBox
                 Grid.Row="0" Grid.Column="0"
+                Command="{Binding SaveHistoryOptionClicked}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <CheckBox
-                    Command="{Binding SaveHistoryOptionClicked}"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    />
-                <TextBlock
-                    Classes="TextBlockColorStyle"
-                    FontSize="22"
-                    Text="Save history on exit."/>
-            </StackPanel>
+                />
+            <TextBlock
+                Grid.Row="0" Grid.Column="1"
+                Classes="TextBlockColorStyle"
+                FontSize="22"
+                Text="Save History On Exit"/>
 
-            <StackPanel
+
+            <CheckBox
                 Grid.Row="1" Grid.Column="0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <CheckBox
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    />
-                <TextBlock 
-                    Classes="TextBlockColorStyle"
-                    FontSize="22"
-                    Text="Logging enabled."/>
-            </StackPanel>
+                />
+            <TextBlock
+                Grid.Row="1" Grid.Column="1"
+                Classes="TextBlockColorStyle"
+                FontSize="22"
+                Text="Logging Enabled"/>
 
-            <StackPanel
+
+            <ComboBox
                 Grid.Row="2" Grid.Column="0"
-                Margin="0 5 0 5"
+                Foreground="{Binding ForegroundBrush}"
+                SelectedIndex="{Binding LogsRotationPeriod}"
+                Margin="0 5 5 5"
                 VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <ComboBox
-                    Foreground="{Binding ForegroundBrush}"
-                    SelectedIndex="{Binding LogsRotationPeriod}"
-                    Margin="0 0 5 0"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
-                    <ComboBoxItem>Month</ComboBoxItem>
-                    <ComboBoxItem>Day</ComboBoxItem>
-                    <ComboBoxItem>Hour</ComboBoxItem>
-                </ComboBox>
-                <TextBlock 
-                    Classes="TextBlockColorStyle"
-                    FontSize="22"
-                    Margin="5 0 0 0"
-                    Text="Logs rotation period."/>
-            </StackPanel>
+                HorizontalAlignment="Center">
+                <ComboBoxItem>Month</ComboBoxItem>
+                <ComboBoxItem>Day</ComboBoxItem>
+                <ComboBoxItem>Hour</ComboBoxItem>
+            </ComboBox>
+            <TextBlock
+                Grid.Row="2" Grid.Column="1"
+                Classes="TextBlockColorStyle"
+                FontSize="22"
+                Text="Logs Rotation Period"/>
 
-            <StackPanel
+
+            <ColorPicker
                 Grid.Row="3" Grid.Column="0"
-                Margin="0 5 0 0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <ColorPicker
-                    Margin="0 0 5 0"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    />
-                <TextBlock 
-                    Classes="TextBlockColorStyle"
-                    FontSize="22"
-                    Margin="5 0 0 0"
-                    Text="First Background Color."/>
-            </StackPanel>
+                Margin="0 5 5 5"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                />
+            <TextBlock 
+                Grid.Row="3" Grid.Column="1"
+                Classes="TextBlockColorStyle"
+                FontSize="22"
+                Text="First Background Color"/>
 
-            <StackPanel
+
+            <ColorPicker
                 Grid.Row="4" Grid.Column="0"
-                Margin="0 5 0 0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <ColorPicker
-                    Margin="0 0 5 0"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    />
-                <TextBlock 
-                    Classes="TextBlockColorStyle"
-                    FontSize="22"
-                    Margin="5 0 0 0"
-                    Text="Second Background Color."/>
-            </StackPanel>
+                Margin="0 5 5 5"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                />
+            <TextBlock 
+                Grid.Row="4" Grid.Column="1"
+                Classes="TextBlockColorStyle"
+                FontSize="22"
+                Text="Second Background Color"/>
 
-            <StackPanel
+
+            <ColorPicker
                 Grid.Row="5" Grid.Column="0"
-                Margin="0 5 0 0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <ColorPicker
-                    Color="{Binding ForegroundColor, Mode=TwoWay}"
-                    Margin="0 0 5 0"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    />
-                <TextBlock 
-                    Classes="TextBlockColorStyle"
-                    FontSize="22"
-                    Margin="5 0 0 0"
-                    Text="Foreground Color."/>
-            </StackPanel>
+                Color="{Binding ForegroundColor, Mode=TwoWay}"
+                Margin="0 5 5 5"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                />
+            <TextBlock 
+                Grid.Row="5" Grid.Column="1"
+                Classes="TextBlockColorStyle"
+                FontSize="22"
+                Text="Foreground Color"/>
 
         </Grid>
     </StackPanel>
