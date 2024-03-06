@@ -9,6 +9,9 @@ namespace ScientificCalculator.ViewModels
 {
     public class CalculatorViewModel : ViewModelBase
     {
+        public delegate void CalculationCompleteEventHander(bool error, string expression, string? answer);
+        public event CalculationCompleteEventHander? CalculationCompleteEvent;
+
         private IBrush _foregroundBrush = Brushes.Black;
         public IBrush ForegroundBrush
         {
@@ -76,21 +79,8 @@ namespace ScientificCalculator.ViewModels
         public ReactiveCommand<IClipboard, Unit> CopyInputActionCmd { get; }
         public ReactiveCommand<IClipboard, Unit> PasteInputActionCmd { get; }
 
-        private HistoryViewModel _historyViewModel;
-
-        public CalculatorViewModel(HistoryViewModel historyViewModel)
-        {
-            _historyViewModel = historyViewModel;
-
-            CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
-            PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
-        }
-       
-        // design
         public CalculatorViewModel()
         {
-            _historyViewModel = new HistoryViewModel();
-
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
         }
@@ -98,11 +88,8 @@ namespace ScientificCalculator.ViewModels
         public void CalculateBtnClicked()
         {
             AnswerField = ExpressionInput;
-            _historyViewModel.HistoryRecords.Add(new Models.HistoryRecord()
-            {
-                Expression = ExpressionInput,
-                Answer = AnswerField
-            });
+
+            CalculationCompleteEvent?.Invoke(false, ExpressionInput, AnswerField);
         }
         
         public void AllClearBtnClicked()

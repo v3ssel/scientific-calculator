@@ -15,35 +15,14 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Models;
+using ScientificCalculator.Services.Logging;
 using ScientificCalculator.Views;
 
 namespace ScientificCalculator.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public delegate void ForegroundBrushChangedEventHandler(IBrush brush);
-    public event ForegroundBrushChangedEventHandler ForegroundBrushChanged;
-
-    public delegate void FirstBackgroundBrushChangedEventHandler(IBrush brush);
-    public event FirstBackgroundBrushChangedEventHandler FirstBackgroundBrushChanged;
-
-    public delegate void SecondBackgroundBrushChangedEventHandler(IBrush brush);
-    public event SecondBackgroundBrushChangedEventHandler SecondBackgroundBrushChanged;
-
-    private ViewModelBase _contentViewModel;
-
-    public ViewModelBase ContentViewModel
-    {
-        get => _contentViewModel;
-        private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
-    }
-
-    private bool _isSplitViewPaneOpen;
-    public bool IsSplitViewPaneOpen
-    {
-        get => _isSplitViewPaneOpen;
-        set => this.RaiseAndSetIfChanged(ref _isSplitViewPaneOpen, value);
-    }
+    #region Properties
 
     private IBrush _foregroundBrush = Brushes.Black;
     public IBrush ForegroundBrush
@@ -64,6 +43,25 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _secondBackgroundBrush;
         set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
+    }
+
+    private bool _isSplitViewPaneOpen;
+    public bool IsSplitViewPaneOpen
+    {
+        get => _isSplitViewPaneOpen;
+        set => this.RaiseAndSetIfChanged(ref _isSplitViewPaneOpen, value);
+    }
+
+    #endregion
+
+    #region ContentViewModels
+
+    private ViewModelBase _contentViewModel;
+
+    public ViewModelBase ContentViewModel
+    {
+        get => _contentViewModel;
+        private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
     }
 
     private CalculatorViewModel _calculatorContent;
@@ -101,40 +99,41 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _aboutContent, value);
     }
 
-    public MainWindowViewModel()
+    #endregion
+
+    private readonly ICalculatorLogger Logger;
+
+    public MainWindowViewModel(ICalculatorLogger logger)
     {
+        Logger = logger;
+
         _graphContent = new GraphViewModel();
         _historyContent = new HistoryViewModel();
         _settingsContent = new SettingsViewModel();
         _aboutContent = new AboutViewModel();
-        _calculatorContent = new CalculatorViewModel(_historyContent);
+        _calculatorContent = new CalculatorViewModel();
         
         _contentViewModel = _calculatorContent;
 
-        HistoryContent.WhenAnyValue(x => x.SelectedExpression)
-                      .Subscribe(HistoryValueSelectedAction);
+        CalculatorContent.CalculationCompleteEvent += OnCalculationComplete;
+        CalculatorContent.CalculationCompleteEvent += HistoryContent.OnCalculationComplete;
 
-        ForegroundBrushChanged += ForegroundBrushChangedAction;
-        ForegroundBrushChanged += CalculatorContent.ForegroundBrushChangedAction;
-        ForegroundBrushChanged += HistoryContent.ForegroundBrushChangedAction;
+        HistoryContent.WhenAnyValue(x => x.SelectedExpression).Subscribe(HistoryValueSelectedAction);
+
+        SettingsContent.ForegroundBrushChangedEvent += ForegroundBrushChangedAction;
+        SettingsContent.ForegroundBrushChangedEvent += CalculatorContent.ForegroundBrushChangedAction;
+        SettingsContent.ForegroundBrushChangedEvent += HistoryContent.ForegroundBrushChangedAction;
         
-        FirstBackgroundBrushChanged += FirstBackgroundBrushChangedAction;
-        FirstBackgroundBrushChanged += CalculatorContent.FirstBackgroundBrushChangedAction;
-        FirstBackgroundBrushChanged += HistoryContent.FirstBackgroundBrushChangedAction;
+        SettingsContent.FirstBackgroundBrushChangedEvent += FirstBackgroundBrushChangedAction;
+        SettingsContent.FirstBackgroundBrushChangedEvent += CalculatorContent.FirstBackgroundBrushChangedAction;
+        SettingsContent.FirstBackgroundBrushChangedEvent += HistoryContent.FirstBackgroundBrushChangedAction;
 
-        SecondBackgroundBrushChanged += SecondBackgroundBrushChangedAction;
-        SecondBackgroundBrushChanged += CalculatorContent.SecondBackgroundBrushChangedAction;
-        SecondBackgroundBrushChanged += HistoryContent.SecondBackgroundBrushChangedAction;
-
-        SettingsContent.WhenAnyValue(x => x.ForegroundBrush)
-                       .Subscribe(x => ForegroundBrushChanged?.Invoke(x));
-
-        SettingsContent.WhenAnyValue(x => x.FirstBackgroundBrush)
-                       .Subscribe(x => FirstBackgroundBrushChanged?.Invoke(x));
-                       
-        SettingsContent.WhenAnyValue(x => x.SecondBackgroundBrush)
-                       .Subscribe(x => SecondBackgroundBrushChanged?.Invoke(x));
+        SettingsContent.SecondBackgroundBrushChangedEvent += SecondBackgroundBrushChangedAction;
+        SettingsContent.SecondBackgroundBrushChangedEvent += CalculatorContent.SecondBackgroundBrushChangedAction;
+        SettingsContent.SecondBackgroundBrushChangedEvent += HistoryContent.SecondBackgroundBrushChangedAction;
     }
+
+    #region EventHandlers
 
     public void ForegroundBrushChangedAction(IBrush brush)
     {
@@ -150,6 +149,17 @@ public class MainWindowViewModel : ViewModelBase
     {
         SecondBackgroundBrush = brush;
     }
+
+    public void OnCalculationComplete(bool error, string expression, string? answer)
+    {
+        var t = Task.Run(async () =>
+            await Logger.LogAsync(error ? LogLevel.ERROR : LogLevel.CALCULATED, expression, answer)
+        );
+    }
+
+    #endregion
+
+    #region Buttons
 
     public void CalculatorSidebarButtonClicked()
     {
@@ -183,8 +193,9 @@ public class MainWindowViewModel : ViewModelBase
 
     private void HistoryValueSelectedAction(HistoryRecord x)
     {
-
         CalculatorContent.ExpressionInput = x.Expression;
         ContentViewModel = CalculatorContent;
     }
+
+    #endregion
 }

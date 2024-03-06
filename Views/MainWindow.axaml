@@ -86,7 +86,7 @@
         </SplitView.Pane>
 
         <SplitView.Content>
-            <TransitioningContentControl Content="{Binding ContentViewModel}"/>
+            <TransitioningContentControl Background="{Binding FirstBackgroundBrush}" Content="{Binding ContentViewModel}"/>
         </SplitView.Content>
     </SplitView>
 </Window>

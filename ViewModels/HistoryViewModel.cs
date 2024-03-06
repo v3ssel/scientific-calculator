@@ -52,6 +52,20 @@ namespace ScientificCalculator.ViewModels
             HistoryRecords = new ObservableCollection<HistoryRecord>();
         }
 
+        public void OnCalculationComplete(bool error, string expression, string? answer)
+        {
+            if (error || answer is null)
+            {
+                return;
+            }
+
+            HistoryRecords.Insert(0, new Models.HistoryRecord()
+            {
+                Expression = expression,
+                Answer = answer
+            });
+        }
+
         public void DeleteHistoryRecord()
         {
             if (LastClickedRecord is not null && HistoryRecords.Contains(LastClickedRecord))
