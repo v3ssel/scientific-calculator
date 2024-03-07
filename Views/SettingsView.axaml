@@ -43,15 +43,15 @@
             </Grid.ColumnDefinitions>
 
             
-            <CheckBox  Grid.Row="0"  Grid.Column="0" IsChecked="{Binding IsSaveSettingsChecked}" Command="{Binding SaveSettingsOptionClicked}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <TextBlock Grid.Row="0"  Grid.Column="1" Classes="TextBlockColorStyle" FontSize="20" Text="Save Settings" />
+            <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsSaveSettingsChecked}" Command="{Binding SaveSettingsOptionClicked}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Classes="TextBlockColorStyle" FontSize="20" Text="Save Settings" />
 
 
-            <CheckBox  Grid.Row="1"  Grid.Column="0" IsChecked="{Binding IsSaveHistoryChecked}" Command="{Binding SaveHistoryOptionClicked}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <TextBlock Grid.Row="1"  Grid.Column="1" Classes="TextBlockColorStyle" FontSize="20" Text="Save History" />
+            <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsSaveHistoryChecked}"  Command="{Binding SaveHistoryOptionClicked}"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Classes="TextBlockColorStyle" FontSize="20" Text="Save History" />
 
 
-            <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding IsLogEnableChecked}" Command="{Binding LogEnableOptionClicked}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding IsLogEnableChecked}"    Command="{Binding LogEnableOptionClicked}"    VerticalAlignment="Center" HorizontalAlignment="Center" />
             <TextBlock Grid.Row="2" Grid.Column="1" Classes="TextBlockColorStyle" FontSize="20" Text="Logging Enabled" />
 
 

@@ -13,9 +13,11 @@ using Avalonia.Data;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ScientificCalculator.Models;
 using ScientificCalculator.Services.Logging;
+using ScientificCalculator.Services.Saving;
 using ScientificCalculator.Views;
 
 namespace ScientificCalculator.ViewModels;
@@ -106,6 +108,7 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(ICalculatorLogger logger)
     {
         Logger = logger;
+        logger.Enabled = false;
 
         _graphContent = new GraphViewModel();
         _historyContent = new HistoryViewModel();
@@ -117,6 +120,13 @@ public class MainWindowViewModel : ViewModelBase
 
         CalculatorContent.CalculationCompleteEvent += OnCalculationComplete;
         CalculatorContent.CalculationCompleteEvent += HistoryContent.OnCalculationComplete;
+
+        using (var context = new ApplicationContext())
+        {
+            context.Database.EnsureCreated();
+            context.HistoryRecords.Load();
+            HistoryContent.HistoryRecords = new ObservableCollection<HistoryRecord>(context.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
+        }
 
         HistoryContent.WhenAnyValue(x => x.SelectedExpression).Subscribe(HistoryValueSelectedAction);
 
@@ -150,10 +160,10 @@ public class MainWindowViewModel : ViewModelBase
         SecondBackgroundBrush = brush;
     }
 
-    public void OnCalculationComplete(bool error, string expression, string? answer)
+    public void OnCalculationComplete(bool error, HistoryRecord record)
     {
-        var t = Task.Run(async () =>
-            await Logger.LogAsync(error ? LogLevel.ERROR : LogLevel.CALCULATED, expression, answer)
+        Task.Run(async () =>
+            await Logger.LogAsync(error ? LogLevel.ERROR : LogLevel.CALCULATED, record)
         );
     }
 

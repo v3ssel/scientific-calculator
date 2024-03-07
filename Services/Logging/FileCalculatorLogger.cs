@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ScientificCalculator.Models;
 
 namespace ScientificCalculator.Services.Logging;
 
@@ -21,21 +22,21 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
         Enabled = enabled;
     }
 
-    public void Log(LogLevel level, string input, string? output)
+    public void Log(LogLevel level, HistoryRecord record)
     {
         if (!Enabled) return;
         
-        var task = Task.Run(async () => await LogAsync(level, input, output));
+        var task = Task.Run(async () => await LogAsync(level, record));
         task.Wait();
     }
 
-    public async Task LogAsync(LogLevel level, string input, string? output)
+    public async Task LogAsync(LogLevel level, HistoryRecord record)
     {
         if (!Enabled) return;
 
         var dir = Directory.CreateDirectory("./logs");
         var last_file = dir.GetFiles($"logs_*.log").OrderBy(x => x.CreationTime).FirstOrDefault();
-        var formatted_out = $"[{level}] \"{input}\" = \"{output ?? ""}\"";
+        var formatted_out = $"[{level}] [{record.CalculationTime:dd-MM-yy-hh-mm-ss}] - \"{record.Expression}\" = \"{record.Answer}\"";
 
         if (last_file is null || DateTime.Now >= GetLogExpireTime(last_file.CreationTime))
         {

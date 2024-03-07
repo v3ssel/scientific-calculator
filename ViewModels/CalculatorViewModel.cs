@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using Avalonia.Input.Platform;
 using Avalonia.Media;
 using ReactiveUI;
+using ScientificCalculator.Models;
 
 namespace ScientificCalculator.ViewModels
 {
     public class CalculatorViewModel : ViewModelBase
     {
-        public delegate void CalculationCompleteEventHander(bool error, string expression, string? answer);
+        public delegate void CalculationCompleteEventHander(bool error, HistoryRecord record);
         public event CalculationCompleteEventHander? CalculationCompleteEvent;
 
         private IBrush _foregroundBrush = Brushes.Black;
@@ -89,7 +90,13 @@ namespace ScientificCalculator.ViewModels
         {
             AnswerField = ExpressionInput;
 
-            CalculationCompleteEvent?.Invoke(false, ExpressionInput, AnswerField);
+            CalculationCompleteEvent?.Invoke(false,
+                new HistoryRecord()
+                {
+                    CalculationTime = DateTime.Now,
+                    Expression = ExpressionInput,
+                    Answer = AnswerField
+                });
         }
         
         public void AllClearBtnClicked()

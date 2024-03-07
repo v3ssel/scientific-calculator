@@ -1,9 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ScientificCalculator.Models;
+using ScientificCalculator.Services.Saving;
 
 namespace ScientificCalculator.ViewModels
 {
@@ -46,35 +50,51 @@ namespace ScientificCalculator.ViewModels
 
         public ObservableCollection<HistoryRecord> HistoryRecords { get; set; }
 
+        private ApplicationContext DbContext;
+
         public HistoryViewModel()
         {
+            DbContext = new ApplicationContext();
+            DbContext.Database.EnsureCreated();
+
             _selectedExpression = new HistoryRecord();
             HistoryRecords = new ObservableCollection<HistoryRecord>();
         }
 
-        public void OnCalculationComplete(bool error, string expression, string? answer)
+        public void OnCalculationComplete(bool error, HistoryRecord record)
         {
-            if (error || answer is null)
-            {
-                return;
-            }
+            if (error) return;
 
-            HistoryRecords.Insert(0, new Models.HistoryRecord()
+            HistoryRecords.Insert(0, record);
+
+            Task.Run(async () =>
             {
-                Expression = expression,
-                Answer = answer
+                DbContext.HistoryRecords.Add(record);
+                await DbContext.SaveChangesAsync();
             });
         }
 
         public void DeleteHistoryRecord()
         {
             if (LastClickedRecord is not null && HistoryRecords.Contains(LastClickedRecord))
+            {
                 HistoryRecords.Remove(LastClickedRecord);
+
+                Task.Run(async () =>
+                {
+                    DbContext.HistoryRecords.Remove(LastClickedRecord);
+                    await DbContext.SaveChangesAsync();
+                });
+            }
         }
 
         public void DeleteAllHistory()
         {
             HistoryRecords.Clear();
+
+            Task.Run(async () =>
+                await DbContext.HistoryRecords.ExecuteDeleteAsync()
+            );
         }
 
         public void ForegroundBrushChangedAction(IBrush brush)
