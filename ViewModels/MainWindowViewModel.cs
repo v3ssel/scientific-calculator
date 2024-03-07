@@ -121,13 +121,6 @@ public class MainWindowViewModel : ViewModelBase
         CalculatorContent.CalculationCompleteEvent += OnCalculationComplete;
         CalculatorContent.CalculationCompleteEvent += HistoryContent.OnCalculationComplete;
 
-        using (var context = new ApplicationContext())
-        {
-            context.Database.EnsureCreated();
-            context.HistoryRecords.Load();
-            HistoryContent.HistoryRecords = new ObservableCollection<HistoryRecord>(context.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
-        }
-
         HistoryContent.WhenAnyValue(x => x.SelectedExpression).Subscribe(HistoryValueSelectedAction);
 
         SettingsContent.ForegroundBrushChangedEvent += ForegroundBrushChangedAction;

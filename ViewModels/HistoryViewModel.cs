@@ -50,13 +50,15 @@ namespace ScientificCalculator.ViewModels
 
         public ObservableCollection<HistoryRecord> HistoryRecords { get; set; }
 
-        private ApplicationContext DbContext;
+        private readonly ApplicationContext DbContext;
 
         public HistoryViewModel()
         {
             DbContext = new ApplicationContext();
             DbContext.Database.EnsureCreated();
-
+            DbContext.HistoryRecords.Load();
+            HistoryRecords = new ObservableCollection<HistoryRecord>(DbContext.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
+        
             _selectedExpression = new HistoryRecord();
             HistoryRecords = new ObservableCollection<HistoryRecord>();
         }
