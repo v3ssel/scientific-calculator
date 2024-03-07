@@ -35,8 +35,8 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
         if (!Enabled) return;
 
         var dir = Directory.CreateDirectory("./logs");
-        var last_file = dir.GetFiles($"logs_*.log").OrderBy(x => x.CreationTime).FirstOrDefault();
-        var formatted_out = $"[{level}] [{record.CalculationTime:dd-MM-yy-hh-mm-ss}] - \"{record.Expression}\" = \"{record.Answer}\"";
+        var last_file = dir.GetFiles($"logs_*.log").OrderByDescending(x => x.CreationTime).FirstOrDefault();
+        var formatted_out = $"[{level}] [{record.CalculationTime:dd/MM/yy-hh:mm:ss}] - \"{record.Expression}\" = \"{record.Answer}\"";
 
         if (last_file is null || DateTime.Now >= GetLogExpireTime(last_file.CreationTime))
         {

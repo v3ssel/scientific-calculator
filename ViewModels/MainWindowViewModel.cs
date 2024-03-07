@@ -108,7 +108,7 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(ICalculatorLogger logger)
     {
         Logger = logger;
-        logger.Enabled = false;
+        // logger.Enabled = false;
 
         _graphContent = new GraphViewModel();
         _historyContent = new HistoryViewModel();
