@@ -60,7 +60,6 @@ namespace ScientificCalculator.ViewModels
             HistoryRecords = new ObservableCollection<HistoryRecord>(DbContext.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
         
             _selectedExpression = new HistoryRecord();
-            HistoryRecords = new ObservableCollection<HistoryRecord>();
         }
 
         public void OnCalculationComplete(bool error, HistoryRecord record)
