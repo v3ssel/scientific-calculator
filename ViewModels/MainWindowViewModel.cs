@@ -194,8 +194,10 @@ public class MainWindowViewModel : ViewModelBase
         IsSplitViewPaneOpen = !IsSplitViewPaneOpen;
     }
 
-    private void HistoryValueSelectedAction(HistoryRecord x)
+    private void HistoryValueSelectedAction(HistoryRecord? x)
     {
+        if (x is null) return;
+        
         CalculatorContent.ExpressionInput = x.Expression;
         ContentViewModel = CalculatorContent;
     }

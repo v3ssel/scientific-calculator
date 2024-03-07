@@ -28,20 +28,23 @@ public partial class HistoryView : UserControl
         
         if (point.Properties.IsRightButtonPressed)
         {
+            args.Handled = true;
+
             if (ViewModel is null)
             {
-                throw new NullReferenceException("ViewModel is null.");
+                Avalonia.Logging.Logger.Sink?.Log(Avalonia.Logging.LogEventLevel.Error, "HistoryView", ViewModel, "ViewModel is null");
+                
+                return;
             }
 
             if (point.Pointer.Captured is not ContentPresenter captured)
             {
-                throw new NullReferenceException("point.Pointer.Captured is null or not ContentPresenter type.");
+                Avalonia.Logging.Logger.Sink?.Log(Avalonia.Logging.LogEventLevel.Error, "HistoryView", point.Pointer.Captured, "Pointer.Captured is null");
+
+                return;
             }
 
-            ViewModel.LastClickedRecord = captured.Content as HistoryRecord;
-            
-            args.Handled = true;
-            return;
+            ViewModel.LastClickedRecord = captured.Content as HistoryRecord;            
         }
     }
 }
