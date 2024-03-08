@@ -13,6 +13,8 @@ namespace ScientificCalculator.ViewModels
 {
     public class HistoryViewModel : ViewModelBase
     {
+        #region  Properties
+
         private IBrush _foregroundBrush = Brushes.Black;
         public IBrush ForegroundBrush
         {
@@ -50,16 +52,25 @@ namespace ScientificCalculator.ViewModels
 
         public ObservableCollection<HistoryRecord> HistoryRecords { get; set; }
 
+        public bool IsSaved { get; set; }
+
+        #endregion
+
         private readonly ApplicationContext DbContext;
 
         public HistoryViewModel()
         {
             DbContext = new ApplicationContext();
             DbContext.Database.EnsureCreated();
-            DbContext.HistoryRecords.Load();
-            HistoryRecords = new ObservableCollection<HistoryRecord>(DbContext.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
         
             _selectedExpression = new HistoryRecord();
+            HistoryRecords = new ObservableCollection<HistoryRecord>();
+        }
+
+        public void SetupFromDatabase()
+        {
+            DbContext.HistoryRecords.Load();
+            HistoryRecords = new ObservableCollection<HistoryRecord>(DbContext.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
         }
 
         public void OnCalculationComplete(bool error, HistoryRecord record)
@@ -70,8 +81,11 @@ namespace ScientificCalculator.ViewModels
 
             Task.Run(async () =>
             {
-                DbContext.HistoryRecords.Add(record);
-                await DbContext.SaveChangesAsync();
+                if (IsSaved)
+                {
+                    DbContext.HistoryRecords.Add(record);
+                    await DbContext.SaveChangesAsync();
+                }
             });
         }
 
@@ -83,8 +97,11 @@ namespace ScientificCalculator.ViewModels
 
                 Task.Run(async () =>
                 {
-                    DbContext.HistoryRecords.Remove(LastClickedRecord);
-                    await DbContext.SaveChangesAsync();
+                    if (IsSaved)
+                    {
+                        DbContext.HistoryRecords.Remove(LastClickedRecord);
+                        await DbContext.SaveChangesAsync();
+                    }
                 });
             }
         }
@@ -94,8 +111,12 @@ namespace ScientificCalculator.ViewModels
             HistoryRecords.Clear();
 
             Task.Run(async () =>
-                await DbContext.HistoryRecords.ExecuteDeleteAsync()
-            );
+            {
+                if (IsSaved)
+                {
+                    await DbContext.HistoryRecords.ExecuteDeleteAsync();
+                }
+            });
         }
 
         public void ForegroundBrushChangedAction(IBrush brush)

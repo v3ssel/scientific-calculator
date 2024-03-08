@@ -120,6 +120,7 @@ public class MainWindowViewModel : ViewModelBase
         CalculatorContent.CalculationCompleteEvent += OnCalculationComplete;
         CalculatorContent.CalculationCompleteEvent += HistoryContent.OnCalculationComplete;
 
+        HistoryContent.SetupFromDatabase();
         HistoryContent.WhenAnyValue(x => x.SelectedExpression).Subscribe(HistoryValueSelectedAction);
 
         SettingsContent.ForegroundBrushChangedEvent += ForegroundBrushChangedAction;
@@ -133,6 +134,11 @@ public class MainWindowViewModel : ViewModelBase
         SettingsContent.SecondBackgroundBrushChangedEvent += SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += CalculatorContent.SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += HistoryContent.SecondBackgroundBrushChangedAction;
+
+        SettingsContent.LogEnableChangedEvent += LogEnableChangedAction;
+        SettingsContent.SaveHistoryEnableChangedEvent += SaveHistoryChangedAction;
+
+        SettingsContent.SetupFromDatabase();
     }
 
     #region EventHandlers
@@ -150,6 +156,22 @@ public class MainWindowViewModel : ViewModelBase
     public void SecondBackgroundBrushChangedAction(IBrush brush)
     {
         SecondBackgroundBrush = brush;
+    }
+
+    public void SaveHistoryChangedAction(bool enable)
+    {
+        HistoryContent.IsSaved = enable;
+    }
+
+    public void LogEnableChangedAction(bool enable)
+    {
+        Logger.Enabled = enable;
+    }
+
+    public void RotationPeriodChangedAction(RotationPeriod period)
+    {
+        if (Logger is ICalculatorLoggerWithRotation logger)
+            logger.RotationPeriod = period;
     }
 
     public void OnCalculationComplete(bool error, HistoryRecord record)

@@ -24,6 +24,9 @@ namespace ScientificCalculator.ViewModels
         public delegate void SaveSettingsEnableChanged(bool new_value);
         public event SaveSettingsEnableChanged? SaveSettingsEnableChangedEvent;
 
+        public delegate void RotationPeriodChanged(RotationPeriod new_value);
+        public event RotationPeriodChanged? RotationPeriodChangedEvent;
+
         public delegate void ForegroundBrushChanged(IBrush brush);
         public event ForegroundBrushChanged? ForegroundBrushChangedEvent;
 
@@ -37,6 +40,8 @@ namespace ScientificCalculator.ViewModels
         
         #region SettingsProperties
 
+        public static Array PossibleRotationPeriods => Enum.GetValues(typeof(RotationPeriod));
+
         private RotationPeriod _logsRotationPeriod = RotationPeriod.Hour;
         public RotationPeriod LogsRotationPeriod
         {
@@ -44,21 +49,21 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _logsRotationPeriod, value);
         }
 
-        private bool _isSaveSettingsChecked = true;
+        private bool _isSaveSettingsChecked;
         public bool IsSaveSettingsChecked
         {
             get => _isSaveSettingsChecked;
             set => this.RaiseAndSetIfChanged(ref _isSaveSettingsChecked, value);
         }
         
-        private bool _isSaveHistoryChecked = true;
+        private bool _isSaveHistoryChecked;
         public bool IsSaveHistoryChecked
         {
             get => _isSaveHistoryChecked;
             set => this.RaiseAndSetIfChanged(ref _isSaveHistoryChecked, value);
         }
         
-        private bool _isLogEnableChecked = true;
+        private bool _isLogEnableChecked;
         public bool IsLogEnableChecked
         {
             get => _isLogEnableChecked;
@@ -117,6 +122,18 @@ namespace ScientificCalculator.ViewModels
             DbContext = new ApplicationContext();
             DbContext.Database.EnsureCreated();
             
+            this.WhenAnyValue(x => x.IsSaveSettingsChecked)
+                .Subscribe(SaveSettingsOptionClicked);
+
+            this.WhenAnyValue(x => x.IsSaveHistoryChecked)
+                .Subscribe(SaveHistoryOptionClicked);
+                
+            this.WhenAnyValue(x => x.IsLogEnableChecked)
+                .Subscribe(LogEnableOptionClicked);
+
+            this.WhenAnyValue(x => x.LogsRotationPeriod)
+                .Subscribe(LogsRotationPeriodChanged);
+                
             this.WhenAnyValue(x => x.ForegroundColor)
                 .Subscribe(ForegroundColorChangedAction);
 
@@ -125,11 +142,9 @@ namespace ScientificCalculator.ViewModels
 
             this.WhenAnyValue(x => x.SecondBackgroundColor)
                 .Subscribe(SecondBackgroundColorChangedAction);
-
-            SetupFromDatabase();
         }
 
-        private void SetupFromDatabase()
+        public void SetupFromDatabase()
         {
             CurrentSettings = DbContext.Settings.FirstOrDefault();
 
@@ -138,24 +153,17 @@ namespace ScientificCalculator.ViewModels
                 IsSaveSettingsChecked = CurrentSettings.IsSettingsSaved;
                 IsSaveHistoryChecked = CurrentSettings.IsHistorySaved;
                 IsLogEnableChecked = CurrentSettings.IsLogEnabled;
+                LogsRotationPeriod = CurrentSettings.RotationPeriod;
 
                 Avalonia.Media.Color tmp_color;
                 if (Avalonia.Media.Color.TryParse(CurrentSettings.ForegroundColor, out tmp_color))
-                    _foregroundColor = tmp_color;
+                    ForegroundColor = tmp_color;
                     
                 if (Avalonia.Media.Color.TryParse(CurrentSettings.FirstBackgroundColor, out tmp_color))
-                    _firstBackgroundColor = tmp_color;
+                    FirstBackgroundColor = tmp_color;
                     
                 if (Avalonia.Media.Color.TryParse(CurrentSettings.SecondBackgroundColor, out tmp_color))
-                    _secondBackgroundColor = tmp_color;
-
-                ForegroundBrush = new SolidColorBrush(ForegroundColor);
-                FirstBackgroundBrush = new SolidColorBrush(FirstBackgroundColor);
-                SecondBackgroundBrush = new SolidColorBrush(SecondBackgroundColor);
-
-                ForegroundBrushChangedEvent?.Invoke(ForegroundBrush);
-                FirstBackgroundBrushChangedEvent?.Invoke(FirstBackgroundBrush);
-                SecondBackgroundBrushChangedEvent?.Invoke(SecondBackgroundBrush);
+                    SecondBackgroundColor = tmp_color;
             }
             else
             {
@@ -164,6 +172,7 @@ namespace ScientificCalculator.ViewModels
                     IsHistorySaved = IsSaveHistoryChecked,
                     IsSettingsSaved = IsSaveSettingsChecked,
                     IsLogEnabled = IsLogEnableChecked,
+                    RotationPeriod = LogsRotationPeriod,
 
                     FirstBackgroundColor = FirstBackgroundColor.ToString(),
                     SecondBackgroundColor = SecondBackgroundColor.ToString(),
@@ -175,26 +184,67 @@ namespace ScientificCalculator.ViewModels
             }
         }
 
-        public void SaveSettingsOptionClicked()
+        public void SaveSettingsOptionClicked(bool enabled)
         {
-            SaveSettingsEnableChangedEvent?.Invoke(IsSaveSettingsChecked);
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null)
+                {
+                    CurrentSettings.IsSettingsSaved = enabled;
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            SaveSettingsEnableChangedEvent?.Invoke(enabled);
         }
 
-        public void SaveHistoryOptionClicked()
+        public void SaveHistoryOptionClicked(bool enabled)
         {
-            SaveHistoryEnableChangedEvent?.Invoke(IsSaveHistoryChecked);
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null && CurrentSettings.IsSettingsSaved)
+                {
+                    CurrentSettings.IsHistorySaved = enabled;
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            SaveHistoryEnableChangedEvent?.Invoke(enabled);
         }
 
-        public void LogEnableOptionClicked()
+        public void LogEnableOptionClicked(bool enabled)
         {
-            LogEnableChangedEvent?.Invoke(IsLogEnableChecked);
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null && CurrentSettings.IsSettingsSaved)
+                {
+                    CurrentSettings.IsLogEnabled = enabled;
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            LogEnableChangedEvent?.Invoke(enabled);
+        }
+
+        public void LogsRotationPeriodChanged(RotationPeriod period)
+        {
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null && CurrentSettings.IsSettingsSaved)
+                {
+                    CurrentSettings.RotationPeriod = period;
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            RotationPeriodChangedEvent?.Invoke(period);
         }
 
         private void ForegroundColorChangedAction(Avalonia.Media.Color color)
         {
             Task.Run(async () =>
             {
-                if (CurrentSettings is not null)
+                if (CurrentSettings is not null && CurrentSettings.IsSettingsSaved)
                 {
                     CurrentSettings.ForegroundColor = color.ToString();
                     await DbContext.SaveChangesAsync();
@@ -209,7 +259,7 @@ namespace ScientificCalculator.ViewModels
         {
             Task.Run(async () =>
             {
-                if (CurrentSettings is not null)
+                if (CurrentSettings is not null && CurrentSettings.IsSettingsSaved)
                 {
                     CurrentSettings.FirstBackgroundColor = color.ToString();
                     await DbContext.SaveChangesAsync();
@@ -224,7 +274,7 @@ namespace ScientificCalculator.ViewModels
         {
             Task.Run(async () =>
             {
-                if (CurrentSettings is not null)
+                if (CurrentSettings is not null && CurrentSettings.IsSettingsSaved)
                 {
                     CurrentSettings.SecondBackgroundColor = color.ToString();
                     await DbContext.SaveChangesAsync();
