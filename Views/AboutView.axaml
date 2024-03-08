@@ -42,7 +42,7 @@
                     Margin="5"
                     CornerRadius="5"
                     Background="{Binding SecondBackgroundBrush}">
-                <TextBlock Classes="TextBlockColorStyle" FontSize="27" FontWeight="Bold" Text="About" />
+                <TextBlock Classes="TextBlockColorStyle" TextWrapping="NoWrap" FontSize="27" FontWeight="Bold" Text="About" />
             </Border>
             
             <TextBlock  Grid.Row="1" Grid.Column="0"
@@ -100,11 +100,11 @@
 
             
             <controls:Hyperlink Grid.Row="9" Grid.Column="0"
-                                Classes="TextBlockColorStyle"
+                                Margin="5 5 5 10"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Alias="Source code."
-                                Url="{Binding ProjectUrl}"/>
+                                Url="https://github.com/v3ssel/scientific-calculator"/>
         </Grid>
     </ScrollViewer>
 </UserControl>

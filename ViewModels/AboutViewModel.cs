@@ -34,9 +34,6 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
         }
 
-        public string ProjectUrl => "https://github.com/v3ssel/scientific-calculator";
-
-        
         #endregion
 
 
