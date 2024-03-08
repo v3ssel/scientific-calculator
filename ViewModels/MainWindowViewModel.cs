@@ -108,7 +108,6 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(ICalculatorLogger logger)
     {
         Logger = logger;
-        // logger.Enabled = false;
 
         _graphContent = new GraphViewModel();
         _historyContent = new HistoryViewModel();
@@ -197,7 +196,7 @@ public class MainWindowViewModel : ViewModelBase
     private void HistoryValueSelectedAction(HistoryRecord? x)
     {
         if (x is null) return;
-        
+
         CalculatorContent.ExpressionInput = x.Expression;
         ContentViewModel = CalculatorContent;
     }

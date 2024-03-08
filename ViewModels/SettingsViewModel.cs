@@ -1,8 +1,13 @@
 using System;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Media;
 using ReactiveUI;
+using ScientificCalculator.Services.Logging;
+using ScientificCalculator.Services.Saving;
 
 namespace ScientificCalculator.ViewModels
 {
@@ -30,8 +35,10 @@ namespace ScientificCalculator.ViewModels
 
         #endregion
         
-        private int _logsRotationPeriod;
-        public int LogsRotationPeriod
+        #region SettingsProperties
+
+        private RotationPeriod _logsRotationPeriod = RotationPeriod.Hour;
+        public RotationPeriod LogsRotationPeriod
         {
             get => _logsRotationPeriod;
             set => this.RaiseAndSetIfChanged(ref _logsRotationPeriod, value);
@@ -100,30 +107,72 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _secondBackgroundColor, value);
         }
 
+        #endregion
+
+        private readonly ApplicationContext DbContext;
+        private Models.Settings? CurrentSettings;
+
         public SettingsViewModel()
         {
-            _logsRotationPeriod = 1;
+            DbContext = new ApplicationContext();
+            DbContext.Database.EnsureCreated();
             
             this.WhenAnyValue(x => x.ForegroundColor)
-                .Subscribe(x =>
-                {
-                    ForegroundBrush = new SolidColorBrush(x);
-                    ForegroundBrushChangedEvent?.Invoke(ForegroundBrush);
-                });
+                .Subscribe(ForegroundColorChangedAction);
 
             this.WhenAnyValue(x => x.FirstBackgroundColor)
-                .Subscribe(x =>
-                {
-                    FirstBackgroundBrush = new SolidColorBrush(x);
-                    FirstBackgroundBrushChangedEvent?.Invoke(FirstBackgroundBrush);
-                });
+                .Subscribe(FirstBackgroundColorChangedAction);
 
             this.WhenAnyValue(x => x.SecondBackgroundColor)
-                .Subscribe(x =>
+                .Subscribe(SecondBackgroundColorChangedAction);
+
+            SetupFromDatabase();
+        }
+
+        private void SetupFromDatabase()
+        {
+            CurrentSettings = DbContext.Settings.FirstOrDefault();
+
+            if (CurrentSettings is not null)
+            {
+                IsSaveSettingsChecked = CurrentSettings.IsSettingsSaved;
+                IsSaveHistoryChecked = CurrentSettings.IsHistorySaved;
+                IsLogEnableChecked = CurrentSettings.IsLogEnabled;
+
+                Avalonia.Media.Color tmp_color;
+                if (Avalonia.Media.Color.TryParse(CurrentSettings.ForegroundColor, out tmp_color))
+                    _foregroundColor = tmp_color;
+                    
+                if (Avalonia.Media.Color.TryParse(CurrentSettings.FirstBackgroundColor, out tmp_color))
+                    _firstBackgroundColor = tmp_color;
+                    
+                if (Avalonia.Media.Color.TryParse(CurrentSettings.SecondBackgroundColor, out tmp_color))
+                    _secondBackgroundColor = tmp_color;
+
+                ForegroundBrush = new SolidColorBrush(ForegroundColor);
+                FirstBackgroundBrush = new SolidColorBrush(FirstBackgroundColor);
+                SecondBackgroundBrush = new SolidColorBrush(SecondBackgroundColor);
+
+                ForegroundBrushChangedEvent?.Invoke(ForegroundBrush);
+                FirstBackgroundBrushChangedEvent?.Invoke(FirstBackgroundBrush);
+                SecondBackgroundBrushChangedEvent?.Invoke(SecondBackgroundBrush);
+            }
+            else
+            {
+                CurrentSettings = new Models.Settings
                 {
-                    SecondBackgroundBrush = new SolidColorBrush(x);
-                    SecondBackgroundBrushChangedEvent?.Invoke(SecondBackgroundBrush);
-                });
+                    IsHistorySaved = IsSaveHistoryChecked,
+                    IsSettingsSaved = IsSaveSettingsChecked,
+                    IsLogEnabled = IsLogEnableChecked,
+
+                    FirstBackgroundColor = FirstBackgroundColor.ToString(),
+                    SecondBackgroundColor = SecondBackgroundColor.ToString(),
+                    ForegroundColor = ForegroundColor.ToString()
+                };
+
+                DbContext.Settings.Add(CurrentSettings);
+                DbContext.SaveChanges();
+            }
         }
 
         public void SaveSettingsOptionClicked()
@@ -139,6 +188,51 @@ namespace ScientificCalculator.ViewModels
         public void LogEnableOptionClicked()
         {
             LogEnableChangedEvent?.Invoke(IsLogEnableChecked);
+        }
+
+        private void ForegroundColorChangedAction(Avalonia.Media.Color color)
+        {
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null)
+                {
+                    CurrentSettings.ForegroundColor = color.ToString();
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            ForegroundBrush = new SolidColorBrush(color);
+            ForegroundBrushChangedEvent?.Invoke(ForegroundBrush);
+        }
+
+        private void FirstBackgroundColorChangedAction(Avalonia.Media.Color color)
+        {
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null)
+                {
+                    CurrentSettings.FirstBackgroundColor = color.ToString();
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            FirstBackgroundBrush = new SolidColorBrush(color);
+            FirstBackgroundBrushChangedEvent?.Invoke(FirstBackgroundBrush);
+        }
+        
+        private void SecondBackgroundColorChangedAction(Avalonia.Media.Color color)
+        {
+            Task.Run(async () =>
+            {
+                if (CurrentSettings is not null)
+                {
+                    CurrentSettings.SecondBackgroundColor = color.ToString();
+                    await DbContext.SaveChangesAsync();
+                }
+            });
+
+            SecondBackgroundBrush = new SolidColorBrush(color);
+            SecondBackgroundBrushChangedEvent?.Invoke(SecondBackgroundBrush);
         }
     }
 }
