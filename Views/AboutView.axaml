@@ -2,9 +2,109 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="355" d:DesignHeight="550"
+             xmlns:controls="clr-namespace:HyperText.Avalonia.Controls;assembly=HyperText.Avalonia"
              xmlns:vm="using:ScientificCalculator.ViewModels"
              x:Class="ScientificCalculator.Views.AboutView"
              x:DataType="vm:AboutViewModel">
-    About!
+    <UserControl.Styles>
+        <Style Selector="TextBlock.TextBlockColorStyle">
+            <Setter Property="Foreground" Value="{Binding ForegroundBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <Grid Background="{Binding FirstBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Border 
+                    Grid.Row="0" Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Margin="5"
+                    CornerRadius="5"
+                    Background="{Binding SecondBackgroundBrush}">
+                <TextBlock Classes="TextBlockColorStyle" FontSize="27" FontWeight="Bold" Text="About" />
+            </Border>
+            
+            <TextBlock  Grid.Row="1" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        FontWeight="Bold"
+                        Text="Scientific Calculator"/>
+                        
+            <TextBlock  Grid.Row="2" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    It's a simple calculator program developed in educational purpose using <Bold>Avalonia 11</Bold>, <Bold>EFCore</Bold> and <Bold>SQLite</Bold>.                    
+            </TextBlock>
+
+            <TextBlock  Grid.Row="3" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    There are few tabs on the right, to open information about them click on <Bold>burger-menu button</Bold>.
+            </TextBlock>
+                    
+            <TextBlock  Grid.Row="4" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    First of them, <Bold>Calculator</Bold>, write your expression, click <Bold>=</Bold> button and get answer. By default expressions will recording to history tab and log file. You can manage it in settings tab.
+            </TextBlock>
+
+            <TextBlock  Grid.Row="5" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    Second, <Bold>Graph</Bold>, here you can plot a graph of your expression.
+            </TextBlock>
+                        
+            <TextBlock  Grid.Row="6" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    Third, <Bold>History</Bold>, all valid expression will record here. Your can delete any of them by <Bold>right-click</Bold> on record or delete whole history clicking on <Bold>trash-button</Bold>.
+                    <LineBreak/><Span FontWeight="Bold" TextDecorations="Underline">Note:</Span> History will added or deleted only for a session, to save it and relaunch you must marked option in settings tab.
+            </TextBlock>
+
+            <TextBlock  Grid.Row="7" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    Four, <Bold>Settings</Bold>, some settings for application, here you can:
+                            <LineBreak/><Run Text="  "/> 1. Make sure your changes will saved through relaunch by marking <Bold>Save Settings</Bold>.
+                            <LineBreak/><Run Text="  "/> 2. To make history saved through relaunch mark <Bold>Save History</Bold>.
+                            <LineBreak/><Run Text="  "/> 3. Calculation errors and results will writen to log file, to disable this you can mark <Bold>Logging Enable</Bold>.
+                            <LineBreak/><Run Text="  "/> 4. Logs rotation period, it's period when log file became expired and new will created.
+                            <LineBreak/><Run Text="  "/> 5. Foreground color is the color of displayed text, background - is just background.
+            </TextBlock>
+
+            <TextBlock  Grid.Row="8" Grid.Column="0"
+                        Classes="TextBlockColorStyle"
+                        Margin="5">
+                    And last, <Bold>About</Bold>, information about application, where you are.        
+            </TextBlock>
+
+            
+            <controls:Hyperlink Grid.Row="9" Grid.Column="0"
+                                Classes="TextBlockColorStyle"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Alias="Source code."
+                                Url="{Binding ProjectUrl}"/>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

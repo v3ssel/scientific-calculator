@@ -126,14 +126,17 @@ public class MainWindowViewModel : ViewModelBase
         SettingsContent.ForegroundBrushChangedEvent += ForegroundBrushChangedAction;
         SettingsContent.ForegroundBrushChangedEvent += CalculatorContent.ForegroundBrushChangedAction;
         SettingsContent.ForegroundBrushChangedEvent += HistoryContent.ForegroundBrushChangedAction;
+        SettingsContent.ForegroundBrushChangedEvent += AboutContent.ForegroundBrushChangedAction;
         
         SettingsContent.FirstBackgroundBrushChangedEvent += FirstBackgroundBrushChangedAction;
         SettingsContent.FirstBackgroundBrushChangedEvent += CalculatorContent.FirstBackgroundBrushChangedAction;
         SettingsContent.FirstBackgroundBrushChangedEvent += HistoryContent.FirstBackgroundBrushChangedAction;
+        SettingsContent.FirstBackgroundBrushChangedEvent += AboutContent.FirstBackgroundBrushChangedAction;
 
         SettingsContent.SecondBackgroundBrushChangedEvent += SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += CalculatorContent.SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += HistoryContent.SecondBackgroundBrushChangedAction;
+        SettingsContent.SecondBackgroundBrushChangedEvent += AboutContent.SecondBackgroundBrushChangedAction;
 
         SettingsContent.LogEnableChangedEvent += LogEnableChangedAction;
         SettingsContent.SaveHistoryEnableChangedEvent += SaveHistoryChangedAction;
