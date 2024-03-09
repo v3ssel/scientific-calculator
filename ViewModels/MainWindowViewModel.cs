@@ -193,17 +193,13 @@ public class MainWindowViewModel : ViewModelBase
 
     public void CalculatorSidebarButtonClicked()
     {
-        if (ContentViewModel is GraphViewModel)
-            CalculatorContent.ExpressionInput = GraphContent.ExpressionInput;
-
+        CalculatorContent.ExpressionInput = GraphContent.ExpressionInput;
         ContentViewModel = CalculatorContent;
     }
 
     public void GraphSidebarButtonClicked()
     {
-        if (ContentViewModel is CalculatorViewModel)
-            GraphContent.ExpressionInput = CalculatorContent.ExpressionInput;
-
+        GraphContent.ExpressionInput = CalculatorContent.ExpressionInput;
         ContentViewModel = GraphContent;
     }
     

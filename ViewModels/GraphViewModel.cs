@@ -49,14 +49,14 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _expressionInput, value);
         }
         
-        private string _dxMin = string.Empty;
+        private string _dxMin = "-100";
         public string DxMin
         {
             get => _dxMin;
             set => this.RaiseAndSetIfChanged(ref _dxMin, value);
         }
 
-        private string _dxMax = string.Empty;
+        private string _dxMax = "100";
         public string DxMax
         {
             get => _dxMax;
@@ -79,7 +79,7 @@ namespace ScientificCalculator.ViewModels
 
         public void PlotGraphCommand()
         {
-            
+
         }
 
         #region EventHandlers
