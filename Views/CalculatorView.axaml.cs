@@ -1,21 +1,28 @@
-using Avalonia;
+using System;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media;
+using Avalonia.Input;
+using ScientificCalculator.ViewModels;
 
 namespace ScientificCalculator.Views;
 
 public partial class CalculatorView : UserControl
 {
+    private CalculatorViewModel? ViewModel => this.DataContext as CalculatorViewModel;
+    
     public CalculatorView()
     {
         InitializeComponent();
     }
 
-    // debug
-    public void Fnc(object? sender, RoutedEventArgs e)
+    public void ExpressionGotFocusAction(object? sender, GotFocusEventArgs args)
     {
-        
+        if (ViewModel is not null)
+            ViewModel.LastFocusToExpression = DateTime.Now.TimeOfDay;
+    }
+
+    public void XValueGotFocusAction(object? sender, GotFocusEventArgs args)
+    {
+        if (ViewModel is not null)
+            ViewModel.LastFocusToX = DateTime.Now.TimeOfDay;
     }
 }

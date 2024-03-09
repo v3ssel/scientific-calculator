@@ -48,6 +48,7 @@
             Grid.Row="0" Grid.Column="0" 
             Text="{Binding ExpressionInput}"
             CaretIndex="{Binding ExpressionInputCaretIndex, Mode=TwoWay}"
+            GotFocus="ExpressionGotFocusAction"
             SelectionStart="{Binding ExpressionInputSelectionStart, Mode=TwoWay}"
             SelectionEnd="{Binding ExpressionInputSelectionEnd, Mode=TwoWay}"
             Margin="5" 
@@ -78,7 +79,7 @@
             <Button  Grid.Row="1" Grid.Column="1" Content="acos" Command="{Binding AcosBtnClicked}" Classes="BtnStyle" FontSize="20"/>
             <Button  Grid.Row="1" Grid.Column="2" Content="atan" Command="{Binding AtanBtnClicked}" Classes="BtnStyle" FontSize="20"/>
             <Button  Grid.Row="1" Grid.Column="3" Content="sqrt" Command="{Binding SqrtBtnClicked}" Classes="BtnStyle" FontSize="20"/>
-            <TextBox Grid.Row="1" Grid.Column="4" Watermark="x"  Text="{Binding XValue}"            Classes="BtnStyle" FontSize="20" Foreground="{Binding ForegroundBrush}"/>
+            <TextBox Grid.Row="1" Grid.Column="4" Watermark="x"  Text="{Binding XValue}"            Classes="BtnStyle" FontSize="20" Foreground="{Binding ForegroundBrush}" CaretIndex="{Binding XValueCaretIndex, Mode=TwoWay}" GotFocus="XValueGotFocusAction"/>
         </Grid>
 
         <Grid

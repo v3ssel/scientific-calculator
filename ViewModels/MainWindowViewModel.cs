@@ -193,13 +193,20 @@ public class MainWindowViewModel : ViewModelBase
 
     public void CalculatorSidebarButtonClicked()
     {
-        CalculatorContent.ExpressionInput = GraphContent.ExpressionInput;
+        if (!string.IsNullOrEmpty(GraphContent.ExpressionInput) || ContentViewModel is GraphViewModel)
+        {
+            CalculatorContent.ExpressionInput = GraphContent.ExpressionInput;
+            CalculatorContent.ExpressionInputCaretIndex = GraphContent.ExpressionInput.Length;
+        }
+
         ContentViewModel = CalculatorContent;
     }
 
     public void GraphSidebarButtonClicked()
     {
-        GraphContent.ExpressionInput = CalculatorContent.ExpressionInput;
+        if (!string.IsNullOrEmpty(CalculatorContent.ExpressionInput) || ContentViewModel is CalculatorViewModel)
+            GraphContent.ExpressionInput = CalculatorContent.ExpressionInput;
+
         ContentViewModel = GraphContent;
     }
     

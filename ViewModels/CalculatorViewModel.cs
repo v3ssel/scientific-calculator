@@ -13,6 +13,8 @@ namespace ScientificCalculator.ViewModels
         public delegate void CalculationCompleteEventHander(bool error, HistoryRecord record);
         public event CalculationCompleteEventHander? CalculationCompleteEvent;
 
+        #region ColorProperties
+
         private IBrush _foregroundBrush = Brushes.Black;
         public IBrush ForegroundBrush
         {
@@ -34,6 +36,10 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
         }
 
+        #endregion
+
+        #region ExpressionProperties
+
         private string _expressionInput = string.Empty;
         public string ExpressionInput
         {
@@ -42,26 +48,29 @@ namespace ScientificCalculator.ViewModels
         }
 
         private int _expressionInputCaretIndex;
-
         public int ExpressionInputCaretIndex
         {
             get => _expressionInputCaretIndex;
             set => this.RaiseAndSetIfChanged(ref _expressionInputCaretIndex, value);
         }
-        private int _expressionInputSelectionStart;
 
+        private int _expressionInputSelectionStart;
         public int ExpressionInputSelectionStart
         {
             get => _expressionInputSelectionStart;
             set => this.RaiseAndSetIfChanged(ref _expressionInputSelectionStart, value);
         }
-        private int _expressionInputSelectionEnd;
 
+        private int _expressionInputSelectionEnd;
         public int ExpressionInputSelectionEnd
         {
             get => _expressionInputSelectionEnd;
             set => this.RaiseAndSetIfChanged(ref _expressionInputSelectionEnd, value);
         }
+
+        #endregion
+
+        #region OtherProperties
 
         private string _xValue = string.Empty;
         public string XValue
@@ -70,6 +79,13 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _xValue, value);
         }
 
+        private int _xValueCaretIndex;
+        public int XValueCaretIndex
+        {
+            get => _xValueCaretIndex;
+            set => this.RaiseAndSetIfChanged(ref _xValueCaretIndex, value);
+        }
+        
         private string _answerField = string.Empty;
         public string AnswerField
         {
@@ -79,11 +95,19 @@ namespace ScientificCalculator.ViewModels
 
         public ReactiveCommand<IClipboard, Unit> CopyInputActionCmd { get; }
         public ReactiveCommand<IClipboard, Unit> PasteInputActionCmd { get; }
+ 
+        public TimeSpan LastFocusToExpression;
+        public TimeSpan LastFocusToX;
+
+        #endregion
 
         public CalculatorViewModel()
         {
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
+            
+            LastFocusToX = DateTime.Now.TimeOfDay;
+            LastFocusToExpression = DateTime.Now.AddSeconds(1).TimeOfDay;
         }
 
         public void CalculateBtnClicked()
@@ -106,6 +130,11 @@ namespace ScientificCalculator.ViewModels
             AnswerField = string.Empty;
             XValue = string.Empty;
         }
+
+        public void CreditBtnClicked() {/* TODO */}  
+        public void DepositBtnClicked() {/* TODO */}
+
+        #region InsertButtons
 
         public void SinBtnClicked()  => InsertAndMoveCaret("sin()", 4);
         public void CosBtnClicked()  => InsertAndMoveCaret("cos()", 4);
@@ -139,8 +168,9 @@ namespace ScientificCalculator.ViewModels
         public void LeftBracketBtnClicked()  => InsertAndMoveCaret("(");
         public void RightBracketBtnClicked() => InsertAndMoveCaret(")");
         
-        public void CreditBtnClicked() {/* TODO */}  
-        public void DepositBtnClicked() {/* TODO */}
+        #endregion
+
+        #region EventHandlers
 
         public void ForegroundBrushChangedAction(IBrush brush)
         {
@@ -159,9 +189,21 @@ namespace ScientificCalculator.ViewModels
 
         private void InsertAndMoveCaret(string value, int caret_shift = 1)
         {
-            ExpressionInput = ExpressionInput.Insert(ExpressionInputCaretIndex, value);
-            ExpressionInputCaretIndex += caret_shift;
+            if (LastFocusToX >= LastFocusToExpression)
+            {
+                XValue = XValue.Insert(XValueCaretIndex, value);
+                XValueCaretIndex += caret_shift;
+            }
+            else
+            {
+                ExpressionInput = ExpressionInput.Insert(ExpressionInputCaretIndex, value);
+                ExpressionInputCaretIndex += caret_shift;
+            }
         }
+
+        #endregion
+
+        #region Clipboard
 
         public void CleanInputAction()
         {
@@ -212,5 +254,7 @@ namespace ScientificCalculator.ViewModels
             
             return (value.Remove(start, end - start).Insert(start, clipboard_text), clipboard_text.Length);
         }
+
+        #endregion
     }
 }
