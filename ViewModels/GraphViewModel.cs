@@ -8,12 +8,16 @@ using Avalonia.Input;
 using Avalonia.Media;
 using OxyPlot;
 using ReactiveUI;
+using ScientificCalculator.Models;
 using ScientificCalculator.Services.Calculation;
 
 namespace ScientificCalculator.ViewModels
 {
     public class GraphViewModel : ViewModelBase
     {
+        public delegate void GraphPlottedEventHander(CalculationStatus status, HistoryRecord record);
+        public event GraphPlottedEventHander? GraphPlottedEvent;
+
         #region ColorsProperties
 
         private IBrush _foregroundBrush = Brushes.Black;
@@ -59,14 +63,22 @@ namespace ScientificCalculator.ViewModels
         public string DxMin
         {
             get => _dxMin;
-            set => this.RaiseAndSetIfChanged(ref _dxMin, value);
+            set 
+            {
+                CheckDx(value);
+                this.RaiseAndSetIfChanged(ref _dxMin, value);
+            }
         }
 
         private string _dxMax = "100";
         public string DxMax
         {
             get => _dxMax;
-            set => this.RaiseAndSetIfChanged(ref _dxMax, value);
+            set 
+            {
+                CheckDx(value);
+                this.RaiseAndSetIfChanged(ref _dxMax, value);
+            }
         }
 
         #endregion
@@ -91,9 +103,14 @@ namespace ScientificCalculator.ViewModels
 
         public void PlotGraphCommand(TextBox expression_box)
         {
+            CalculationStatus status = CalculationStatus.GRAPH;
+
             try
             {
-                var range_result = CalculationService.CalculateRange(Convert.ToInt32(DxMin), Convert.ToInt32(DxMax), ExpressionInput);
+                var x_min = Convert.ToInt32(DxMin);
+                var x_max = Convert.ToInt32(DxMax);
+
+                var range_result = CalculationService.CalculateRange(Math.Min(x_min, x_max), Math.Max(x_min, x_max), ExpressionInput);
                 
                 Points = new List<DataPoint>();
                 for (int i = 0; i < range_result.Count; i++)
@@ -102,10 +119,24 @@ namespace ScientificCalculator.ViewModels
                 }
 
                 DataValidationErrors.ClearErrors(expression_box);
+
             }
-            catch
+            catch (Exception e)
             {
-                DataValidationErrors.SetError(expression_box, new DataValidationException("Error appeared during calculation, check your expression."));
+                status = CalculationStatus.ERROR;
+                
+                DataValidationErrors.SetError(expression_box, new DataValidationException($"Error appeared during calculation.\n{e.Message}\nCheck your expression."));
+            }
+            finally
+            {
+                GraphPlottedEvent?.Invoke(status,
+                    new HistoryRecord()
+                    {
+                        CalculationTime = DateTime.Now,
+                        Expression = ExpressionInput,
+                        Answer = "",
+                        XValue = "",
+                    });
             }
 
         }
@@ -129,5 +160,23 @@ namespace ScientificCalculator.ViewModels
         }
 
         #endregion
+
+        private void CheckDx(string value)
+        {
+            if (!int.TryParse(value, out var res))
+            {
+                throw new DataValidationException("value must be a number");
+            }
+
+            if (res > 1e6)
+            {
+                throw new DataValidationException("value must be less than 1e6");
+            }
+
+            if (res < -1e6)
+            {
+                throw new DataValidationException("value must be more than -1e6");
+            }
+        }
     }
 }

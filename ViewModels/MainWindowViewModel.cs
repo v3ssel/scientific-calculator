@@ -123,6 +123,9 @@ public class MainWindowViewModel : ViewModelBase
         CalculatorContent.CalculationCompleteEvent += OnCalculationComplete;
         CalculatorContent.CalculationCompleteEvent += HistoryContent.OnCalculationComplete;
 
+        GraphContent.GraphPlottedEvent += OnCalculationComplete;
+        GraphContent.GraphPlottedEvent += HistoryContent.OnCalculationComplete;
+
         HistoryContent.SetupFromDatabase();
         HistoryContent.WhenAnyValue(x => x.SelectedExpression).Subscribe(HistoryValueSelectedAction);
 

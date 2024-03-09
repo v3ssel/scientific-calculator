@@ -129,12 +129,12 @@ namespace ScientificCalculator.ViewModels
 
                 DataValidationErrors.ClearErrors(expression_box);
             }
-            catch
+            catch (Exception e)
             {
                 status = CalculationStatus.ERROR;
                 AnswerField = string.Empty;
 
-                DataValidationErrors.SetError(expression_box, new DataValidationException("Error appeared during calculation, check your expression."));
+                DataValidationErrors.SetError(expression_box, new DataValidationException($"Error appeared during calculation.\n{e.Message}\nCheck your expression."));
             }
             finally
             {
