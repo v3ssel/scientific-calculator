@@ -5,7 +5,102 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
              xmlns:vm="using:ScientificCalculator.ViewModels"
              xmlns:views="clr-namespace:ScientificCalculator.Views"
+             xmlns:oxy="clr-namespace:OxyPlot.Avalonia;assembly=OxyPlot.Avalonia" 
              x:Class="ScientificCalculator.Views.GraphView"
              x:DataType="vm:GraphViewModel">
-    Graph!
+
+    <Design.DataContext>
+        <vm:GraphViewModel/>
+    </Design.DataContext>
+
+    <Grid Background="{Binding FirstBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Row="0" Grid.Column="0"
+                    Text="{Binding ExpressionInput}"
+                    Margin="10 5 5 2"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Stretch"
+                    Watermark="Expression"
+                    FontSize="20"
+                    >
+
+            </TextBox>
+            <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                    Command="{Binding PlotGraphCommand}"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="5 5 10 0"
+                    FontSize="28"
+                    Background="{Binding SecondBackgroundBrush}"
+                    >
+                Plot
+            </Button>
+
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+    
+                <TextBox Grid.Row="0" Grid.Column="0"
+                        Text="{Binding DxMin}"
+                        Margin="10 5 5 0"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        FontSize="20"
+                        Watermark="x min"
+                        >
+
+                </TextBox>
+                <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding DxMax}"
+                        Margin="10 5 5 0"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        FontSize="20"
+                        Watermark="x max"
+                        >
+
+                </TextBox>
+            </Grid>
+        </Grid>
+
+
+        <oxy:Plot Background="{Binding FirstBackgroundBrush}" Grid.Row="1" Grid.Column="0">
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding Points}" Color="{Binding SecondBackgroundColor}"/>
+            </oxy:Plot.Series>
+
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis Position="Bottom"/>
+                <oxy:LinearAxis Position="Left"/>
+            </oxy:Plot.Axes>
+        </oxy:Plot>
+    </Grid>
+
 </UserControl>

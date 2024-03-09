@@ -95,7 +95,8 @@ namespace ScientificCalculator.ViewModels
                 {
                     CalculationTime = DateTime.Now,
                     Expression = ExpressionInput,
-                    Answer = AnswerField
+                    Answer = AnswerField,
+                    XValue = XValue
                 });
         }
         
@@ -103,6 +104,7 @@ namespace ScientificCalculator.ViewModels
         {
             ExpressionInput = string.Empty;
             AnswerField = string.Empty;
+            XValue = string.Empty;
         }
 
         public void SinBtnClicked()  => InsertAndMoveCaret("sin()", 4);

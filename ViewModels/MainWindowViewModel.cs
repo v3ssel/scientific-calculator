@@ -125,16 +125,19 @@ public class MainWindowViewModel : ViewModelBase
 
         SettingsContent.ForegroundBrushChangedEvent += ForegroundBrushChangedAction;
         SettingsContent.ForegroundBrushChangedEvent += CalculatorContent.ForegroundBrushChangedAction;
+        SettingsContent.ForegroundBrushChangedEvent += GraphContent.ForegroundBrushChangedAction;
         SettingsContent.ForegroundBrushChangedEvent += HistoryContent.ForegroundBrushChangedAction;
         SettingsContent.ForegroundBrushChangedEvent += AboutContent.ForegroundBrushChangedAction;
         
         SettingsContent.FirstBackgroundBrushChangedEvent += FirstBackgroundBrushChangedAction;
         SettingsContent.FirstBackgroundBrushChangedEvent += CalculatorContent.FirstBackgroundBrushChangedAction;
+        SettingsContent.FirstBackgroundBrushChangedEvent += GraphContent.FirstBackgroundBrushChangedAction;
         SettingsContent.FirstBackgroundBrushChangedEvent += HistoryContent.FirstBackgroundBrushChangedAction;
         SettingsContent.FirstBackgroundBrushChangedEvent += AboutContent.FirstBackgroundBrushChangedAction;
 
         SettingsContent.SecondBackgroundBrushChangedEvent += SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += CalculatorContent.SecondBackgroundBrushChangedAction;
+        SettingsContent.SecondBackgroundBrushChangedEvent += GraphContent.SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += HistoryContent.SecondBackgroundBrushChangedAction;
         SettingsContent.SecondBackgroundBrushChangedEvent += AboutContent.SecondBackgroundBrushChangedAction;
 
@@ -190,11 +193,17 @@ public class MainWindowViewModel : ViewModelBase
 
     public void CalculatorSidebarButtonClicked()
     {
+        if (ContentViewModel is GraphViewModel)
+            CalculatorContent.ExpressionInput = GraphContent.ExpressionInput;
+
         ContentViewModel = CalculatorContent;
     }
 
     public void GraphSidebarButtonClicked()
     {
+        if (ContentViewModel is CalculatorViewModel)
+            GraphContent.ExpressionInput = CalculatorContent.ExpressionInput;
+
         ContentViewModel = GraphContent;
     }
     
@@ -223,6 +232,7 @@ public class MainWindowViewModel : ViewModelBase
         if (x is null) return;
 
         CalculatorContent.ExpressionInput = x.Expression;
+        CalculatorContent.XValue = x.XValue ?? string.Empty;
         ContentViewModel = CalculatorContent;
     }
 

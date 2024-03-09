@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using ScientificCalculator.Models;
 
 namespace ScientificCalculator.Services.Logging;
@@ -36,7 +37,7 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
 
         var dir = Directory.CreateDirectory("./logs");
         var last_file = dir.GetFiles($"logs_*.log").OrderByDescending(x => x.CreationTime).FirstOrDefault();
-        var formatted_out = $"[{level}] [{record.CalculationTime:dd/MM/yy-hh:mm:ss}] - \"{record.Expression}\" = \"{record.Answer}\"";
+        var formatted_out = $"[{level}] [{record.CalculationTime:dd/MM/yy-hh:mm:ss}] - \"{record.Expression}\" = \"{record.Answer}\"" + (record.XValue is null ? "" : $" | X = \"{record.XValue}\"");
 
         if (last_file is null || DateTime.Now >= GetLogExpireTime(last_file.CreationTime))
         {
