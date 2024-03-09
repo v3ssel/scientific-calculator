@@ -73,9 +73,9 @@ namespace ScientificCalculator.ViewModels
             HistoryRecords = new ObservableCollection<HistoryRecord>(DbContext.HistoryRecords.Local.OrderByDescending(x => x.CalculationTime));
         }
 
-        public void OnCalculationComplete(bool error, HistoryRecord record)
+        public void OnCalculationComplete(CalculationStatus status, HistoryRecord record)
         {
-            if (error) return;
+            if (status == CalculationStatus.ERROR) return;
 
             HistoryRecords.Insert(0, record);
 

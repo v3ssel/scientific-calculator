@@ -35,6 +35,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox Grid.Row="0" Grid.Column="0"
+                    Name="expressionField"
                     Text="{Binding ExpressionInput}"
                     Margin="10 5 5 2"
                     VerticalAlignment="Top"
@@ -46,6 +47,7 @@
             </TextBox>
             <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                     Command="{Binding PlotGraphCommand}"
+                    CommandParameter="{Binding #expressionField}"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     VerticalContentAlignment="Center"

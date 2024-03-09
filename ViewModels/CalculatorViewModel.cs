@@ -1,16 +1,20 @@
 using System;
+using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input.Platform;
 using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Models;
+using ScientificCalculator.Services.Calculation;
 
 namespace ScientificCalculator.ViewModels
 {
     public class CalculatorViewModel : ViewModelBase
     {
-        public delegate void CalculationCompleteEventHander(bool error, HistoryRecord record);
+        public delegate void CalculationCompleteEventHander(CalculationStatus status, HistoryRecord record);
         public event CalculationCompleteEventHander? CalculationCompleteEvent;
 
         #region ColorProperties
@@ -101,8 +105,13 @@ namespace ScientificCalculator.ViewModels
 
         #endregion
 
-        public CalculatorViewModel()
+        
+        private readonly ICalculationService CalculationService;
+
+        public CalculatorViewModel(ICalculationService calculationService)
         {
+            CalculationService = calculationService;
+
             CopyInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(CopyInputAction);
             PasteInputActionCmd = ReactiveCommand.CreateFromTask<IClipboard>(PasteInputAction);
             
@@ -110,18 +119,34 @@ namespace ScientificCalculator.ViewModels
             LastFocusToExpression = DateTime.Now.AddSeconds(1).TimeOfDay;
         }
 
-        public void CalculateBtnClicked()
+        public void CalculateBtnClicked(TextBox expression_box)
         {
-            AnswerField = ExpressionInput;
+            CalculationStatus status = CalculationStatus.CALCULATED;
 
-            CalculationCompleteEvent?.Invoke(false,
-                new HistoryRecord()
-                {
-                    CalculationTime = DateTime.Now,
-                    Expression = ExpressionInput,
-                    Answer = AnswerField,
-                    XValue = XValue
-                });
+            try
+            {
+                AnswerField = CalculationService.Calculate(ExpressionInput, XValue).ToString(CultureInfo.InvariantCulture);
+
+                DataValidationErrors.ClearErrors(expression_box);
+            }
+            catch
+            {
+                status = CalculationStatus.ERROR;
+                AnswerField = string.Empty;
+
+                DataValidationErrors.SetError(expression_box, new DataValidationException("Error appeared during calculation, check your expression."));
+            }
+            finally
+            {
+                CalculationCompleteEvent?.Invoke(status,
+                    new HistoryRecord()
+                    {
+                        CalculationTime = DateTime.Now,
+                        Expression = ExpressionInput,
+                        Answer = AnswerField,
+                        XValue = XValue
+                    });
+            }
         }
         
         public void AllClearBtnClicked()

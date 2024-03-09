@@ -23,7 +23,7 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
         Enabled = enabled;
     }
 
-    public void Log(LogLevel level, HistoryRecord record)
+    public void Log(CalculationStatus level, HistoryRecord record)
     {
         if (!Enabled) return;
         
@@ -31,13 +31,16 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
         task.Wait();
     }
 
-    public async Task LogAsync(LogLevel level, HistoryRecord record)
+    public async Task LogAsync(CalculationStatus level, HistoryRecord record)
     {
         if (!Enabled) return;
 
         var dir = Directory.CreateDirectory("./logs");
         var last_file = dir.GetFiles($"logs_*.log").OrderByDescending(x => x.CreationTime).FirstOrDefault();
-        var formatted_out = $"[{level}] [{record.CalculationTime:dd/MM/yy-hh:mm:ss}] - \"{record.Expression}\" = \"{record.Answer}\"" + (record.XValue is null ? "" : $" | X = \"{record.XValue}\"");
+
+        var x_part = string.IsNullOrEmpty(record.XValue) ? "" : $" | X = \"{record.XValue}\"";
+        var answer_part = string.IsNullOrEmpty(record.Answer) ? "" : $" = \"{record.Answer}\"";
+        var formatted_out = $"[{level}] [{record.CalculationTime:dd/MM/yy-hh:mm:ss}] - \"{record.Expression}\"" + answer_part + x_part;
 
         if (last_file is null || DateTime.Now >= GetLogExpireTime(last_file.CreationTime))
         {

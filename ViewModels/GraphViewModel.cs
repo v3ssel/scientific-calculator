@@ -1,8 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Media;
 using OxyPlot;
 using ReactiveUI;
+using ScientificCalculator.Services.Calculation;
 
 namespace ScientificCalculator.ViewModels
 {
@@ -67,18 +73,40 @@ namespace ScientificCalculator.ViewModels
 
         public IList<DataPoint> Points { get; set; }
 
-        public GraphViewModel()
+        
+        private readonly ICalculationService CalculationService;
+
+        public GraphViewModel(ICalculationService calculationService)
         {
-            this.Points = new List<DataPoint>();
-            var r = new Random(13);
-            for (int i = 0; i < 10; i++)
-            {
-                this.Points.Add(new DataPoint(i, r.NextDouble()));
-            }
+            CalculationService = calculationService;
+            Points = new List<DataPoint>();
         }
 
-        public void PlotGraphCommand()
+        // design
+        public GraphViewModel()
         {
+            CalculationService = new DllCalculationService();
+            Points = new List<DataPoint>();
+        }
+
+        public void PlotGraphCommand(TextBox expression_box)
+        {
+            try
+            {
+                var range_result = CalculationService.CalculateRange(Convert.ToInt32(DxMin), Convert.ToInt32(DxMax), ExpressionInput);
+                
+                Points = new List<DataPoint>();
+                for (int i = 0; i < range_result.Count; i++)
+                {
+                    Points.Add(new DataPoint(i, range_result[i]));
+                }
+
+                DataValidationErrors.ClearErrors(expression_box);
+            }
+            catch
+            {
+                DataValidationErrors.SetError(expression_box, new DataValidationException("Error appeared during calculation, check your expression."));
+            }
 
         }
 

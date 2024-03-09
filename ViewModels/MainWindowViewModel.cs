@@ -16,6 +16,7 @@ using Avalonia.Media;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ScientificCalculator.Models;
+using ScientificCalculator.Services.Calculation;
 using ScientificCalculator.Services.Logging;
 using ScientificCalculator.Services.Saving;
 using ScientificCalculator.Views;
@@ -104,16 +105,18 @@ public class MainWindowViewModel : ViewModelBase
     #endregion
 
     private readonly ICalculatorLogger Logger;
+    private readonly ICalculationService CalculationService;
 
-    public MainWindowViewModel(ICalculatorLogger logger)
+    public MainWindowViewModel(ICalculatorLogger logger, ICalculationService calculationService)
     {
         Logger = logger;
+        CalculationService = calculationService;
 
-        _graphContent = new GraphViewModel();
+        _calculatorContent = new CalculatorViewModel(CalculationService);
+        _graphContent = new GraphViewModel(CalculationService);
         _historyContent = new HistoryViewModel();
         _settingsContent = new SettingsViewModel();
         _aboutContent = new AboutViewModel();
-        _calculatorContent = new CalculatorViewModel();
         
         _contentViewModel = _calculatorContent;
 
@@ -180,10 +183,10 @@ public class MainWindowViewModel : ViewModelBase
             logger.RotationPeriod = period;
     }
 
-    public void OnCalculationComplete(bool error, HistoryRecord record)
+    public void OnCalculationComplete(CalculationStatus status, HistoryRecord record)
     {
         Task.Run(async () =>
-            await Logger.LogAsync(error ? LogLevel.ERROR : LogLevel.CALCULATED, record)
+            await Logger.LogAsync(status, record)
         );
     }
 

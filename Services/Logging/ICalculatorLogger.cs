@@ -5,7 +5,7 @@ namespace ScientificCalculator.Services.Logging;
 
 public interface ICalculatorLogger
 {
-    Task LogAsync(LogLevel level, HistoryRecord record);
-    void Log(LogLevel level, HistoryRecord record);
+    Task LogAsync(CalculationStatus level, HistoryRecord record);
+    void Log(CalculationStatus level, HistoryRecord record);
     bool Enabled { get; set; }
 }
