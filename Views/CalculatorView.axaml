@@ -144,7 +144,7 @@
             <Button  Grid.Row="0" Grid.Column="1" Content="0"  Command="{Binding ZeroBtnClicked}"      Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="2" Content="."  Command="{Binding DotBtnClicked}"       Classes="BtnStyle" FontSize="45"/>
             <Button  Grid.Row="0" Grid.Column="3" Content="AC" Command="{Binding AllClearBtnClicked}"  Classes="BtnStyle" FontSize="18"/>
-            <Button  Grid.Row="0" Grid.Column="4" Content="="  Command="{Binding CalculateBtnClicked}" Classes="BtnStyle" FontSize="18" CommandParameter="{Binding #expressionField}"/>
+            <Button  Grid.Row="0" Grid.Column="4" Content="="  Command="{Binding CalculateBtnClicked}" Classes="BtnStyle" FontSize="18" CommandParameter="{Binding #expressionField}" HotKey="Enter"/>
         </Grid>
 
         <TextBox
