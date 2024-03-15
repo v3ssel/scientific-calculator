@@ -1,0 +1,3 @@
+[submodule "CalculationLib"]
+	path = CalculationLib
+	url = https://github.com/v3ssel/CalculationLib.git
