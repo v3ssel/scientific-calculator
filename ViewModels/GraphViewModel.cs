@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Media;
 using OxyPlot;
 using ReactiveUI;
@@ -83,7 +81,7 @@ namespace ScientificCalculator.ViewModels
 
         #endregion
 
-        public IList<DataPoint> Points { get; set; }
+        public ObservableCollection<DataPoint> Points { get; private set; }
 
         
         private readonly ICalculationService CalculationService;
@@ -91,14 +89,14 @@ namespace ScientificCalculator.ViewModels
         public GraphViewModel(ICalculationService calculationService)
         {
             CalculationService = calculationService;
-            Points = new List<DataPoint>();
+            Points = new ObservableCollection<DataPoint>();
         }
 
         // design
         public GraphViewModel()
         {
             CalculationService = new DllCalculationService();
-            Points = new List<DataPoint>();
+            Points = new ObservableCollection<DataPoint>();
         }
 
         public void PlotGraphCommand(TextBox expression_box)
@@ -107,15 +105,21 @@ namespace ScientificCalculator.ViewModels
 
             try
             {
+                CheckDx(DxMax);
+                CheckDx(DxMin);
+
                 var x_min = Convert.ToInt32(DxMin);
                 var x_max = Convert.ToInt32(DxMax);
+                (x_min, x_max) = (Math.Min(x_min, x_max), Math.Max(x_min, x_max));
 
-                var range_result = CalculationService.CalculateRange(Math.Min(x_min, x_max), Math.Max(x_min, x_max), ExpressionInput);
-                
-                Points = new List<DataPoint>();
-                for (int i = 0; i < range_result.Count; i++)
+                var range_result = CalculationService.CalculateRange(x_min, x_max, ExpressionInput);
+
+                Points.Clear();
+
+                int shift = x_min < 0 ? Math.Abs(x_min) : -x_min;
+                for (int x = x_min; x < x_max; x++)
                 {
-                    Points.Add(new DataPoint(i, range_result[i]));
+                    Points.Add(new DataPoint(x, range_result[x + shift]));
                 }
 
                 DataValidationErrors.ClearErrors(expression_box);
@@ -161,7 +165,7 @@ namespace ScientificCalculator.ViewModels
 
         #endregion
 
-        private void CheckDx(string value)
+        public static void CheckDx(string value)
         {
             if (!int.TryParse(value, out var res))
             {

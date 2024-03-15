@@ -93,14 +93,25 @@
         </Grid>
 
 
-        <oxy:Plot Background="{Binding FirstBackgroundBrush}" Grid.Row="1" Grid.Column="0">
+        <oxy:Plot Grid.Row="1" Grid.Column="0" Background="{Binding FirstBackgroundBrush}">
             <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Points}" Color="{Binding SecondBackgroundColor}"/>
+                <oxy:LineSeries ItemsSource="{Binding Points}"
+                                Color="{Binding SecondBackgroundColor}"/>
             </oxy:Plot.Series>
 
             <oxy:Plot.Axes>
-                <oxy:LinearAxis Position="Bottom"/>
-                <oxy:LinearAxis Position="Left"/>
+                <oxy:LinearAxis TickStyle="Inside"
+                                MajorGridlineStyle="Solid"
+                                MinorGridlineStyle="Dot"
+                                MinimumPadding="0.1"
+                                MaximumPadding="0.1"
+                                Position="Bottom"/>
+                <oxy:LinearAxis TickStyle="Inside"
+                                MajorGridlineStyle="Solid"
+                                MinorGridlineStyle="Dot"
+                                MinimumPadding="0.1"
+                                MaximumPadding="0.1"
+                                Position="Left"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
     </Grid>
