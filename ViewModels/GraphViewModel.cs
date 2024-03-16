@@ -15,37 +15,12 @@ namespace ScientificCalculator.ViewModels
         public delegate void GraphPlottedEventHander(CalculationStatus status, HistoryRecord record);
         public event GraphPlottedEventHander? GraphPlottedEvent;
 
-        #region ColorsProperties
-
-        private IBrush _foregroundBrush = Brushes.Black;
-        public IBrush ForegroundBrush
-        {
-            get => _foregroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
-        }
-
-        private IBrush _firstBackgroundBrush = Brushes.White;
-        public IBrush FirstBackgroundBrush
-        {
-            get => _firstBackgroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
-        }
-
-        private IBrush _secondBackgroundBrush = Brushes.Silver;
-        public IBrush SecondBackgroundBrush
-        {
-            get => _secondBackgroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
-        }
-
         private Avalonia.Media.Color _secondBackgroundColor = Colors.Silver;
         public Avalonia.Media.Color SecondBackgroundColor
         {
             get => _secondBackgroundColor;
             set => this.RaiseAndSetIfChanged(ref _secondBackgroundColor, value);
         }
-
-        #endregion
 
         #region DataProperties
 
@@ -136,26 +111,6 @@ namespace ScientificCalculator.ViewModels
             }
 
         }
-
-        #region EventHandlers
-
-        public void ForegroundBrushChangedAction(IBrush brush)
-        {
-            ForegroundBrush = brush;
-        }
-
-        public void FirstBackgroundBrushChangedAction(IBrush brush)
-        {
-            FirstBackgroundBrush = brush;
-        }
-
-        public void SecondBackgroundBrushChangedAction(IBrush brush)
-        {
-            SecondBackgroundBrush = brush;
-            SecondBackgroundColor = Color.Parse(brush.ToString()!);
-        }
-
-        #endregion
 
         public static void CheckDx(string value)
         {

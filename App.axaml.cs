@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Diagnostics;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ScientificCalculator.Services.Calculation;

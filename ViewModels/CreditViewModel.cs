@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace ScientificCalculator.ViewModels
 {
-    public class AboutViewModel : ViewModelBase
+    public class CreditViewModel : ViewModelBase
     {
         
     }

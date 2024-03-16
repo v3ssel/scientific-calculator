@@ -67,43 +67,22 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _isLogEnableChecked, value);
         }
 
-        private IBrush _foregroundBrush = Brushes.Black;
-        public IBrush ForegroundBrush
-        {
-            get => _foregroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
-        }
-        
-        private Avalonia.Media.Color _foregroundColor = Colors.Black;
-        public Avalonia.Media.Color ForegroundColor
+        private Color _foregroundColor = Colors.Black;
+        public Color ForegroundColor
         {
             get => _foregroundColor;
             set => this.RaiseAndSetIfChanged(ref _foregroundColor, value);
         }
 
-        private IBrush _firstBackgroundBrush = Brushes.White;
-        public IBrush FirstBackgroundBrush
-        {
-            get => _firstBackgroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
-        }
-
-        private Avalonia.Media.Color _firstBackgroundColor = Colors.White;
-        public Avalonia.Media.Color FirstBackgroundColor
+        private Color _firstBackgroundColor = Colors.White;
+        public Color FirstBackgroundColor
         {
             get => _firstBackgroundColor;
             set => this.RaiseAndSetIfChanged(ref _firstBackgroundColor, value);
         }
 
-        private IBrush _secondBackgroundBrush = Brushes.Silver;
-        public IBrush SecondBackgroundBrush
-        {
-            get => _secondBackgroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
-        }
-
-        private Avalonia.Media.Color _secondBackgroundColor = Colors.Silver;
-        public Avalonia.Media.Color SecondBackgroundColor
+        private Color _secondBackgroundColor = Colors.Silver;
+        public Color SecondBackgroundColor
         {
             get => _secondBackgroundColor;
             set => this.RaiseAndSetIfChanged(ref _secondBackgroundColor, value);
@@ -152,14 +131,14 @@ namespace ScientificCalculator.ViewModels
                 IsLogEnableChecked = CurrentSettings.IsLogEnabled;
                 LogsRotationPeriod = CurrentSettings.RotationPeriod;
 
-                Avalonia.Media.Color tmp_color;
-                if (Avalonia.Media.Color.TryParse(CurrentSettings.ForegroundColor, out tmp_color))
+                Color tmp_color;
+                if (Color.TryParse(CurrentSettings.ForegroundColor, out tmp_color))
                     ForegroundColor = tmp_color;
                     
-                if (Avalonia.Media.Color.TryParse(CurrentSettings.FirstBackgroundColor, out tmp_color))
+                if (Color.TryParse(CurrentSettings.FirstBackgroundColor, out tmp_color))
                     FirstBackgroundColor = tmp_color;
                     
-                if (Avalonia.Media.Color.TryParse(CurrentSettings.SecondBackgroundColor, out tmp_color))
+                if (Color.TryParse(CurrentSettings.SecondBackgroundColor, out tmp_color))
                     SecondBackgroundColor = tmp_color;
             }
             else
@@ -237,7 +216,7 @@ namespace ScientificCalculator.ViewModels
             RotationPeriodChangedEvent?.Invoke(period);
         }
 
-        private void ForegroundColorChangedAction(Avalonia.Media.Color color)
+        private void ForegroundColorChangedAction(Color color)
         {
             Task.Run(async () =>
             {
@@ -252,7 +231,7 @@ namespace ScientificCalculator.ViewModels
             ForegroundBrushChangedEvent?.Invoke(ForegroundBrush);
         }
 
-        private void FirstBackgroundColorChangedAction(Avalonia.Media.Color color)
+        private void FirstBackgroundColorChangedAction(Color color)
         {
             Task.Run(async () =>
             {
@@ -267,7 +246,7 @@ namespace ScientificCalculator.ViewModels
             FirstBackgroundBrushChangedEvent?.Invoke(FirstBackgroundBrush);
         }
         
-        private void SecondBackgroundColorChangedAction(Avalonia.Media.Color color)
+        private void SecondBackgroundColorChangedAction(Color color)
         {
             Task.Run(async () =>
             {

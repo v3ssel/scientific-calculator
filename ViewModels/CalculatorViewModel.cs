@@ -17,31 +17,6 @@ namespace ScientificCalculator.ViewModels
         public delegate void CalculationCompleteEventHander(CalculationStatus status, HistoryRecord record);
         public event CalculationCompleteEventHander? CalculationCompleteEvent;
 
-        #region ColorProperties
-
-        private IBrush _foregroundBrush = Brushes.Black;
-        public IBrush ForegroundBrush
-        {
-            get => _foregroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _foregroundBrush, value);
-        }
-
-        private IBrush _firstBackgroundBrush = Brushes.White;
-        public IBrush FirstBackgroundBrush
-        {
-            get => _firstBackgroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _firstBackgroundBrush, value);
-        }
-
-        private IBrush _secondBackgroundBrush = Brushes.Silver;
-        public IBrush SecondBackgroundBrush
-        {
-            get => _secondBackgroundBrush;
-            set => this.RaiseAndSetIfChanged(ref _secondBackgroundBrush, value);
-        }
-
-        #endregion
-
         #region ExpressionProperties
 
         private string _expressionInput = string.Empty;
@@ -196,21 +171,6 @@ namespace ScientificCalculator.ViewModels
         #endregion
 
         #region EventHandlers
-
-        public void ForegroundBrushChangedAction(IBrush brush)
-        {
-            ForegroundBrush = brush;
-        }
-
-        public void FirstBackgroundBrushChangedAction(IBrush brush)
-        {
-            FirstBackgroundBrush = brush;
-        }
-
-        public void SecondBackgroundBrushChangedAction(IBrush brush)
-        {
-            SecondBackgroundBrush = brush;
-        }
 
         private void InsertAndMoveCaret(string value, int caret_shift = 1)
         {
