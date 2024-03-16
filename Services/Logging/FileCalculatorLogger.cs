@@ -17,7 +17,7 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
     }
     public bool Enabled { get; set; }
 
-    public FileCalculatorLogger(RotationPeriod rotationPeriod, bool enabled = true)
+    public FileCalculatorLogger(RotationPeriod rotationPeriod, bool enabled = false)
     {
         RotationPeriod = rotationPeriod;
         Enabled = enabled;
