@@ -1,16 +1,9 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
-using ReactiveUI;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ScientificCalculator.Views;
 
@@ -35,12 +28,6 @@ public partial class MainWindow : Window
         {
             StartAnimation(MainWindow.WidthProperty, this.Width, this.Width - (main_split.OpenPaneLength - main_split.CompactPaneLength));
         }
-    }
-
-    // debug
-    public void ExpandButtonClicked(object source, RoutedEventArgs args)
-    {   
-        // (source as TextBox).SelectedText
     }
 
     private void StartAnimation(AvaloniaProperty property, object initial_value, object desired_value)

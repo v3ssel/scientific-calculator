@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Avalonia.Media;
-using HyperText.Avalonia;
-using HyperText.Avalonia.Models;
 using ReactiveUI;
 
 namespace ScientificCalculator.ViewModels

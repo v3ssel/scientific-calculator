@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -89,13 +88,6 @@ namespace ScientificCalculator.ViewModels
         public GraphViewModel(ICalculationService calculationService)
         {
             CalculationService = calculationService;
-            Points = new ObservableCollection<DataPoint>();
-        }
-
-        // design
-        public GraphViewModel()
-        {
-            CalculationService = new DllCalculationService();
             Points = new ObservableCollection<DataPoint>();
         }
 

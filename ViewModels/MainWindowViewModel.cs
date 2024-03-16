@@ -1,25 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Data;
-using Avalonia.Input.Platform;
-using Avalonia.Interactivity;
 using Avalonia.Media;
-using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ScientificCalculator.Models;
 using ScientificCalculator.Services.Calculation;
 using ScientificCalculator.Services.Logging;
-using ScientificCalculator.Services.Saving;
-using ScientificCalculator.Views;
 
 namespace ScientificCalculator.ViewModels;
 

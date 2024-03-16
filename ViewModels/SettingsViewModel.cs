@@ -1,9 +1,6 @@
 using System;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Controls.Documents;
 using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Services.Logging;
