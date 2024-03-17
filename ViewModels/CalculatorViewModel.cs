@@ -80,7 +80,6 @@ namespace ScientificCalculator.ViewModels
 
         #endregion
 
-        
         private readonly ICalculationService CalculationService;
 
         public CalculatorViewModel(ICalculationService calculationService)
@@ -130,9 +129,6 @@ namespace ScientificCalculator.ViewModels
             AnswerField = string.Empty;
             XValue = string.Empty;
         }
-
-        public void CreditBtnClicked() {/* TODO */}  
-        public void DepositBtnClicked() {/* TODO */}
 
         #region InsertButtons
 

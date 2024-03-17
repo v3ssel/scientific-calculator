@@ -11,6 +11,16 @@ namespace ScientificCalculator.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    #region Events
+
+    public delegate void ShowCreditWindow(object? context);
+    public event ShowCreditWindow? ShowCreditWindowEvent;
+
+    public delegate void ShowDepositWindow(object? context);
+    public event ShowDepositWindow? ShowDepositWindowEvent;
+
+    #endregion
+
     #region Properties
 
     private bool _isSplitViewPaneOpen;
@@ -67,6 +77,20 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _aboutContent, value);
     }
 
+    private CreditViewModel _creditContent;
+    public CreditViewModel CreditContent
+    {
+        get => _creditContent;
+        set => this.RaiseAndSetIfChanged(ref _creditContent, value);
+    }
+
+    private DepositViewModel _depositContent;
+    public DepositViewModel DepositContent
+    {
+        get => _depositContent;
+        set => this.RaiseAndSetIfChanged(ref _depositContent, value);
+    }
+
     #endregion
 
     private readonly ICalculatorLogger Logger;
@@ -82,7 +106,9 @@ public class MainWindowViewModel : ViewModelBase
         _historyContent = new HistoryViewModel();
         _settingsContent = new SettingsViewModel();
         _aboutContent = new AboutViewModel();
-        
+        _creditContent = new CreditViewModel();
+        _depositContent = new DepositViewModel();
+
         _contentViewModel = _calculatorContent;
 
         CalculatorContent.CalculationCompleteEvent += OnCalculationComplete;
@@ -179,6 +205,16 @@ public class MainWindowViewModel : ViewModelBase
     public void AboutSidebarButtonClicked()
     {
         ContentViewModel = AboutContent;
+    }
+
+    public void CreditBtnClicked()
+    {
+        ShowCreditWindowEvent?.Invoke(CreditContent);
+    }
+
+    public void DepositBtnClicked()
+    {
+        ShowDepositWindowEvent?.Invoke(DepositContent);
     }
 
     public void ExpandGraphBtnClicked()

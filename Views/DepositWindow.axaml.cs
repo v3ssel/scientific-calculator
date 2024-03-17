@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace ScientificCalculator.Views;
 
-public partial class CreditView : UserControl
+public partial class DepositWindow : Window
 {
-    public CreditView()
+    public DepositWindow()
     {
         InitializeComponent();
     }

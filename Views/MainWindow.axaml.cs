@@ -2,16 +2,38 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.ReactiveUI;
 using Avalonia.Styling;
+using ReactiveUI;
+using ScientificCalculator.ViewModels;
 using System;
 
 namespace ScientificCalculator.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
     public MainWindow()
     {
+        
         InitializeComponent();
+
+        this.WhenActivated(action =>
+        {
+            ViewModel!.ShowCreditWindowEvent += DoShowCreditDialog;
+            ViewModel!.ShowDepositWindowEvent += DoShowDepositDialog;
+        });
+    }
+
+    private void DoShowCreditDialog(object? context)
+    {
+        var dialog = new CreditWindow { DataContext = context };
+        dialog.Show();
+    }
+
+    private void DoShowDepositDialog(object? context)
+    {
+        var dialog = new DepositWindow { DataContext = context };
+        dialog.Show();
     }
  
     public void PaneOpeningEvent(object source, CancelRoutedEventArgs args)
