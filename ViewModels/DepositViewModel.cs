@@ -1,9 +1,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using Avalonia.Controls;
 using Avalonia.Data;
 using ReactiveUI;
 using ScientificCalculator.Models;
+using static ScientificCalculator.Utils.Utils;
 
 namespace ScientificCalculator.ViewModels
 {
@@ -148,32 +150,40 @@ namespace ScientificCalculator.ViewModels
             CurrentWithdrawalDate = DateTime.Now;
         }
 
-        public void OnAddReplenishment()
+        public void OnAddReplenishment(TextBox textBox)
         {
+            if (!double.TryParse(CurrentReplenishment, CultureInfo.InvariantCulture, out var replenishment))
+            {
+                DataValidationErrors.SetError(textBox, new DataValidationException("Amount must be a number."));
+                return;
+            }
+
             Replenishments.Add(new DepositReplenishment()
             {
                 Id = Replenishments.Count + 1, 
                 Date = DateOnly.FromDateTime(CurrentReplenishmentDate),
-                Amount = double.Parse(CurrentReplenishment, CultureInfo.InvariantCulture)
+                Amount = replenishment
             });
+
+            DataValidationErrors.ClearErrors(textBox);
         }
 
-        public void OnAddWithdrawal()
+        public void OnAddWithdrawal(TextBox textBox)
         {
+            if (!double.TryParse(CurrentWithdrawal, CultureInfo.InvariantCulture, out var withdrawal))
+            {
+                DataValidationErrors.SetError(textBox, new DataValidationException("Amount must be a number."));
+                return;
+            }
+
             Withdrawals.Add(new DepositReplenishment()
             {
                 Id = Withdrawals.Count + 1, 
                 Date = DateOnly.FromDateTime(CurrentWithdrawalDate),
-                Amount = double.Parse(CurrentWithdrawal, CultureInfo.InvariantCulture)
+                Amount = withdrawal
             });
-        }
 
-        private static void CheckDouble(string? str)
-        {
-            if (string.IsNullOrEmpty(str) || !double.TryParse(str, CultureInfo.InvariantCulture, out var _))
-            {
-                throw new DataValidationException("Value must be a number.");
-            }
+            DataValidationErrors.ClearErrors(textBox);
         }
     }
 }

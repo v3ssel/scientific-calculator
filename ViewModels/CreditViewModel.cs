@@ -9,6 +9,7 @@ using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Models;
 using ScientificCalculator.Services.Calculation;
+using static ScientificCalculator.Utils.Utils;
 
 namespace ScientificCalculator.ViewModels
 {
@@ -170,14 +171,6 @@ namespace ScientificCalculator.ViewModels
         {
             SecondBackgroundBrush = brush;
             BackgroundBrushChanged?.Invoke(brush);
-        }
-
-        private static void CheckDouble(string? str)
-        {
-            if (string.IsNullOrEmpty(str) || !double.TryParse(str, CultureInfo.InvariantCulture, out var _))
-            {
-                throw new DataValidationException("Value must be a number.");
-            }
         }
     }
 }

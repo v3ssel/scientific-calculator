@@ -30,22 +30,22 @@
         </Style>
     </Window.Styles>
 
-    <ScrollViewer>
+    <!-- <ScrollViewer> -->
     <Grid Margin="10 0 10 10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -70,9 +70,9 @@
                     Text="Deposit Calculator" />
         </Border>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Classes="TextBlockColorStyle" Text="Deposit Amount:" />
-        <TextBox   Grid.Row="1" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding DepositAmount}" />
-        <TextBlock Grid.Row="1" Grid.Column="2" Margin="10 0 0 0" Classes="TextBlockColorStyle" Text="USD$"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0  10 0 0" Classes="TextBlockColorStyle" Text="Deposit Amount:" />
+        <TextBox   Grid.Row="1" Grid.Column="1" Margin="0  10 0 0" Classes="TextBoxColorStyle" Text="{Binding DepositAmount}" />
+        <TextBlock Grid.Row="1" Grid.Column="2" Margin="10 10 0 0" Classes="TextBlockColorStyle" Text="USD$"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Classes="TextBlockColorStyle" Text="Credit Term:"/>
         <TextBox   Grid.Row="2" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding Term}"/>
@@ -133,8 +133,8 @@
         <TextBlock Grid.Row="8" Grid.ColumnSpan="3" Margin="0" FontWeight="Bold" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Replenishments"/>
 
         <CalendarDatePicker Grid.Row="9" Grid.Column="0" SelectedDate="{Binding CurrentReplenishmentDate}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
-        <TextBox   Grid.Row="9" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding CurrentReplenishment}"/>
-        <Button    Grid.Row="9" Grid.Column="2" Margin="10 0 0 0" Command="{Binding OnAddReplenishment}" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Content="Add"/>
+        <TextBox   Grid.Row="9" Grid.Column="1" Name="replenishmentTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentReplenishment}"/>
+        <Button    Grid.Row="9" Grid.Column="2" Margin="10 0 0 0" Command="{Binding OnAddReplenishment}" CommandParameter="{Binding #replenishmentTextBox}" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Content="Add"/>
 
         <DataGrid Grid.Row="10" Grid.ColumnSpan="3"
                 IsVisible="{Binding !!Replenishments.Count}"
@@ -151,9 +151,9 @@
             <DataGrid.Columns>
                     <DataGridTextColumn Header="N" Width="*" 
                            Binding="{Binding Id}" />
-                    <DataGridTextColumn Header="Date" Width="*" 
+                    <DataGridTextColumn Header="Date" Width="2*" 
                            Binding="{Binding Date}" />
-                    <DataGridTextColumn Header="Amount" Width="*" 
+                    <DataGridTextColumn Header="Amount" Width="2*" 
                            Binding="{Binding Amount, StringFormat={}{0:0.00}}" />
                 </DataGrid.Columns>
         </DataGrid>
@@ -161,8 +161,8 @@
         <TextBlock Grid.Row="11" Grid.ColumnSpan="3" FontWeight="Bold" Margin="0 10 0 0" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Withdrawals"/>
 
         <CalendarDatePicker Grid.Row="12" Grid.Column="0" SelectedDate="{Binding CurrentWithdrawalDate}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
-        <TextBox   Grid.Row="12" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding CurrentWithdrawal}"/>
-        <Button    Grid.Row="12" Grid.Column="2" Margin="10 0 0 0" Content="Add" Command="{Binding OnAddWithdrawal}"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBox   Grid.Row="12" Grid.Column="1" Name="withdrawalTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentWithdrawal}"/>
+        <Button    Grid.Row="12" Grid.Column="2" Margin="10 0 0 0" Content="Add" Command="{Binding OnAddWithdrawal}" CommandParameter="{Binding #withdrawalTextBox}"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"/>
 
         <DataGrid Grid.Row="13" Grid.ColumnSpan="3"
                 IsVisible="{Binding !!Withdrawals.Count}"
@@ -179,12 +179,12 @@
             <DataGrid.Columns>
                     <DataGridTextColumn Header="N" Width="*" 
                            Binding="{Binding Id}" />
-                    <DataGridTextColumn Header="Date" Width="*" 
+                    <DataGridTextColumn Header="Date" Width="2*" 
                            Binding="{Binding Date}" />
-                    <DataGridTextColumn Header="Amount" Width="*" 
+                    <DataGridTextColumn Header="Amount" Width="2*" 
                            Binding="{Binding Amount, StringFormat={}{0:0.00}}" />
                 </DataGrid.Columns>
         </DataGrid>
     </Grid>
-    </ScrollViewer>
+    <!-- </ScrollViewer> -->
 </Window>
