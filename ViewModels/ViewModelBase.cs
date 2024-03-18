@@ -32,17 +32,17 @@ public class ViewModelBase : ReactiveObject
 
         #region EventHandlers
 
-        public void ForegroundBrushChangedAction(IBrush brush)
+        public virtual void ForegroundBrushChangedAction(IBrush brush)
         {
             ForegroundBrush = brush;
         }
 
-        public void FirstBackgroundBrushChangedAction(IBrush brush)
+        public virtual void FirstBackgroundBrushChangedAction(IBrush brush)
         {
             FirstBackgroundBrush = brush;
         }
 
-        public void SecondBackgroundBrushChangedAction(IBrush brush)
+        public virtual void SecondBackgroundBrushChangedAction(IBrush brush)
         {
             SecondBackgroundBrush = brush;
         }

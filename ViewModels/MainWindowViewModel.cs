@@ -120,23 +120,13 @@ public class MainWindowViewModel : ViewModelBase
         HistoryContent.SetupFromDatabase();
         HistoryContent.WhenAnyValue(x => x.SelectedExpression).Subscribe(HistoryValueSelectedAction);
 
-        SettingsContent.ForegroundBrushChangedEvent += ForegroundBrushChangedAction;
-        SettingsContent.ForegroundBrushChangedEvent += CalculatorContent.ForegroundBrushChangedAction;
-        SettingsContent.ForegroundBrushChangedEvent += GraphContent.ForegroundBrushChangedAction;
-        SettingsContent.ForegroundBrushChangedEvent += HistoryContent.ForegroundBrushChangedAction;
-        SettingsContent.ForegroundBrushChangedEvent += AboutContent.ForegroundBrushChangedAction;
-        
-        SettingsContent.FirstBackgroundBrushChangedEvent += FirstBackgroundBrushChangedAction;
-        SettingsContent.FirstBackgroundBrushChangedEvent += CalculatorContent.FirstBackgroundBrushChangedAction;
-        SettingsContent.FirstBackgroundBrushChangedEvent += GraphContent.FirstBackgroundBrushChangedAction;
-        SettingsContent.FirstBackgroundBrushChangedEvent += HistoryContent.FirstBackgroundBrushChangedAction;
-        SettingsContent.FirstBackgroundBrushChangedEvent += AboutContent.FirstBackgroundBrushChangedAction;
-
-        SettingsContent.SecondBackgroundBrushChangedEvent += SecondBackgroundBrushChangedAction;
-        SettingsContent.SecondBackgroundBrushChangedEvent += CalculatorContent.SecondBackgroundBrushChangedAction;
-        SettingsContent.SecondBackgroundBrushChangedEvent += GraphContent.SecondBackgroundBrushChangedAction;
-        SettingsContent.SecondBackgroundBrushChangedEvent += HistoryContent.SecondBackgroundBrushChangedAction;
-        SettingsContent.SecondBackgroundBrushChangedEvent += AboutContent.SecondBackgroundBrushChangedAction;
+        SetupColors(this);
+        SetupColors(CalculatorContent);
+        SetupColors(GraphContent);
+        SetupColors(HistoryContent);
+        SetupColors(AboutContent);
+        SetupColors(CreditContent);
+        SetupColors(DepositContent);
 
         SettingsContent.LogEnableChangedEvent += LogEnableChangedAction;
         SettingsContent.SaveHistoryEnableChangedEvent += SaveHistoryChangedAction;
@@ -167,6 +157,13 @@ public class MainWindowViewModel : ViewModelBase
         Task.Run(async () =>
             await Logger.LogAsync(status, record)
         );
+    }
+
+    private void SetupColors(ViewModelBase viewModel)
+    {
+        SettingsContent.ForegroundBrushChangedEvent += viewModel.ForegroundBrushChangedAction;
+        SettingsContent.FirstBackgroundBrushChangedEvent += viewModel.FirstBackgroundBrushChangedAction;
+        SettingsContent.SecondBackgroundBrushChangedEvent += viewModel.SecondBackgroundBrushChangedAction;
     }
 
     #endregion

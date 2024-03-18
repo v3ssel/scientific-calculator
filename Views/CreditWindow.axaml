@@ -7,6 +7,164 @@
         x:Class="ScientificCalculator.Views.CreditWindow"
         x:DataType="vm:CreditViewModel"
         Width="400" Height="520"
-        Title="Credit Calculator">
-  Welcome to Credit Window!
+        Title="Credit Calculator"
+        Icon="/Assets/icon_credit.ico"
+        Background="{Binding FirstBackgroundBrush}">
+    <Window.Styles>
+        <Style Selector="TextBlock.TextBlockColorStyle">
+            <Setter Property="Foreground" Value="{Binding ForegroundBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+
+        <Style Selector="TextBox.TextBoxColorStyle">
+            <Setter Property="Foreground" Value="{Binding ForegroundBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0 10 0 10" />
+        </Style>
+    </Window.Styles>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="DataGridColumnHeaderForegroundBrush" Color="Black" />
+            <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundBrush" Color="Silver" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="10 0 10 10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.ColumnSpan="3"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Margin="0 5 0 0"
+                CornerRadius="5"
+                Background="{Binding SecondBackgroundBrush}">
+            <TextBlock
+                    Foreground="{Binding ForegroundBrush}"
+                    FontSize="27"
+                    FontWeight="Bold"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Text="Credit Monthly Payment" />
+        </Border>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Classes="TextBlockColorStyle" Text="Amount:"/>
+        <TextBox   Grid.Row="1" Grid.Column="1" Classes="TextBoxColorStyle  " Text="{Binding Amount}" />
+        <TextBlock Grid.Row="1" Grid.Column="2" Margin="10 0 0 0" Classes="TextBlockColorStyle" Text="USD$"/>
+        
+        
+        <TextBlock Grid.Row="2" Grid.Column="0" Classes="TextBlockColorStyle" Text="Credit term:"/>
+        <TextBox   Grid.Row="2" Grid.Column="1" Classes="TextBoxColorStyle  " Text="{Binding Term}"/>
+        <ComboBox  Grid.Row="2" Grid.Column="2" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" Margin="10 0 0 0" SelectedIndex="{Binding SelectedTermType}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+            <ComboBoxItem Content="Months"/>
+            <ComboBoxItem Content="Years"/>
+        </ComboBox>
+
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Classes="TextBlockColorStyle" Text="Interest rate:"/>
+        <TextBox   Grid.Row="3" Grid.Column="1" Classes="TextBoxColorStyle  " Text="{Binding Rate}"/>
+        <TextBlock Grid.Row="3" Grid.Column="2" Margin="10 0 0 0" Classes="TextBlockColorStyle" Text="%"/>
+
+        <TextBlock   Grid.Row="4" Grid.Column="0" Classes="TextBlockColorStyle" Text="Type of monthly payments:"/>
+        <RadioButton Grid.Row="4" Grid.Column="1" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" GroupName="MonthlyType" Content="Annuity" IsChecked="{Binding IsAnnuityChecked}"/>
+        <RadioButton Grid.Row="4" Grid.Column="2" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" GroupName="MonthlyType" Content="Differentiated"/>
+
+        <Button Grid.Row="5" Grid.ColumnSpan="3"
+                Content="Calculate"
+                Command="{Binding CalculateButtonClicked}"
+                Margin="10"
+                FontSize="27"
+                FontWeight="Bold"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Background="{Binding SecondBackgroundBrush}"
+                Foreground="{Binding ForegroundBrush}"/>
+        </Grid>
+        
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Classes="TextBlockColorStyle" Text="Monthly payments" IsVisible="{Binding MonthlyPayment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 0 0 5" VerticalAlignment="Center" HorizontalAlignment="Center" Classes="TextBlockColorStyle" Text="{Binding MonthlyPayment}" IsVisible="{Binding MonthlyPayment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                
+                <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Classes="TextBlockColorStyle" Text="Overpayment" IsVisible="{Binding Overpayment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 0 0 5" VerticalAlignment="Center" HorizontalAlignment="Center" Classes="TextBlockColorStyle" Text="{Binding Overpayment}" IsVisible="{Binding Overpayment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+                <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Classes="TextBlockColorStyle" Text="Total Payout" IsVisible="{Binding TotalPayout, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                <TextBlock Grid.Row="1" Grid.Column="2" Margin="0 0 0 5" VerticalAlignment="Center" HorizontalAlignment="Center" Classes="TextBlockColorStyle" Text="{Binding TotalPayout}" IsVisible="{Binding TotalPayout, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            </Grid>
+
+            <DataGrid Grid.Row="1" Grid.Column="0"
+                    IsVisible="{Binding !!CreditResults.Count}"
+                    ItemsSource="{Binding CreditResults}"
+                    VerticalScrollBarVisibility="Auto"
+                    VerticalAlignment="Stretch"
+                    IsReadOnly="True" 
+                    CanUserResizeColumns="True"
+                    GridLinesVisibility="All"
+                    Foreground="{Binding ForegroundBrush}"
+                    FontWeight="Medium"
+                    BorderBrush="{Binding ForegroundBrush}"
+                    BorderThickness="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Month" Width="*" 
+                            Binding="{Binding Month}" />
+                    <DataGridTextColumn Header="Payment" Width="*" 
+                            Binding="{Binding Payment}" />
+                    <DataGridTextColumn Header="Overpay" Width="*" 
+                            Binding="{Binding Overpay}" />
+                    <DataGridTextColumn Header="Total" Width="*" 
+                            Binding="{Binding Fullsum}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
 </Window>
