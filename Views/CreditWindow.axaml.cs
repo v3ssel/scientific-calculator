@@ -24,8 +24,8 @@ public partial class CreditWindow : ReactiveWindow<CreditViewModel>
         });
     }
 
-    // avalonia doesnt support changing header colors property for now
-    // so have to override dynamic resource value
+    // avalonia doesnt support changing data grid header colors property for now
+    // so i have to override dynamic resource value
     private void UpdateColumnHeaderForeground(IBrush brush)
     {
         this.Resources["DataGridColumnHeaderForegroundBrush"] = brush;
