@@ -24,12 +24,12 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            ICalculatorLogger logger = new FileCalculatorLogger(RotationPeriod.Hour);
-            ICalculationService calculation = new DllCalculationService();
+            var logger = new FileCalculatorLogger(RotationPeriod.Hour);
+            var calculation = new DllCalculationService();
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(logger, calculation),
+                DataContext = new MainWindowViewModel(logger, calculation, calculation),
             };
         }
 

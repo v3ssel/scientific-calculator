@@ -76,8 +76,8 @@
                     Text="Credit Monthly Payment" />
         </Border>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Classes="TextBlockColorStyle" Text="Amount:"/>
-        <TextBox   Grid.Row="1" Grid.Column="1" Classes="TextBoxColorStyle  " Text="{Binding Amount}" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Classes="TextBlockColorStyle" Text="Amount:" />
+        <TextBox   Grid.Row="1" Grid.Column="1" Classes="TextBoxColorStyle  " Text="{Binding Amount}" Name="amountTextBox" />
         <TextBlock Grid.Row="1" Grid.Column="2" Margin="10 0 0 0" Classes="TextBlockColorStyle" Text="USD$"/>
         
         
@@ -94,12 +94,13 @@
         <TextBlock Grid.Row="3" Grid.Column="2" Margin="10 0 0 0" Classes="TextBlockColorStyle" Text="%"/>
 
         <TextBlock   Grid.Row="4" Grid.Column="0" Classes="TextBlockColorStyle" Text="Type of monthly payments:"/>
-        <RadioButton Grid.Row="4" Grid.Column="1" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" GroupName="MonthlyType" Content="Annuity" IsChecked="{Binding IsAnnuityChecked}"/>
-        <RadioButton Grid.Row="4" Grid.Column="2" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" GroupName="MonthlyType" Content="Differentiated"/>
+        <RadioButton Grid.Row="4" Grid.Column="1" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" GroupName="MonthlyType" IsChecked="{Binding IsAnnuityChecked}" Content="Annuity" />
+        <RadioButton Grid.Row="4" Grid.Column="2" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" GroupName="MonthlyType" IsChecked="{Binding IsDifferChecked}"  Content="Differentiated"/>
 
         <Button Grid.Row="5" Grid.ColumnSpan="3"
                 Content="Calculate"
                 Command="{Binding CalculateButtonClicked}"
+                CommandParameter="{Binding #amountTextBox}"
                 Margin="10"
                 FontSize="27"
                 FontWeight="Bold"
@@ -158,11 +159,11 @@
                     <DataGridTextColumn Header="Month" Width="*" 
                             Binding="{Binding Month}" />
                     <DataGridTextColumn Header="Payment" Width="*" 
-                            Binding="{Binding Payment}" />
+                            Binding="{Binding Payment, StringFormat={}{0:0.00}}" />
                     <DataGridTextColumn Header="Overpay" Width="*" 
-                            Binding="{Binding Overpay}" />
+                            Binding="{Binding Overpay, StringFormat={}{0:0.00}}" />
                     <DataGridTextColumn Header="Total" Width="*" 
-                            Binding="{Binding Fullsum}" />
+                            Binding="{Binding Fullsum, StringFormat={}{0:0.00}}" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
