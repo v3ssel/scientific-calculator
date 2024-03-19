@@ -3,13 +3,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:ScientificCalculator.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="550"
+             xmlns:converters="using:ScientificCalculator.Services.Converters"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
              x:Class="ScientificCalculator.Views.DepositMainView"
              x:DataType="vm:DepositMainViewModel">
+
+    <UserControl.Resources>
+        <converters:RateTypeToBoolConverter x:Key="rateTypeToBoolConverter"/>
+        <converters:MultivalueConverter x:Key="multivalueConverter"/>
+    </UserControl.Resources>
+    
     
     <ScrollViewer>
     <Grid Margin="10 0 10 10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -84,17 +92,51 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <TextBox Grid.Row="0" Grid.Column="1" Classes="TextBoxColorStyle" Margin="0" Text="" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Classes="TextBoxColorStyle" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right"
+                     Text="{Binding FixedRate}"
+                     IsVisible="{Binding SelectedRateType, Converter={StaticResource rateTypeToBoolConverter}}"/>
 
         </Grid>
-        <TextBlock Grid.Row="4" Grid.Column="2" Classes="TextBlockColorStyle" Margin="10 0 0 0" Text="% per annum"/>
+        <TextBlock  Grid.Row="4" Grid.Column="2" Classes="TextBlockColorStyle" Margin="10 0 0 0" Text="% per annum"
+                    IsVisible="{Binding SelectedRateType, Converter={StaticResource rateTypeToBoolConverter}}"/>
         
-        <TextBlock Grid.Row="5" Grid.Column="0" Classes="TextBlockColorStyle" Text="Tax Rate:"/>
-        <TextBox   Grid.Row="5" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding TaxRate}"/>
-        <TextBlock Grid.Row="5" Grid.Column="2" Classes="TextBlockColorStyle" Margin="10 0 0 0" Text="% per annum"/>
+        <Grid Grid.Row="5" Grid.ColumnSpan="3" IsVisible="{Binding SelectedRateType, Converter={StaticResource rateTypeToBoolConverter}, ConverterParameter=not}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Margin="0 5 0 0" Text="{Binding DependentValueLabel}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Margin="0 5 0 0" Text="%"/>
+
+            <TextBox Grid.Row="1" Grid.Column="0" Name="dependentValueTextBox" Classes="TextBoxColorStyle" Margin="0 3 5 0" Text="{Binding CurrentDependentValue}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Name="dependentRateTextBox"  Classes="TextBoxColorStyle" Margin="5 3 0 0" Text="{Binding CurrentDependentRate}"/>
+
+            <Button  Grid.Row="2" Grid.Column="0" Margin="0 5 5 0" Classes="BtnColorStyle" Content="Add"
+                     Command="{Binding $parent[Window].((vm:DepositViewModel)DataContext).OnAddInterestRateCommand}">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource multivalueConverter}">
+                        <Binding ElementName="dependentValueTextBox"/>
+                        <Binding ElementName="dependentRateTextBox"/>
+                    </MultiBinding>
+                </Button.CommandParameter>     
+            </Button>
+            <Button  Grid.Row="2" Grid.Column="1" Margin="5 5 0 0" Classes="BtnColorStyle" Content="View" 
+                     Command="{Binding $parent[Window].((vm:DepositViewModel)DataContext).OnViewInterestRates}" />
+        </Grid>
+
+        <TextBlock Grid.Row="6" Grid.Column="0" Classes="TextBlockColorStyle" Text="Tax Rate:"/>
+        <TextBox   Grid.Row="6" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding TaxRate}"/>
+        <TextBlock Grid.Row="6" Grid.Column="2" Classes="TextBlockColorStyle" Margin="10 0 0 0" Text="% per annum"/>
         
-        <TextBlock Grid.Row="6" Grid.Column="0" Classes="TextBlockColorStyle" Text="Periodicity:"/>
-        <ComboBox  Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" FontWeight="Medium"
+        <TextBlock Grid.Row="7" Grid.Column="0" Classes="TextBlockColorStyle" Text="Periodicity:"/>
+        <ComboBox  Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" FontWeight="Medium"
                 ItemsSource="{Binding Periodicity}"
                 Foreground="{Binding ForegroundBrush}" SelectedIndex="{Binding SelectedPaymentPeriod}"
                 VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -105,28 +147,28 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <CheckBox   Grid.Row="7" Grid.ColumnSpan="3" Margin="0 5 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Center"
+        <CheckBox   Grid.Row="8" Grid.ColumnSpan="3" Margin="0 5 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Center"
                     Content="Interest Capitalization" IsChecked="{Binding IsInterestCapitalisationChecked}" Foreground="{Binding ForegroundBrush}"/>
 
-        <TextBlock Grid.Row="8" Grid.ColumnSpan="3" Margin="0" FontWeight="Bold" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Replenishments"/>
+        <TextBlock Grid.Row="9" Grid.ColumnSpan="3" Margin="0" FontWeight="Bold" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Replenishments"/>
 
-        <CalendarDatePicker Grid.Row="9" Grid.Column="0" SelectedDate="{Binding CurrentReplenishmentDate}" Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
-        <TextBox    Grid.Row="9" Grid.Column="1" Name="replenishmentTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentReplenishment}"/>
-        <Button     Grid.Row="9" Grid.Column="2" Margin="10 0 0 0" Classes="BtnColorStyle" Content="Add"
+        <CalendarDatePicker Grid.Row="10" Grid.Column="0" SelectedDate="{Binding CurrentReplenishmentDate}" Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
+        <TextBox    Grid.Row="10" Grid.Column="1" Name="replenishmentTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentReplenishment}"/>
+        <Button     Grid.Row="10" Grid.Column="2" Margin="10 0 0 0" Classes="BtnColorStyle" Content="Add"
                     Command="{Binding $parent[Window].((vm:DepositViewModel)DataContext).OnAddReplenishmentCommand}" CommandParameter="{Binding #replenishmentTextBox}"/>
 
-        <Button Grid.Row="10" Grid.ColumnSpan="3" Margin="0 0 0 10" Content="View" Classes="BtnColorStyle"
+        <Button Grid.Row="11" Grid.ColumnSpan="3" Margin="0 0 0 10" Content="View" Classes="BtnColorStyle"
                 Command="{Binding $parent[Window].((vm:DepositViewModel)DataContext).OnViewReplenishments}"
                 IsVisible="{Binding !!$parent[Window].((vm:DepositViewModel)DataContext).ReplenishmentViewModel.Items.Count}"/>
 
-        <TextBlock Grid.Row="11" Grid.ColumnSpan="3" FontWeight="Bold" Margin="0" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Withdrawals"/>
+        <TextBlock Grid.Row="12" Grid.ColumnSpan="3" FontWeight="Bold" Margin="0" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Withdrawals"/>
 
-        <CalendarDatePicker Grid.Row="12" Grid.Column="0" SelectedDate="{Binding CurrentWithdrawalDate}" Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
-        <TextBox    Grid.Row="12" Grid.Column="1" Name="withdrawalTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentWithdrawal}"/>
-        <Button     Grid.Row="12" Grid.Column="2" Margin="10 0 0 0" Classes="BtnColorStyle" Content="Add" 
+        <CalendarDatePicker Grid.Row="13" Grid.Column="0" SelectedDate="{Binding CurrentWithdrawalDate}" Foreground="{Binding ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
+        <TextBox    Grid.Row="13" Grid.Column="1" Name="withdrawalTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentWithdrawal}"/>
+        <Button     Grid.Row="13" Grid.Column="2" Margin="10 0 0 0" Classes="BtnColorStyle" Content="Add" 
                     Command="{Binding $parent[Window].((vm:DepositViewModel)DataContext).OnAddWithdrawalCommand}" CommandParameter="{Binding #withdrawalTextBox}" />
 
-        <Button Grid.Row="13" Grid.ColumnSpan="3" Margin="0" Content="View" Classes="BtnColorStyle"
+        <Button Grid.Row="14" Grid.ColumnSpan="3" Margin="0" Content="View" Classes="BtnColorStyle"
                 Command="{Binding $parent[Window].((vm:DepositViewModel)DataContext).OnViewWithdrawals}"
                 IsVisible="{Binding !!$parent[Window].((vm:DepositViewModel)DataContext).WithdrawalViewModel.Items.Count}"
                 />

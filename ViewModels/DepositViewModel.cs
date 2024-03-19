@@ -43,6 +43,7 @@ namespace ScientificCalculator.ViewModels
 
         public ICommand OnAddReplenishmentCommand { get; }
         public ICommand OnAddWithdrawalCommand { get; }
+        public ICommand OnAddInterestRateCommand { get; }
 
         public DepositViewModel()
         {
@@ -69,17 +70,34 @@ namespace ScientificCalculator.ViewModels
             {
                 Title = "Rate Depending",
                 FirstColumnName = "Id",
-                SecondColumnName = "Day/Amount", // change
+                SecondColumnName = "",
                 ThirdColumnName = "Rate"
             };
 
             OnAddReplenishmentCommand = ReactiveCommand.Create<TextBox>(OnAddReplenishment);
             OnAddWithdrawalCommand = ReactiveCommand.Create<TextBox>(OnAddWithdrawal);
+            OnAddInterestRateCommand = ReactiveCommand.Create<object>(OnAddInterestRate);
 
             SetupColors(DepositMainViewModel);
             SetupColors(ReplenishmentViewModel);
             SetupColors(WithdrawalViewModel);
             SetupColors(RatesViewModel);
+
+            this.WhenAnyValue(x => x.DepositMainViewModel.SelectedRateType).Subscribe(x =>
+            {
+                if (x == 1)
+                {
+                    DepositMainViewModel.DependentValueLabel = "Amount with which the rate is valid";
+                    RatesViewModel.SecondColumnName = "Amount";
+                }
+                if (x == 2)
+                {
+                    DepositMainViewModel.DependentValueLabel = "Number of the day from which the rate is valid";
+                    RatesViewModel.SecondColumnName = "Day Number";
+                }
+
+                RatesViewModel.Items.Clear();
+            });
         }
 
         public void OnAddReplenishment(TextBox textBox)
@@ -126,6 +144,50 @@ namespace ScientificCalculator.ViewModels
         public void OnViewWithdrawals()
         {
             ContentViewModel = WithdrawalViewModel;
+        }
+
+        public void OnAddInterestRate(object parameter)
+        {
+            var values = (object[])parameter;
+            var valueTextBox = (TextBox)values[0];
+            var rateTextBox = (TextBox)values[1];
+            
+            if (!double.TryParse(DepositMainViewModel.CurrentDependentValue, CultureInfo.InvariantCulture, out var depend_value))
+            {
+                DataValidationErrors.SetError(valueTextBox, new DataValidationException("Value must be a number."));
+                return;
+            }
+
+            if (!double.TryParse(DepositMainViewModel.CurrentDependentRate, CultureInfo.InvariantCulture, out var depend_rate))
+            {
+                DataValidationErrors.SetError(rateTextBox, new DataValidationException("Rate must be a number."));
+                return;
+            }
+
+            string depend_value_str;
+            if (DepositMainViewModel.SelectedRateType == 1)
+            {
+                depend_value_str = depend_value.ToString("C", CultureInfo.GetCultureInfo("en-US"));
+            }
+            else
+            {
+                depend_value_str = ((int)depend_value).ToString(CultureInfo.GetCultureInfo("en-US"));
+            }
+
+            RatesViewModel.Items.Add(new DepositGridItem()
+            {
+                Id = RatesViewModel.Items.Count + 1,
+                Parameter = depend_value_str,
+                Value = depend_rate
+            });
+
+            DataValidationErrors.ClearErrors(valueTextBox);
+            DataValidationErrors.ClearErrors(rateTextBox);
+        }
+
+        public void OnViewInterestRates()
+        {
+            ContentViewModel = RatesViewModel;
         }
 
         public void OnBackToMainView()

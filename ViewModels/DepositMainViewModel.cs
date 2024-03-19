@@ -55,6 +55,46 @@ namespace ScientificCalculator.ViewModels
             set => this.RaiseAndSetIfChanged(ref _selectedRateType, value);
         }
 
+        private string? _fixedRate;
+        public string? FixedRate
+        {
+            get => _fixedRate;
+            set 
+            {
+                CheckDouble(value);
+                this.RaiseAndSetIfChanged(ref _fixedRate, value);
+            }
+        }
+
+        private string? _dependentValueLabel;
+        public string? DependentValueLabel
+        {
+            get => _dependentValueLabel;
+            set => this.RaiseAndSetIfChanged(ref _dependentValueLabel, value);
+        }
+
+        private string? _currentDependentValue;
+        public string? CurrentDependentValue
+        {
+            get => _currentDependentValue;
+            set 
+            {
+                CheckDouble(value);
+                this.RaiseAndSetIfChanged(ref _currentDependentValue, value);
+            }
+        }
+
+        private string? _currentDependentRate;
+        public string? CurrentDependentRate
+        {
+            get => _currentDependentRate;
+            set 
+            {
+                CheckDouble(value);
+                this.RaiseAndSetIfChanged(ref _currentDependentRate, value);
+            }
+        }
+
         private string? _taxRate;
         public string? TaxRate
         {
