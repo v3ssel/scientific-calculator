@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:ScientificCalculator.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+             x:Class="ScientificCalculator.Views.DepositGridView"
+             x:DataType="vm:DepositGridViewModel">
+
+    <Grid Margin="10 0 10 0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Margin="0 5 5 0"
+                    CornerRadius="5"
+                    Background="{Binding SecondBackgroundBrush}"
+                    >
+                <Button Classes="BtnColorStyle"
+                        x:CompileBindings="false" Command="{Binding $parent[Window].DataContext.OnBackToMainView}">
+                    <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource ArrowLeftIcon}"/>
+                </Button>
+            </Border>
+
+            <Border Grid.Row="0" Grid.Column="1"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Margin="0 5 0 0"
+                    CornerRadius="5"
+                    Background="{Binding SecondBackgroundBrush}">
+                <TextBlock
+                        Foreground="{Binding ForegroundBrush}"
+                        FontSize="27"
+                        FontWeight="Bold"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Text="{Binding Title}" />
+            </Border>
+        </Grid>
+
+        <DataGrid Grid.Row="1" Grid.Column="0"
+                Margin="0 10 0 10"
+                ItemsSource="{Binding Items}"
+                VerticalScrollBarVisibility="Auto"
+                VerticalAlignment="Stretch"
+                IsReadOnly="True" 
+                CanUserResizeColumns="True"
+                GridLinesVisibility="All"
+                Foreground="{Binding ForegroundBrush}"
+                FontWeight="Medium"
+                BorderBrush="{Binding ForegroundBrush}"
+                BorderThickness="1">
+            <DataGrid.Columns>
+                    <DataGridTextColumn Header="{Binding FirstColumnName}" Width="*" 
+                            Binding="{Binding Id}" />
+                    <DataGridTextColumn Header="{Binding SecondColumnName}" Width="2*" 
+                            Binding="{Binding Parameter}" />
+                    <DataGridTextColumn Header="{Binding ThirdColumnName}" Width="2*" 
+                            Binding="{Binding Value, StringFormat={}{0:0.00}}" />
+                </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

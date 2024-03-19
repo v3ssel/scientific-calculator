@@ -28,163 +28,17 @@
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="Margin" Value="0 10 0 10" />
         </Style>
+
+        <Style Selector="Button.BtnColorStyle">
+            <Setter Property="Foreground" Value="{Binding ForegroundBrush}" />
+            <Setter Property="Background" Value="{Binding SecondBackgroundBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
     </Window.Styles>
 
-    <!-- <ScrollViewer> -->
-    <Grid Margin="10 0 10 10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <Border Grid.Row="0" Grid.ColumnSpan="3"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch"
-                Margin="0 5 0 0"
-                CornerRadius="5"
-                Background="{Binding SecondBackgroundBrush}">
-            <TextBlock
-                    Foreground="{Binding ForegroundBrush}"
-                    FontSize="27"
-                    FontWeight="Bold"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Text="Deposit Calculator" />
-        </Border>
-
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0  10 0 0" Classes="TextBlockColorStyle" Text="Deposit Amount:" />
-        <TextBox   Grid.Row="1" Grid.Column="1" Margin="0  10 0 0" Classes="TextBoxColorStyle" Text="{Binding DepositAmount}" />
-        <TextBlock Grid.Row="1" Grid.Column="2" Margin="10 10 0 0" Classes="TextBlockColorStyle" Text="USD$"/>
-
-        <TextBlock Grid.Row="2" Grid.Column="0" Classes="TextBlockColorStyle" Text="Credit Term:"/>
-        <TextBox   Grid.Row="2" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding Term}"/>
-        <ComboBox  Grid.Row="2" Grid.Column="2" FontWeight="Medium" Foreground="{Binding ForegroundBrush}" Margin="10 0 0 0" SelectedIndex="{Binding SelectedTermType}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-            <ComboBoxItem Content="Days"/>
-            <ComboBoxItem Content="Months"/>
-            <ComboBoxItem Content="Years"/>
-        </ComboBox>
-
-        <TextBlock Grid.Row="3" Grid.Column="0" Classes="TextBlockColorStyle" Text="Start of Term:"/>
-        <CalendarDatePicker Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" SelectedDate="{Binding StartTermDate}" HorizontalAlignment="Stretch" Margin="0 0 0 10"/>
-        
-        <TextBlock Grid.Row="4" Grid.Column="0" Classes="TextBlockColorStyle" Text="Interest Rate:"/>
-        <Grid Grid.Row="4" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <ComboBox Grid.Row="0" Grid.Column="0"
-                      ItemsSource="{Binding RateTypes}"
-                      FontWeight="Medium" Foreground="{Binding ForegroundBrush}"
-                      Margin="0 0 5 0" SelectedIndex="{Binding SelectedRateType}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-
-            <TextBox Grid.Row="0" Grid.Column="1" Classes="TextBoxColorStyle" Margin="0" Text="" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-
-        </Grid>
-        <TextBlock Grid.Row="4" Grid.Column="2" Classes="TextBlockColorStyle" Margin="10 0 0 0" Text="% per annum"/>
-        
-        <TextBlock Grid.Row="5" Grid.Column="0" Classes="TextBlockColorStyle" Text="Tax Rate:"/>
-        <TextBox   Grid.Row="5" Grid.Column="1" Classes="TextBoxColorStyle" Text="{Binding TaxRate}"/>
-        <TextBlock Grid.Row="5" Grid.Column="2" Classes="TextBlockColorStyle" Margin="10 0 0 0" Text="% per annum"/>
-        
-        <TextBlock Grid.Row="6" Grid.Column="0" Classes="TextBlockColorStyle" Text="Periodicity:"/>
-        <ComboBox  Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" FontWeight="Medium"
-                ItemsSource="{Binding Periodicity}"
-                Foreground="{Binding ForegroundBrush}" SelectedIndex="{Binding SelectedPaymentPeriod}"
-                VerticalAlignment="Center" HorizontalAlignment="Stretch">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" TextWrapping="Wrap" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-
-        <CheckBox Grid.Row="7" Grid.ColumnSpan="3" Margin="0 5 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="Interest Capitalization" IsChecked="{Binding IsInterestCapitalisationChecked}"/>
-
-        <TextBlock Grid.Row="8" Grid.ColumnSpan="3" Margin="0" FontWeight="Bold" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Replenishments"/>
-
-        <CalendarDatePicker Grid.Row="9" Grid.Column="0" SelectedDate="{Binding CurrentReplenishmentDate}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
-        <TextBox   Grid.Row="9" Grid.Column="1" Name="replenishmentTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentReplenishment}"/>
-        <Button    Grid.Row="9" Grid.Column="2" Margin="10 0 0 0" Command="{Binding OnAddReplenishment}" CommandParameter="{Binding #replenishmentTextBox}" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Content="Add"/>
-
-        <DataGrid Grid.Row="10" Grid.ColumnSpan="3"
-                IsVisible="{Binding !!Replenishments.Count}"
-                ItemsSource="{Binding Replenishments}"
-                VerticalScrollBarVisibility="Auto"
-                VerticalAlignment="Stretch"
-                IsReadOnly="True" 
-                CanUserResizeColumns="True"
-                GridLinesVisibility="All"
-                Foreground="{Binding ForegroundBrush}"
-                FontWeight="Medium"
-                BorderBrush="{Binding ForegroundBrush}"
-                BorderThickness="1">
-            <DataGrid.Columns>
-                    <DataGridTextColumn Header="N" Width="*" 
-                           Binding="{Binding Id}" />
-                    <DataGridTextColumn Header="Date" Width="2*" 
-                           Binding="{Binding Date}" />
-                    <DataGridTextColumn Header="Amount" Width="2*" 
-                           Binding="{Binding Amount, StringFormat={}{0:0.00}}" />
-                </DataGrid.Columns>
-        </DataGrid>
-
-        <TextBlock Grid.Row="11" Grid.ColumnSpan="3" FontWeight="Bold" Margin="0 10 0 0" Classes="TextBlockColorStyle" HorizontalAlignment="Center" Text="Withdrawals"/>
-
-        <CalendarDatePicker Grid.Row="12" Grid.Column="0" SelectedDate="{Binding CurrentWithdrawalDate}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"/>
-        <TextBox   Grid.Row="12" Grid.Column="1" Name="withdrawalTextBox" Classes="TextBoxColorStyle" Text="{Binding CurrentWithdrawal}"/>
-        <Button    Grid.Row="12" Grid.Column="2" Margin="10 0 0 0" Content="Add" Command="{Binding OnAddWithdrawal}" CommandParameter="{Binding #withdrawalTextBox}"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"/>
-
-        <DataGrid Grid.Row="13" Grid.ColumnSpan="3"
-                IsVisible="{Binding !!Withdrawals.Count}"
-                ItemsSource="{Binding Withdrawals}"
-                VerticalScrollBarVisibility="Auto"
-                VerticalAlignment="Stretch"
-                IsReadOnly="True" 
-                CanUserResizeColumns="True"
-                GridLinesVisibility="All"
-                Foreground="{Binding ForegroundBrush}"
-                FontWeight="Medium"
-                BorderBrush="{Binding ForegroundBrush}"
-                BorderThickness="1">
-            <DataGrid.Columns>
-                    <DataGridTextColumn Header="N" Width="*" 
-                           Binding="{Binding Id}" />
-                    <DataGridTextColumn Header="Date" Width="2*" 
-                           Binding="{Binding Date}" />
-                    <DataGridTextColumn Header="Amount" Width="2*" 
-                           Binding="{Binding Amount, StringFormat={}{0:0.00}}" />
-                </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
-    <!-- </ScrollViewer> -->
+    <TransitioningContentControl Background="{Binding FirstBackgroundBrush}" Content="{Binding ContentViewModel}"/>
 </Window>

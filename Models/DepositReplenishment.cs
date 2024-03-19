@@ -2,9 +2,9 @@ using System;
 
 namespace ScientificCalculator.Models;
 
-public class DepositReplenishment
+public class DepositGridItem
 {
     public int Id { get; set; }
-    public DateOnly Date { get; set; }
-    public double Amount { get; set; }
+    public string Parameter { get; set; } = null!;
+    public double Value { get; set; }
 }

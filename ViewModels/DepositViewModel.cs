@@ -1,189 +1,117 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Data;
 using ReactiveUI;
 using ScientificCalculator.Models;
+using ScientificCalculator.Views;
 using static ScientificCalculator.Utils.Utils;
 
 namespace ScientificCalculator.ViewModels
 {
     public class DepositViewModel : ViewModelBase
     {
-        private string? _depositAmount;
-        public string? DepositAmount
+        public DepositGridViewModel ReplenishmentViewModel { get; }
+        public DepositGridViewModel WithdrawalViewModel { get; }
+        public DepositGridViewModel RatesViewModel { get; }
+        public DepositMainViewModel DepositMainViewModel { get; }
+
+        private ViewModelBase _contentViewModel;
+
+        public ViewModelBase ContentViewModel
         {
-            get => _depositAmount;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _depositAmount, value);
-            }
-        }
-     
-        private string? _term;
-        public string? Term
-        {
-            get => _term;
-            set 
-            {
-                if (string.IsNullOrEmpty(value) || !int.TryParse(value, CultureInfo.InvariantCulture, out var _))
-                {
-                    throw new DataValidationException("Term must be an integer value.");
-                }
-                this.RaiseAndSetIfChanged(ref _term, value);
-            }
+            get => _contentViewModel;
+            private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
         }
 
-        private DateTime _startTermDate;
-        public DateTime StartTermDate
-        {
-            get => _startTermDate;
-            set => this.RaiseAndSetIfChanged(ref _startTermDate, value);
-        }
-
-        private int _selectedTermType;
-        public int SelectedTermType
-        {
-            get => _selectedTermType;
-            set => this.RaiseAndSetIfChanged(ref _selectedTermType, value);
-        }
-
-        private int _selectedRateType;
-        public int SelectedRateType
-        {
-            get => _selectedRateType;
-            set => this.RaiseAndSetIfChanged(ref _selectedRateType, value);
-        }
-
-        private string? _taxRate;
-        public string? TaxRate
-        {
-            get => _taxRate;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _taxRate, value);
-            }
-        }
-
-        private int _selectedPaymentPeriod;
-        public int SelectedPaymentPeriod
-        {
-            get => _selectedPaymentPeriod;
-            set => this.RaiseAndSetIfChanged(ref _selectedPaymentPeriod, value);
-        }
-
-        private bool _isInterestCapitalisationChecked;
-        public bool IsInterestCapitalisationChecked
-        {
-            get => _isInterestCapitalisationChecked;
-            set => this.RaiseAndSetIfChanged(ref _isInterestCapitalisationChecked, value);
-        }
-
-        private DateTime _currentReplenishmentDate;
-        public DateTime CurrentReplenishmentDate
-        {
-            get => _currentReplenishmentDate;
-            set => this.RaiseAndSetIfChanged(ref _currentReplenishmentDate, value);
-        }
-
-        private string? _currentReplenishment;
-        public string? CurrentReplenishment
-        {
-            get => _currentReplenishment;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _currentReplenishment, value);
-            }
-        }
-
-        private DateTime _currentWithdrawalDate;
-        public DateTime CurrentWithdrawalDate
-        {
-            get => _currentWithdrawalDate;
-            set => this.RaiseAndSetIfChanged(ref _currentWithdrawalDate, value);
-        }
-
-        private string? _currentWithdrawal;
-        public string? CurrentWithdrawal
-        {
-            get => _currentWithdrawal;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _currentWithdrawal, value);
-            }
-        }
-
-        public ObservableCollection<string> RateTypes { get; }
-        public ObservableCollection<string> Periodicity { get; }
-        public ObservableCollection<DepositReplenishment> Replenishments { get; }
-        public ObservableCollection<DepositReplenishment> Withdrawals { get; }
+        public ICommand OnAddReplenishmentCommand { get; }
+        public ICommand OnAddWithdrawalCommand { get; }
 
         public DepositViewModel()
         {
-            RateTypes = new ObservableCollection<string>
+            DepositMainViewModel = new DepositMainViewModel();
+            _contentViewModel = DepositMainViewModel;
+
+            ReplenishmentViewModel = new DepositGridViewModel()
             {
-                "Fixed",
-                "Depends on the amount",
-                "Depends on the term"
+                Title = "Replenishments",
+                FirstColumnName = "Id",
+                SecondColumnName = "Date",
+                ThirdColumnName = "Amount"
+            };
+            
+            WithdrawalViewModel = new DepositGridViewModel()
+            {
+                Title = "Withdrawals",
+                FirstColumnName = "Id",
+                SecondColumnName = "Date",
+                ThirdColumnName = "Amount"
             };
 
-            Periodicity = new ObservableCollection<string>
+            RatesViewModel = new DepositGridViewModel()
             {
-                "Everyday",
-                "Every week",
-                "Once a month",
-                "Once a quarter",
-                "Once a year",
-                "At the end of the term"
+                Title = "Rate Depending",
+                FirstColumnName = "Id",
+                SecondColumnName = "Day/Amount", // change
+                ThirdColumnName = "Rate"
             };
 
-            Replenishments = new ObservableCollection<DepositReplenishment>();
-            Withdrawals = new ObservableCollection<DepositReplenishment>();
-
-            StartTermDate = DateTime.Now;
-            CurrentReplenishmentDate = DateTime.Now;
-            CurrentWithdrawalDate = DateTime.Now;
+            OnAddReplenishmentCommand = ReactiveCommand.Create<TextBox>(OnAddReplenishment);
+            OnAddWithdrawalCommand = ReactiveCommand.Create<TextBox>(OnAddWithdrawal);
         }
 
         public void OnAddReplenishment(TextBox textBox)
         {
-            if (!double.TryParse(CurrentReplenishment, CultureInfo.InvariantCulture, out var replenishment))
+            if (!double.TryParse(DepositMainViewModel.CurrentReplenishment, CultureInfo.InvariantCulture, out var replenishment))
             {
                 DataValidationErrors.SetError(textBox, new DataValidationException("Amount must be a number."));
                 return;
             }
 
-            Replenishments.Add(new DepositReplenishment()
+            ReplenishmentViewModel.Items.Add(new DepositGridItem()
             {
-                Id = Replenishments.Count + 1, 
-                Date = DateOnly.FromDateTime(CurrentReplenishmentDate),
-                Amount = replenishment
+                Id = ReplenishmentViewModel.Items.Count + 1, 
+                Parameter = DepositMainViewModel.CurrentReplenishmentDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
+                Value = replenishment
             });
 
             DataValidationErrors.ClearErrors(textBox);
         }
 
+        public void OnViewReplenishments()
+        {
+            ContentViewModel = ReplenishmentViewModel;
+        }
+
         public void OnAddWithdrawal(TextBox textBox)
         {
-            if (!double.TryParse(CurrentWithdrawal, CultureInfo.InvariantCulture, out var withdrawal))
+            if (!double.TryParse(DepositMainViewModel.CurrentWithdrawal, CultureInfo.InvariantCulture, out var withdrawal))
             {
                 DataValidationErrors.SetError(textBox, new DataValidationException("Amount must be a number."));
                 return;
             }
 
-            Withdrawals.Add(new DepositReplenishment()
+            WithdrawalViewModel.Items.Add(new DepositGridItem()
             {
-                Id = Withdrawals.Count + 1, 
-                Date = DateOnly.FromDateTime(CurrentWithdrawalDate),
-                Amount = withdrawal
+                Id = WithdrawalViewModel.Items.Count + 1, 
+                Parameter = DepositMainViewModel.CurrentWithdrawalDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
+                Value = withdrawal
             });
 
             DataValidationErrors.ClearErrors(textBox);
+        }
+
+        public void OnViewWithdrawals()
+        {
+            ContentViewModel = WithdrawalViewModel;
+        }
+
+        public void OnBackToMainView()
+        {
+            ContentViewModel = DepositMainViewModel;
         }
     }
 }

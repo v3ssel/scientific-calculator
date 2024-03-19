@@ -127,6 +127,10 @@ public class MainWindowViewModel : ViewModelBase
         SetupColors(AboutContent);
         SetupColors(CreditContent);
         SetupColors(DepositContent);
+        SetupColors(DepositContent.DepositMainViewModel);
+        SetupColors(DepositContent.ReplenishmentViewModel);
+        SetupColors(DepositContent.WithdrawalViewModel);
+        SetupColors(DepositContent.RatesViewModel);
 
         SettingsContent.LogEnableChangedEvent += LogEnableChangedAction;
         SettingsContent.SaveHistoryEnableChangedEvent += SaveHistoryChangedAction;
