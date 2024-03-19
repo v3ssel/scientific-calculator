@@ -13,25 +13,14 @@ namespace ScientificCalculator.ViewModels
         public string? DepositAmount
         {
             get => _depositAmount;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _depositAmount, value);
-            }
+            set =>  this.RaiseAndSetIfChanged(ref _depositAmount, value);
         }
      
         private string? _term;
         public string? Term
         {
             get => _term;
-            set 
-            {
-                if (string.IsNullOrEmpty(value) || !int.TryParse(value, CultureInfo.InvariantCulture, out var _))
-                {
-                    throw new DataValidationException("Term must be an integer value.");
-                }
-                this.RaiseAndSetIfChanged(ref _term, value);
-            }
+            set => this.RaiseAndSetIfChanged(ref _term, value);
         }
 
         private DateTime _startTermDate;
@@ -59,11 +48,7 @@ namespace ScientificCalculator.ViewModels
         public string? FixedRate
         {
             get => _fixedRate;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _fixedRate, value);
-            }
+            set =>  this.RaiseAndSetIfChanged(ref _fixedRate, value);
         }
 
         private string? _dependentValueLabel;
@@ -77,33 +62,21 @@ namespace ScientificCalculator.ViewModels
         public string? CurrentDependentValue
         {
             get => _currentDependentValue;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _currentDependentValue, value);
-            }
+            set =>  this.RaiseAndSetIfChanged(ref _currentDependentValue, value);
         }
 
         private string? _currentDependentRate;
         public string? CurrentDependentRate
         {
             get => _currentDependentRate;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _currentDependentRate, value);
-            }
+            set =>  this.RaiseAndSetIfChanged(ref _currentDependentRate, value);
         }
 
         private string? _taxRate;
         public string? TaxRate
         {
             get => _taxRate;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _taxRate, value);
-            }
+            set =>  this.RaiseAndSetIfChanged(ref _taxRate, value);
         }
 
         private int _selectedPaymentPeriod;
@@ -131,11 +104,7 @@ namespace ScientificCalculator.ViewModels
         public string? CurrentReplenishment
         {
             get => _currentReplenishment;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _currentReplenishment, value);
-            }
+            set => this.RaiseAndSetIfChanged(ref _currentReplenishment, value);
         }
 
         private DateTime _currentWithdrawalDate;
@@ -149,11 +118,7 @@ namespace ScientificCalculator.ViewModels
         public string? CurrentWithdrawal
         {
             get => _currentWithdrawal;
-            set 
-            {
-                CheckDouble(value);
-                this.RaiseAndSetIfChanged(ref _currentWithdrawal, value);
-            }
+            set => this.RaiseAndSetIfChanged(ref _currentWithdrawal, value);
         }
 
         public ObservableCollection<string> RateTypes { get; }
@@ -174,6 +139,7 @@ namespace ScientificCalculator.ViewModels
                 "Every week",
                 "Once a month",
                 "Once a quarter",
+                "Semiannually",
                 "Once a year",
                 "At the end of the term"
             };

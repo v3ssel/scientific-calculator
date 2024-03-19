@@ -1,15 +1,14 @@
 using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Models;
-using ScientificCalculator.Views;
-using static ScientificCalculator.Utils.Utils;
+using ScientificCalculator.Services.Calculation;
 
 namespace ScientificCalculator.ViewModels
 {
@@ -44,9 +43,14 @@ namespace ScientificCalculator.ViewModels
         public ICommand OnAddReplenishmentCommand { get; }
         public ICommand OnAddWithdrawalCommand { get; }
         public ICommand OnAddInterestRateCommand { get; }
+        public ICommand OnCalculateCommand { get; }
 
-        public DepositViewModel()
+        private readonly IDepositCalculationService CalculationService;
+
+        public DepositViewModel(IDepositCalculationService calculationService)
         {
+            CalculationService = calculationService;
+
             DepositMainViewModel = new DepositMainViewModel();
             _contentViewModel = DepositMainViewModel;
 
@@ -77,27 +81,64 @@ namespace ScientificCalculator.ViewModels
             OnAddReplenishmentCommand = ReactiveCommand.Create<TextBox>(OnAddReplenishment);
             OnAddWithdrawalCommand = ReactiveCommand.Create<TextBox>(OnAddWithdrawal);
             OnAddInterestRateCommand = ReactiveCommand.Create<object>(OnAddInterestRate);
+            OnCalculateCommand = ReactiveCommand.Create<object>(OnCalculate);
 
             SetupColors(DepositMainViewModel);
             SetupColors(ReplenishmentViewModel);
             SetupColors(WithdrawalViewModel);
             SetupColors(RatesViewModel);
 
-            this.WhenAnyValue(x => x.DepositMainViewModel.SelectedRateType).Subscribe(x =>
-            {
-                if (x == 1)
-                {
-                    DepositMainViewModel.DependentValueLabel = "Amount with which the rate is valid";
-                    RatesViewModel.SecondColumnName = "Amount";
-                }
-                if (x == 2)
-                {
-                    DepositMainViewModel.DependentValueLabel = "Number of the day from which the rate is valid";
-                    RatesViewModel.SecondColumnName = "Day Number";
-                }
+            this.WhenAnyValue(x => x.DepositMainViewModel.SelectedRateType).Subscribe(SelectedRateTypeChanged);
+        }
 
-                RatesViewModel.Items.Clear();
-            });
+        public void OnCalculate(object parameters)
+        {
+            var (error, depAmount, depTerm, depFixedRate, depTaxRate) = CheckValues(parameters);
+            if (error) return;
+
+            var daysInTerm = DepositMainViewModel.SelectedTermType switch
+            {
+                0 => (DepositMainViewModel.StartTermDate.AddDays(depTerm) - DepositMainViewModel.StartTermDate).Days,
+                1 => (DepositMainViewModel.StartTermDate.AddMonths(depTerm) - DepositMainViewModel.StartTermDate).Days,
+                2 => (DepositMainViewModel.StartTermDate.AddYears(depTerm) - DepositMainViewModel.StartTermDate).Days,
+                _ => (DepositMainViewModel.StartTermDate.AddDays(depTerm) - DepositMainViewModel.StartTermDate).Days,
+            };
+
+            var period = DepositMainViewModel.SelectedPaymentPeriod switch
+            {
+                0 => 1,
+                1 => 7,
+                2 => 30,
+                3 => 365 / 4,
+                4 => 365 / 2,
+                5 => 365,
+                6 => daysInTerm,
+                _ => 1,
+            };
+
+            bool capitalism = DepositMainViewModel.IsInterestCapitalisationChecked;
+
+            var rates = RatesViewModel.Items.OrderBy(x => x.Parameter);
+
+            var reps = ReplenishmentViewModel
+                    .Items
+                    .Concat(WithdrawalViewModel.Items)
+                    .OrderBy(x => x.Parameter)
+                    .GroupBy(x => x.Parameter)
+                    .Select(x =>  x.Aggregate((acc, x) => 
+                                new()
+                                {
+                                    Parameter = acc.Parameter,
+                                    Value = acc.Value + x.Value
+                                }
+                            ))
+                    .Where(x => x.Value != 0);
+
+            var replenishDays = new List<int>();
+            foreach (var rep in reps)
+            {
+                replenishDays.Add((DepositMainViewModel.StartTermDate - DateTime.Parse(rep.Parameter)).Days);
+            }
         }
 
         public void OnAddReplenishment(TextBox textBox)
@@ -135,7 +176,7 @@ namespace ScientificCalculator.ViewModels
             {
                 Id = WithdrawalViewModel.Items.Count + 1, 
                 Parameter = DepositMainViewModel.CurrentWithdrawalDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
-                Value = withdrawal
+                Value = -withdrawal
             });
 
             DataValidationErrors.ClearErrors(textBox);
@@ -193,6 +234,58 @@ namespace ScientificCalculator.ViewModels
         public void OnBackToMainView()
         {
             ContentViewModel = DepositMainViewModel;
+        }
+
+        private void SelectedRateTypeChanged(int x)
+        {
+            if (x == 1)
+            {
+                DepositMainViewModel.DependentValueLabel = "Amount with which the rate is valid";
+                RatesViewModel.SecondColumnName = "Amount";
+            }
+            if (x == 2)
+            {
+                DepositMainViewModel.DependentValueLabel = "Number of the day from which the rate is valid";
+                RatesViewModel.SecondColumnName = "Day Number";
+            }
+
+            RatesViewModel.Items.Clear();
+        }
+
+        private (bool, double, int, double, double) CheckValues(object parameters)
+        {
+            var values = (object[])parameters;
+            var amountTextBox = (TextBox)values[0];
+            var termTextBox = (TextBox)values[1];
+            var fixedRateTextBox = (TextBox)values[2];
+            var taxRateTextBox = (TextBox)values[3];
+
+            bool error = false;
+            if (!double.TryParse(DepositMainViewModel.DepositAmount, CultureInfo.InvariantCulture, out var depAmount))
+            {
+                DataValidationErrors.SetError(amountTextBox, new DataValidationException("Amount must be a number."));
+                error = true;
+            }
+
+            if (!int.TryParse(DepositMainViewModel.Term, CultureInfo.InvariantCulture, out var depTerm))
+            {
+                DataValidationErrors.SetError(termTextBox, new DataValidationException("Term must be an integer number."));
+                error = true;
+            }
+
+            if (!double.TryParse(DepositMainViewModel.FixedRate, CultureInfo.InvariantCulture, out var depFixedRate))
+            {
+                DataValidationErrors.SetError(fixedRateTextBox, new DataValidationException("Rate must be a number."));
+                error = true;
+            }
+
+            if (!double.TryParse(DepositMainViewModel.TaxRate, CultureInfo.InvariantCulture, out var depTaxRate))
+            {
+                DataValidationErrors.SetError(taxRateTextBox, new DataValidationException("Tax Rate must be a number."));
+                error = true;
+            }
+
+            return (error, depAmount, depTerm, depFixedRate, depTaxRate);
         }
 
         public override void ForegroundBrushChangedAction(IBrush brush)

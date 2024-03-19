@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Reactive.Linq;
 using ScientificCalculator.Models;
 
 namespace ScientificCalculator.ViewModels;

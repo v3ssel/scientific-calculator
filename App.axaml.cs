@@ -29,7 +29,7 @@ public partial class App : Application
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(logger, calculation, calculation),
+                DataContext = new MainWindowViewModel(logger, calculation, calculation, calculation),
             };
         }
 

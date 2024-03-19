@@ -96,7 +96,7 @@ public class MainWindowViewModel : ViewModelBase
     private readonly ICalculatorLogger Logger;
     private readonly ICalculationService CalculationService;
 
-    public MainWindowViewModel(ICalculatorLogger logger, ICalculationService calculationService, ICreditCalculationService creditService)
+    public MainWindowViewModel(ICalculatorLogger logger, ICalculationService calculationService, ICreditCalculationService creditService, IDepositCalculationService depositService)
     {
         Logger = logger;
         CalculationService = calculationService;
@@ -107,7 +107,7 @@ public class MainWindowViewModel : ViewModelBase
         _settingsContent = new SettingsViewModel();
         _aboutContent = new AboutViewModel();
         _creditContent = new CreditViewModel(creditService);
-        _depositContent = new DepositViewModel();
+        _depositContent = new DepositViewModel(depositService);
 
         _contentViewModel = _calculatorContent;
 

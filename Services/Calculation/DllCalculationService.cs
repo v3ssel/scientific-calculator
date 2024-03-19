@@ -5,8 +5,10 @@ using ScientificCalculator.Models;
 
 namespace ScientificCalculator.Services.Calculation;
 
-public partial class DllCalculationService : ICalculationService, ICreditCalculationService
+public partial class DllCalculationService : ICalculationService, ICreditCalculationService, IDepositCalculationService
 {
+    #region Calculation
+
     [LibraryImport("Libs/libCalculationLib.dll", StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
     internal static partial double Calculate(string expression, string x, out string error_msg);
@@ -42,6 +44,10 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
 
         return result;
     }
+
+    #endregion
+
+    #region Credit
 
     [LibraryImport("Libs/libCreditLib.dll", StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
@@ -115,4 +121,12 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
 
         return arr;
     }
+
+    #endregion
+
+    #region Deposit
+
+    
+
+    #endregion
 }
