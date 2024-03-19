@@ -1,6 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
+using ScientificCalculator.ViewModels;
 
 namespace ScientificCalculator.Views;
 

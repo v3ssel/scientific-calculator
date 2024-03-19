@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Media;
 using ReactiveUI;
 using ScientificCalculator.Models;
 using ScientificCalculator.Views;
@@ -14,6 +15,19 @@ namespace ScientificCalculator.ViewModels
 {
     public class DepositViewModel : ViewModelBase
     {
+        #region Events
+
+        public delegate void UpdateForegroundBrush(IBrush brush);
+        public event UpdateForegroundBrush? ForegroundBrushChanged;
+
+        public delegate void UpdateFirstBackgroundBrush(IBrush brush);
+        public event UpdateFirstBackgroundBrush? FirstBackgroundBrushChanged;
+        
+        public delegate void UpdateSecondBackgroundBrush(IBrush brush);
+        public event UpdateSecondBackgroundBrush? SecondBackgroundBrushChanged;
+
+        #endregion
+        
         public DepositGridViewModel ReplenishmentViewModel { get; }
         public DepositGridViewModel WithdrawalViewModel { get; }
         public DepositGridViewModel RatesViewModel { get; }
@@ -61,6 +75,11 @@ namespace ScientificCalculator.ViewModels
 
             OnAddReplenishmentCommand = ReactiveCommand.Create<TextBox>(OnAddReplenishment);
             OnAddWithdrawalCommand = ReactiveCommand.Create<TextBox>(OnAddWithdrawal);
+
+            SetupColors(DepositMainViewModel);
+            SetupColors(ReplenishmentViewModel);
+            SetupColors(WithdrawalViewModel);
+            SetupColors(RatesViewModel);
         }
 
         public void OnAddReplenishment(TextBox textBox)
@@ -112,6 +131,31 @@ namespace ScientificCalculator.ViewModels
         public void OnBackToMainView()
         {
             ContentViewModel = DepositMainViewModel;
+        }
+
+        public override void ForegroundBrushChangedAction(IBrush brush)
+        {
+            ForegroundBrush = brush;
+            ForegroundBrushChanged?.Invoke(brush);
+        }
+
+        public override void FirstBackgroundBrushChangedAction(IBrush brush)
+        {
+            FirstBackgroundBrush = brush;
+            FirstBackgroundBrushChanged?.Invoke(brush);
+        }
+
+        public override void SecondBackgroundBrushChangedAction(IBrush brush)
+        {
+            SecondBackgroundBrush = brush;
+            SecondBackgroundBrushChanged?.Invoke(brush);
+        }
+
+        private void SetupColors(ViewModelBase viewModel)
+        {
+            this.ForegroundBrushChanged += viewModel.ForegroundBrushChangedAction;
+            this.FirstBackgroundBrushChanged += viewModel.FirstBackgroundBrushChangedAction;
+            this.SecondBackgroundBrushChanged += viewModel.SecondBackgroundBrushChangedAction;
         }
     }
 }

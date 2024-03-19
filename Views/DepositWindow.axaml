@@ -40,5 +40,12 @@
         </Style>
     </Window.Styles>
 
+    <Window.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="DataGridColumnHeaderForegroundBrush" Color="Black" />
+            <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundBrush" Color="Silver" />
+        </ResourceDictionary>
+    </Window.Resources>
+
     <TransitioningContentControl Background="{Binding FirstBackgroundBrush}" Content="{Binding ContentViewModel}"/>
 </Window>
