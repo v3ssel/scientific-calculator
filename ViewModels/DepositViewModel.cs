@@ -173,7 +173,8 @@ namespace ScientificCalculator.ViewModels
             Marshal.Copy(rates.ToArray(),           0, p.rates,                    rates.Count());
             Marshal.Copy(rate_dependence.ToArray(), 0, p.rate_dependence_values,   rate_dependence.Count());
 
-            // CalculationService.Calculate;
+            var result = CalculationService.CalculateDepositIncome(p);
+            // retrieve result;
 
             Marshal.FreeHGlobal(p.days_of_replenishments);
             Marshal.FreeHGlobal(p.amount_of_replenishments);

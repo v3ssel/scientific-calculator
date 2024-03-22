@@ -5,5 +5,5 @@ namespace ScientificCalculator.Services.Calculation;
 
 public interface IDepositCalculationService
 {
-    // IList<CreditResult> CalculateMonthlyPaymentsAnnuity(double amount, double percent, int term);
+    DepositResult CalculateDepositIncome(DepositParams p);
 }

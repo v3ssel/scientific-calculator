@@ -24,10 +24,7 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
     double ICalculationService.Calculate(string expression, string? x)
     {
         double result = Calculate(expression, x ?? "", out string error_msg);
-        if (!string.IsNullOrEmpty(error_msg))
-        {
-            throw new ArgumentException(error_msg);
-        }
+        ErrorCheck(error_msg);
 
         return result;
     }
@@ -35,11 +32,7 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
     IList<double> ICalculationService.CalculateRange(int start, int end, string expression)
     {
         CalculateRange(start, end, expression, out int size, out IntPtr data, out string error_msg);
-
-        if (!string.IsNullOrEmpty(error_msg))
-        {
-            throw new ArgumentException(error_msg);
-        }
+        ErrorCheck(error_msg);
 
         var result = new double[size];
 
@@ -88,10 +81,7 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
             CalculateDifferentiated(amount, percent, term, out payments, out overpayments, out fullsum, out error_msg);
         }
 
-        if (!string.IsNullOrEmpty(error_msg))
-        {
-            throw new ArgumentException(error_msg);
-        }
+        ErrorCheck(error_msg);
 
         var payments_arr = PtrToArray(payments, term);
         var overpayments_arr = PtrToArray(overpayments, term);
@@ -130,7 +120,25 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
 
     #region Deposit
 
-    
+    [LibraryImport(DepositLibPath, StringMarshalling = StringMarshalling.Utf8)]
+    [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
+    internal static partial DepositResult CalculateDepositIncome(DepositParams p, out string error_msg);
+
+    public DepositResult CalculateDepositIncome(DepositParams p)
+    {
+        var result = CalculateDepositIncome(p, out string error_msg);
+        ErrorCheck(error_msg);
+
+        return result;
+    }
 
     #endregion
+
+    private void ErrorCheck(string error_msg)
+    {
+        if (!string.IsNullOrEmpty(error_msg))
+        {
+            throw new ArgumentException(error_msg);
+        }
+    }
 }
