@@ -7,13 +7,17 @@ namespace ScientificCalculator.Services.Calculation;
 
 public partial class DllCalculationService : ICalculationService, ICreditCalculationService, IDepositCalculationService
 {
+    private const string CalculationLibPath = "Libs/libCalculationLib"; 
+    private const string CreditLibPath = "Libs/libCreditLib"; 
+    private const string DepositLibPath = "Libs/libDepositLib"; 
+
     #region Calculation
 
-    [LibraryImport("Libs/libCalculationLib.dll", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(CalculationLibPath, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
     internal static partial double Calculate(string expression, string x, out string error_msg);
 
-    [LibraryImport("Libs/libCalculationLib.dll", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(CalculationLibPath, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
     internal static partial void CalculateRange(int start, int end, string expression, out int size, out IntPtr data, out string error_msg);
 
@@ -49,11 +53,11 @@ public partial class DllCalculationService : ICalculationService, ICreditCalcula
 
     #region Credit
 
-    [LibraryImport("Libs/libCreditLib.dll", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(CreditLibPath, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
     internal static partial void CalculateAnnuity(double amount, double percent, int term, out IntPtr payments, out IntPtr overpayments, out IntPtr fullsum, out string error_msg);
 
-    [LibraryImport("Libs/libCreditLib.dll", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(CreditLibPath, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new Type[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
     internal static partial void CalculateDifferentiated(double amount, double percent, int term, out IntPtr payments, out IntPtr overpayments, out IntPtr fullsum, out string error_msg);
 
