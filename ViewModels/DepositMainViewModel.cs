@@ -38,6 +38,10 @@ namespace ScientificCalculator.ViewModels
         }
 
         private int _selectedRateType;
+
+        // 0 - fixed
+        // 1 - amount
+        // 2 - days
         public int SelectedRateType
         {
             get => _selectedRateType;

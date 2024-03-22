@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -27,6 +28,8 @@ namespace ScientificCalculator.ViewModels
 
         #endregion
         
+        #region ViewSubmodels
+
         public DepositGridViewModel ReplenishmentViewModel { get; }
         public DepositGridViewModel WithdrawalViewModel { get; }
         public DepositGridViewModel RatesViewModel { get; }
@@ -39,6 +42,8 @@ namespace ScientificCalculator.ViewModels
             get => _contentViewModel;
             private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
         }
+
+        #endregion
 
         public ICommand OnAddReplenishmentCommand { get; }
         public ICommand OnAddWithdrawalCommand { get; }
@@ -74,7 +79,7 @@ namespace ScientificCalculator.ViewModels
             {
                 Title = "Rate Depending",
                 FirstColumnName = "Id",
-                SecondColumnName = "",
+                SecondColumnName = string.Empty,
                 ThirdColumnName = "Rate"
             };
 
@@ -93,9 +98,9 @@ namespace ScientificCalculator.ViewModels
 
         public void OnCalculate(object parameters)
         {
-            var (error, depAmount, depTerm, depFixedRate, depTaxRate) = CheckValues(parameters);
+            var (error, depAmount, depTerm, depFixedRate, depTaxRate) = ReadValues(parameters);
             if (error) return;
-
+            
             var daysInTerm = DepositMainViewModel.SelectedTermType switch
             {
                 0 => (DepositMainViewModel.StartTermDate.AddDays(depTerm) - DepositMainViewModel.StartTermDate).Days,
@@ -116,10 +121,6 @@ namespace ScientificCalculator.ViewModels
                 _ => 1,
             };
 
-            bool capitalism = DepositMainViewModel.IsInterestCapitalisationChecked;
-
-            var rates = RatesViewModel.Items.OrderBy(x => x.Parameter);
-
             var reps = ReplenishmentViewModel
                     .Items
                     .Concat(WithdrawalViewModel.Items)
@@ -132,13 +133,52 @@ namespace ScientificCalculator.ViewModels
                                     Value = acc.Value + x.Value
                                 }
                             ))
-                    .Where(x => x.Value != 0);
+                    .Where(x => x.Value != 0 &&
+                                DateTime.Parse(x.Parameter) >= DepositMainViewModel.StartTermDate &&
+                                DateTime.Parse(x.Parameter) <= DepositMainViewModel.StartTermDate.AddDays(daysInTerm));
 
-            var replenishDays = new List<int>();
-            foreach (var rep in reps)
+            var replenishDays = reps.Select(x => (DateTime.Parse(x.Parameter) - DepositMainViewModel.StartTermDate).Days);
+            var replenishAmount = reps.Select(x => x.Value);
+
+            var sorted_rates = RatesViewModel.Items.OrderBy(x => x.Parameter);
+
+            var rates = DepositMainViewModel.SelectedRateType != 0
+                            ? sorted_rates.Select(x => x.Value)
+                            : new List<double>() { depFixedRate };
+                            
+            var rate_dependence = DepositMainViewModel.SelectedRateType != 0 
+                        ? sorted_rates.Select(x => double.Parse(x.Parameter, CultureInfo.InvariantCulture))
+                        : new List<double>();
+
+            var p = new DepositParams
             {
-                replenishDays.Add((DepositMainViewModel.StartTermDate - DateTime.Parse(rep.Parameter)).Days);
-            }
+                start_amount = depAmount,
+                term_in_days = daysInTerm,
+                tax_rate = depTaxRate,
+                periodicity = period,
+                capitalization = DepositMainViewModel.IsInterestCapitalisationChecked,
+
+                days_of_replenishments = Marshal.AllocHGlobal(replenishDays.Count() * sizeof(int)),
+                amount_of_replenishments = Marshal.AllocHGlobal(replenishAmount.Count() * sizeof(double)),
+                count_of_replenishments = reps.Count(),
+
+                rate_type = DepositMainViewModel.SelectedRateType,
+                rates = Marshal.AllocHGlobal(rates.Count() * sizeof(double)),
+                rate_dependence_values = Marshal.AllocHGlobal(rate_dependence.Count() * sizeof(double)),
+                count_of_rates = rates.Count()
+            };
+
+            Marshal.Copy(replenishDays.ToArray(),   0, p.days_of_replenishments,   replenishDays.Count());
+            Marshal.Copy(replenishAmount.ToArray(), 0, p.amount_of_replenishments, replenishAmount.Count());
+            Marshal.Copy(rates.ToArray(),           0, p.rates,                    rates.Count());
+            Marshal.Copy(rate_dependence.ToArray(), 0, p.rate_dependence_values,   rate_dependence.Count());
+
+            // CalculationService.Calculate;
+
+            Marshal.FreeHGlobal(p.days_of_replenishments);
+            Marshal.FreeHGlobal(p.amount_of_replenishments);
+            Marshal.FreeHGlobal(p.rates);
+            Marshal.FreeHGlobal(p.rate_dependence_values);
         }
 
         public void OnAddReplenishment(TextBox textBox)
@@ -252,7 +292,7 @@ namespace ScientificCalculator.ViewModels
             RatesViewModel.Items.Clear();
         }
 
-        private (bool, double, int, double, double) CheckValues(object parameters)
+        private (bool, double, int, double, double) ReadValues(object parameters)
         {
             var values = (object[])parameters;
             var amountTextBox = (TextBox)values[0];
