@@ -33,7 +33,8 @@ namespace ScientificCalculator.ViewModels
         public DepositGridViewModel ReplenishmentViewModel { get; }
         public DepositGridViewModel WithdrawalViewModel { get; }
         public DepositGridViewModel RatesViewModel { get; }
-        public DepositMainViewModel DepositMainViewModel { get; }
+        public DepositMainViewModel MainViewModel { get; }
+        public DepositResultViewModel ResultViewModel { get; private set; }
 
         private ViewModelBase _contentViewModel;
 
@@ -56,8 +57,8 @@ namespace ScientificCalculator.ViewModels
         {
             CalculationService = calculationService;
 
-            DepositMainViewModel = new DepositMainViewModel();
-            _contentViewModel = DepositMainViewModel;
+            MainViewModel = new DepositMainViewModel();
+            _contentViewModel = MainViewModel;
 
             ReplenishmentViewModel = new DepositGridViewModel()
             {
@@ -83,108 +84,78 @@ namespace ScientificCalculator.ViewModels
                 ThirdColumnName = "Rate"
             };
 
+            ResultViewModel = new DepositResultViewModel(new DepositResult());
+
             OnAddReplenishmentCommand = ReactiveCommand.Create<TextBox>(OnAddReplenishment);
             OnAddWithdrawalCommand = ReactiveCommand.Create<TextBox>(OnAddWithdrawal);
             OnAddInterestRateCommand = ReactiveCommand.Create<object>(OnAddInterestRate);
             OnCalculateCommand = ReactiveCommand.Create<object>(OnCalculate);
 
-            SetupColors(DepositMainViewModel);
+            SetupColors(MainViewModel);
             SetupColors(ReplenishmentViewModel);
             SetupColors(WithdrawalViewModel);
             SetupColors(RatesViewModel);
+            SetupColors(ResultViewModel);
 
-            this.WhenAnyValue(x => x.DepositMainViewModel.SelectedRateType).Subscribe(SelectedRateTypeChanged);
+            this.WhenAnyValue(x => x.MainViewModel.SelectedRateType).Subscribe(SelectedRateTypeChanged);
         }
 
         public void OnCalculate(object parameters)
         {
-            var (error, depAmount, depTerm, depFixedRate, depTaxRate) = ReadValues(parameters);
-            if (error) return;
-            
-            var daysInTerm = DepositMainViewModel.SelectedTermType switch
+            try
             {
-                0 => (DepositMainViewModel.StartTermDate.AddDays(depTerm) - DepositMainViewModel.StartTermDate).Days,
-                1 => (DepositMainViewModel.StartTermDate.AddMonths(depTerm) - DepositMainViewModel.StartTermDate).Days,
-                2 => (DepositMainViewModel.StartTermDate.AddYears(depTerm) - DepositMainViewModel.StartTermDate).Days,
-                _ => (DepositMainViewModel.StartTermDate.AddDays(depTerm) - DepositMainViewModel.StartTermDate).Days,
-            };
+                var (error, depAmount, depTerm, depFixedRate, depTaxRate) = ReadValues(parameters);
+                if (error) return;
+                
+                var daysInTerm = GetTermInDays(depTerm);
+                var period = GetPeriodicity(daysInTerm);
 
-            var period = DepositMainViewModel.SelectedPaymentPeriod switch
+                var (replenishDays, replenishAmount) = GetReplenishments(daysInTerm);
+                var (rates, rate_dependence) = GetInterestRates(depFixedRate);
+
+                var p = new DepositParams
+                {
+                    start_amount = depAmount,
+                    term_in_days = daysInTerm,
+                    tax_rate = depTaxRate,
+                    periodicity = period,
+                    capitalization = MainViewModel.IsInterestCapitalisationChecked,
+
+                    days_of_replenishments = Marshal.AllocHGlobal(replenishDays.Count() * sizeof(int)),
+                    amount_of_replenishments = Marshal.AllocHGlobal(replenishAmount.Count() * sizeof(double)),
+                    count_of_replenishments = replenishDays.Count(),
+
+                    rate_type = MainViewModel.SelectedRateType,
+                    rates = Marshal.AllocHGlobal(rates.Count() * sizeof(double)),
+                    rate_dependence_values = Marshal.AllocHGlobal(rate_dependence.Count() * sizeof(double)),
+                    count_of_rates = rates.Count()
+                };
+
+                Marshal.Copy(replenishDays.ToArray(),   0, p.days_of_replenishments,   replenishDays.Count());
+                Marshal.Copy(replenishAmount.ToArray(), 0, p.amount_of_replenishments, replenishAmount.Count());
+                Marshal.Copy(rates.ToArray(),           0, p.rates,                    rates.Count());
+                Marshal.Copy(rate_dependence.ToArray(), 0, p.rate_dependence_values,   rate_dependence.Count());
+
+                var result = CalculationService.CalculateDepositIncome(p);
+
+                Marshal.FreeHGlobal(p.days_of_replenishments);
+                Marshal.FreeHGlobal(p.amount_of_replenishments);
+                Marshal.FreeHGlobal(p.rates);
+                Marshal.FreeHGlobal(p.rate_dependence_values);
+
+                ResultViewModel.Result = result;
+                ContentViewModel = ResultViewModel;
+            }
+            catch (Exception e)
             {
-                0 => 1,
-                1 => 7,
-                2 => 30,
-                3 => 365 / 4,
-                4 => 365 / 2,
-                5 => 365,
-                6 => daysInTerm,
-                _ => 1,
-            };
-
-            var reps = ReplenishmentViewModel
-                    .Items
-                    .Concat(WithdrawalViewModel.Items)
-                    .OrderBy(x => x.Parameter)
-                    .GroupBy(x => x.Parameter)
-                    .Select(x =>  x.Aggregate((acc, x) => 
-                                new()
-                                {
-                                    Parameter = acc.Parameter,
-                                    Value = acc.Value + x.Value
-                                }
-                            ))
-                    .Where(x => x.Value != 0 &&
-                                DateTime.Parse(x.Parameter) >= DepositMainViewModel.StartTermDate &&
-                                DateTime.Parse(x.Parameter) <= DepositMainViewModel.StartTermDate.AddDays(daysInTerm));
-
-            var replenishDays = reps.Select(x => (DateTime.Parse(x.Parameter) - DepositMainViewModel.StartTermDate).Days);
-            var replenishAmount = reps.Select(x => x.Value);
-
-            var sorted_rates = RatesViewModel.Items.OrderBy(x => x.Parameter);
-
-            var rates = DepositMainViewModel.SelectedRateType != 0
-                            ? sorted_rates.Select(x => x.Value)
-                            : new List<double>() { depFixedRate };
-                            
-            var rate_dependence = DepositMainViewModel.SelectedRateType != 0 
-                        ? sorted_rates.Select(x => double.Parse(x.Parameter, CultureInfo.InvariantCulture))
-                        : new List<double>();
-
-            var p = new DepositParams
-            {
-                start_amount = depAmount,
-                term_in_days = daysInTerm,
-                tax_rate = depTaxRate,
-                periodicity = period,
-                capitalization = DepositMainViewModel.IsInterestCapitalisationChecked,
-
-                days_of_replenishments = Marshal.AllocHGlobal(replenishDays.Count() * sizeof(int)),
-                amount_of_replenishments = Marshal.AllocHGlobal(replenishAmount.Count() * sizeof(double)),
-                count_of_replenishments = reps.Count(),
-
-                rate_type = DepositMainViewModel.SelectedRateType,
-                rates = Marshal.AllocHGlobal(rates.Count() * sizeof(double)),
-                rate_dependence_values = Marshal.AllocHGlobal(rate_dependence.Count() * sizeof(double)),
-                count_of_rates = rates.Count()
-            };
-
-            Marshal.Copy(replenishDays.ToArray(),   0, p.days_of_replenishments,   replenishDays.Count());
-            Marshal.Copy(replenishAmount.ToArray(), 0, p.amount_of_replenishments, replenishAmount.Count());
-            Marshal.Copy(rates.ToArray(),           0, p.rates,                    rates.Count());
-            Marshal.Copy(rate_dependence.ToArray(), 0, p.rate_dependence_values,   rate_dependence.Count());
-
-            var result = CalculationService.CalculateDepositIncome(p);
-            // retrieve result;
-
-            Marshal.FreeHGlobal(p.days_of_replenishments);
-            Marshal.FreeHGlobal(p.amount_of_replenishments);
-            Marshal.FreeHGlobal(p.rates);
-            Marshal.FreeHGlobal(p.rate_dependence_values);
+                var tBox = ((object[])parameters)[0] as TextBox;
+                DataValidationErrors.SetError(tBox!, new DataValidationException($"Error occured during calculation.\n{e.Message}\nPlease, check your input."));
+            }
         }
 
         public void OnAddReplenishment(TextBox textBox)
         {
-            if (!double.TryParse(DepositMainViewModel.CurrentReplenishment, CultureInfo.InvariantCulture, out var replenishment))
+            if (!double.TryParse(MainViewModel.CurrentReplenishment, CultureInfo.InvariantCulture, out var replenishment))
             {
                 DataValidationErrors.SetError(textBox, new DataValidationException("Amount must be a number."));
                 return;
@@ -193,7 +164,7 @@ namespace ScientificCalculator.ViewModels
             ReplenishmentViewModel.Items.Add(new DepositGridItem()
             {
                 Id = ReplenishmentViewModel.Items.Count + 1, 
-                Parameter = DepositMainViewModel.CurrentReplenishmentDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
+                Parameter = MainViewModel.CurrentReplenishmentDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
                 Value = replenishment
             });
 
@@ -207,7 +178,7 @@ namespace ScientificCalculator.ViewModels
 
         public void OnAddWithdrawal(TextBox textBox)
         {
-            if (!double.TryParse(DepositMainViewModel.CurrentWithdrawal, CultureInfo.InvariantCulture, out var withdrawal))
+            if (!double.TryParse(MainViewModel.CurrentWithdrawal, CultureInfo.InvariantCulture, out var withdrawal))
             {
                 DataValidationErrors.SetError(textBox, new DataValidationException("Amount must be a number."));
                 return;
@@ -216,7 +187,7 @@ namespace ScientificCalculator.ViewModels
             WithdrawalViewModel.Items.Add(new DepositGridItem()
             {
                 Id = WithdrawalViewModel.Items.Count + 1, 
-                Parameter = DepositMainViewModel.CurrentWithdrawalDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
+                Parameter = MainViewModel.CurrentWithdrawalDate.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("en-US")),
                 Value = -withdrawal
             });
 
@@ -234,20 +205,20 @@ namespace ScientificCalculator.ViewModels
             var valueTextBox = (TextBox)values[0];
             var rateTextBox = (TextBox)values[1];
             
-            if (!double.TryParse(DepositMainViewModel.CurrentDependentValue, CultureInfo.InvariantCulture, out var depend_value))
+            if (!double.TryParse(MainViewModel.CurrentDependentValue, CultureInfo.InvariantCulture, out var depend_value))
             {
                 DataValidationErrors.SetError(valueTextBox, new DataValidationException("Value must be a number."));
                 return;
             }
 
-            if (!double.TryParse(DepositMainViewModel.CurrentDependentRate, CultureInfo.InvariantCulture, out var depend_rate))
+            if (!double.TryParse(MainViewModel.CurrentDependentRate, CultureInfo.InvariantCulture, out var depend_rate))
             {
                 DataValidationErrors.SetError(rateTextBox, new DataValidationException("Rate must be a number."));
                 return;
             }
 
             string depend_value_str;
-            if (DepositMainViewModel.SelectedRateType == 1)
+            if (MainViewModel.SelectedRateType == 1)
             {
                 depend_value_str = depend_value.ToString("C", CultureInfo.GetCultureInfo("en-US"));
             }
@@ -274,19 +245,19 @@ namespace ScientificCalculator.ViewModels
 
         public void OnBackToMainView()
         {
-            ContentViewModel = DepositMainViewModel;
+            ContentViewModel = MainViewModel;
         }
 
         private void SelectedRateTypeChanged(int x)
         {
             if (x == 1)
             {
-                DepositMainViewModel.DependentValueLabel = "Amount with which the rate is valid";
+                MainViewModel.DependentValueLabel = "Amount with which the rate is valid";
                 RatesViewModel.SecondColumnName = "Amount";
             }
             if (x == 2)
             {
-                DepositMainViewModel.DependentValueLabel = "Number of the day from which the rate is valid";
+                MainViewModel.DependentValueLabel = "Number of the day from which the rate is valid";
                 RatesViewModel.SecondColumnName = "Day Number";
             }
 
@@ -302,25 +273,25 @@ namespace ScientificCalculator.ViewModels
             var taxRateTextBox = (TextBox)values[3];
 
             bool error = false;
-            if (!double.TryParse(DepositMainViewModel.DepositAmount, CultureInfo.InvariantCulture, out var depAmount))
+            if (!double.TryParse(MainViewModel.DepositAmount, CultureInfo.InvariantCulture, out var depAmount))
             {
                 DataValidationErrors.SetError(amountTextBox, new DataValidationException("Amount must be a number."));
                 error = true;
             }
 
-            if (!int.TryParse(DepositMainViewModel.Term, CultureInfo.InvariantCulture, out var depTerm))
+            if (!int.TryParse(MainViewModel.Term, CultureInfo.InvariantCulture, out var depTerm))
             {
                 DataValidationErrors.SetError(termTextBox, new DataValidationException("Term must be an integer number."));
                 error = true;
             }
 
-            if (!double.TryParse(DepositMainViewModel.FixedRate, CultureInfo.InvariantCulture, out var depFixedRate))
+            if (!double.TryParse(MainViewModel.FixedRate, CultureInfo.InvariantCulture, out var depFixedRate))
             {
                 DataValidationErrors.SetError(fixedRateTextBox, new DataValidationException("Rate must be a number."));
                 error = true;
             }
 
-            if (!double.TryParse(DepositMainViewModel.TaxRate, CultureInfo.InvariantCulture, out var depTaxRate))
+            if (!double.TryParse(MainViewModel.TaxRate, CultureInfo.InvariantCulture, out var depTaxRate))
             {
                 DataValidationErrors.SetError(taxRateTextBox, new DataValidationException("Tax Rate must be a number."));
                 error = true;
@@ -352,6 +323,72 @@ namespace ScientificCalculator.ViewModels
             this.ForegroundBrushChanged += viewModel.ForegroundBrushChangedAction;
             this.FirstBackgroundBrushChanged += viewModel.FirstBackgroundBrushChangedAction;
             this.SecondBackgroundBrushChanged += viewModel.SecondBackgroundBrushChangedAction;
+        }
+
+        private int GetTermInDays(int term)
+        {
+            return MainViewModel.SelectedTermType switch
+            {
+                0 => (MainViewModel.StartTermDate.AddDays(term) - MainViewModel.StartTermDate).Days,
+                1 => (MainViewModel.StartTermDate.AddMonths(term) - MainViewModel.StartTermDate).Days,
+                2 => (MainViewModel.StartTermDate.AddYears(term) - MainViewModel.StartTermDate).Days,
+                _ => (MainViewModel.StartTermDate.AddDays(term) - MainViewModel.StartTermDate).Days,
+            };
+
+        }
+
+        private int GetPeriodicity(int total_term)
+        {
+            return MainViewModel.SelectedPaymentPeriod switch
+            {
+                0 => 1,
+                1 => 7,
+                2 => 30,
+                3 => 365 / 4,
+                4 => 365 / 2,
+                5 => 365,
+                6 => total_term,
+                _ => 1,
+            };
+        }
+
+        private (IEnumerable<int>, IEnumerable<double>) GetReplenishments(int total_term)
+        {
+            var reps = ReplenishmentViewModel
+                    .Items
+                    .Concat(WithdrawalViewModel.Items)
+                    .OrderBy(x => x.Parameter)
+                    .GroupBy(x => x.Parameter)
+                    .Select(x =>  x.Aggregate((acc, x) => 
+                                new()
+                                {
+                                    Parameter = acc.Parameter,
+                                    Value = acc.Value + x.Value
+                                }
+                            ))
+                    .Where(x => x.Value != 0 &&
+                                DateTime.Parse(x.Parameter) >= MainViewModel.StartTermDate &&
+                                DateTime.Parse(x.Parameter) <= MainViewModel.StartTermDate.AddDays(total_term));
+
+            var replenishDays = reps.Select(x => (DateTime.Parse(x.Parameter) - MainViewModel.StartTermDate).Days);
+            var replenishAmount = reps.Select(x => x.Value);
+
+            return (replenishDays, replenishAmount);
+        }
+
+        private (IEnumerable<double>, IEnumerable<double>) GetInterestRates(double fixed_rate)
+        {
+            var sorted_rates = RatesViewModel.Items.OrderBy(x => x.Parameter);
+
+            var rates = MainViewModel.SelectedRateType != 0
+                            ? sorted_rates.Select(x => x.Value)
+                            : new List<double>() { fixed_rate };
+                            
+            var rate_dependence = MainViewModel.SelectedRateType != 0 
+                        ? sorted_rates.Select(x => double.Parse(x.Parameter, CultureInfo.InvariantCulture))
+                        : new List<double>();
+            
+            return (rates, rate_dependence);
         }
     }
 }

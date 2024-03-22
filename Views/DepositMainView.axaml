@@ -15,7 +15,7 @@
     
 
     <ScrollViewer>
-    <Grid Margin="10 0 10 10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+    <Grid Margin="5 0 5 5" VerticalAlignment="Top" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>

@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:ScientificCalculator.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+             x:Class="ScientificCalculator.Views.DepositResultView"
+             x:DataType="vm:DepositResultViewModel">
+
+    <Grid VerticalAlignment="Top" Margin="5 0 5 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.ColumnSpan="2"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Margin="0 5 0 0"
+                CornerRadius="5"
+                Background="{Binding SecondBackgroundBrush}">
+            <TextBlock
+                    Foreground="{Binding ForegroundBrush}"
+                    FontSize="27"
+                    FontWeight="Bold"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Text="Result" />
+        </Border>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 5 0 5" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="Total Income:"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0 5 0 5" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="Total Tax Paid:"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Margin="0 5 0 5" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="Total Amount:"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.Income}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.TaxAmount}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.TotalAmount}"/>
+
+        <Button Grid.Row="4" Grid.ColumnSpan="2" Content="Ok" Margin="0 5 0 5" Classes="BtnColorStyle" FontWeight="Bold"
+                x:CompileBindings="false" Command="{Binding $parent[Window].DataContext.OnBackToMainView}"/>
+    </Grid>
+</UserControl>
