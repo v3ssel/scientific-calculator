@@ -22,3 +22,6 @@ To run UI
 ```
 dotnet run
 ```
+
+## Image
+![image](misc/image.png)
