@@ -25,6 +25,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <Border Grid.Row="0" Grid.Column="0"
@@ -53,6 +54,19 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         Text="{Binding Title}" />
+            </Border>
+
+            <Border Grid.Row="0" Grid.Column="2"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Margin="5 5 0 0"
+                    CornerRadius="5"
+                    Background="{Binding SecondBackgroundBrush}"
+                    >
+                <Button Classes="BtnColorStyle"
+                        Command="{Binding OnClear}">
+                    <PathIcon Foreground="{Binding ForegroundBrush}" Data="{StaticResource DeleteIcon}"/>
+                </Button>
             </Border>
         </Grid>
 

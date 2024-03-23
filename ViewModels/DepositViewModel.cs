@@ -117,6 +117,9 @@ namespace ScientificCalculator.ViewModels
                 {
                     start_amount = depAmount,
                     term_in_days = daysInTerm,
+                    term_begin_day = MainViewModel.StartTermDate.Day,
+                    term_begin_month = MainViewModel.StartTermDate.Month,
+                    term_begin_year = MainViewModel.StartTermDate.Year,
                     tax_rate = depTaxRate,
                     periodicity = period,
                     capitalization = MainViewModel.IsInterestCapitalisationChecked,
@@ -224,15 +227,24 @@ namespace ScientificCalculator.ViewModels
             }
             else
             {
-                depend_value_str = ((int)depend_value).ToString(CultureInfo.GetCultureInfo("en-US"));
+                depend_value_str = ((int)depend_value).ToString("N", CultureInfo.GetCultureInfo("en-US"));
             }
 
-            RatesViewModel.Items.Add(new DepositGridItem()
+            var elem = RatesViewModel.Items.FirstOrDefault(x => x.Parameter == depend_value_str);
+
+            if (elem is null)
             {
-                Id = RatesViewModel.Items.Count + 1,
-                Parameter = depend_value_str,
-                Value = depend_rate
-            });
+                RatesViewModel.Items.Add(new DepositGridItem()
+                {
+                    Id = RatesViewModel.Items.Count + 1,
+                    Parameter = depend_value_str,
+                    Value = depend_rate
+                });
+            }
+            else
+            {
+                elem.Value = depend_rate;
+            }
 
             DataValidationErrors.ClearErrors(valueTextBox);
             DataValidationErrors.ClearErrors(rateTextBox);
@@ -285,7 +297,7 @@ namespace ScientificCalculator.ViewModels
                 error = true;
             }
 
-            if (!double.TryParse(MainViewModel.FixedRate, CultureInfo.InvariantCulture, out var depFixedRate))
+            if (!double.TryParse(MainViewModel.FixedRate, CultureInfo.InvariantCulture, out var depFixedRate) && MainViewModel.SelectedRateType == 0)
             {
                 DataValidationErrors.SetError(fixedRateTextBox, new DataValidationException("Rate must be a number."));
                 error = true;
@@ -357,20 +369,25 @@ namespace ScientificCalculator.ViewModels
             var reps = ReplenishmentViewModel
                     .Items
                     .Concat(WithdrawalViewModel.Items)
+                    .Select(x => new
+                            {
+                                Parameter = DateTime.Parse(x.Parameter),
+                                x.Value
+                            })
                     .OrderBy(x => x.Parameter)
                     .GroupBy(x => x.Parameter)
                     .Select(x =>  x.Aggregate((acc, x) => 
-                                new()
+                                new
                                 {
-                                    Parameter = acc.Parameter,
+                                    acc.Parameter,
                                     Value = acc.Value + x.Value
                                 }
                             ))
                     .Where(x => x.Value != 0 &&
-                                DateTime.Parse(x.Parameter) >= MainViewModel.StartTermDate &&
-                                DateTime.Parse(x.Parameter) <= MainViewModel.StartTermDate.AddDays(total_term));
+                                x.Parameter >= MainViewModel.StartTermDate &&
+                                x.Parameter <= MainViewModel.StartTermDate.AddDays(total_term));
 
-            var replenishDays = reps.Select(x => (DateTime.Parse(x.Parameter) - MainViewModel.StartTermDate).Days);
+            var replenishDays = reps.Select(x => (x.Parameter - MainViewModel.StartTermDate).Days);
             var replenishAmount = reps.Select(x => x.Value);
 
             return (replenishDays, replenishAmount);
@@ -378,15 +395,26 @@ namespace ScientificCalculator.ViewModels
 
         private (IEnumerable<double>, IEnumerable<double>) GetInterestRates(double fixed_rate)
         {
-            var sorted_rates = RatesViewModel.Items.OrderBy(x => x.Parameter);
+            var sorted_rates = RatesViewModel.Items
+                                             .Select(x => new
+                                                    {
+                                                        Parameter = double.Parse(x.Parameter,
+                                                                                 MainViewModel.SelectedRateType == 1 
+                                                                                                ? NumberStyles.Currency
+                                                                                                : NumberStyles.Number, 
+                                                                                 CultureInfo.GetCultureInfo("en-US")),
+                                                        x.Value
+                                                    })
+                                             .OrderBy(x => x.Parameter)
+                                             .DistinctBy(x => x.Parameter);
 
             var rates = MainViewModel.SelectedRateType != 0
                             ? sorted_rates.Select(x => x.Value)
                             : new List<double>() { fixed_rate };
                             
             var rate_dependence = MainViewModel.SelectedRateType != 0 
-                        ? sorted_rates.Select(x => double.Parse(x.Parameter, CultureInfo.InvariantCulture))
-                        : new List<double>();
+                        ? sorted_rates.Select(x => x.Parameter)
+                        : new List<double>() { 0 };
             
             return (rates, rate_dependence);
         }

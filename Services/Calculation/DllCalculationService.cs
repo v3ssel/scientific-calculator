@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ScientificCalculator.Models;
 
+[assembly: System.Runtime.CompilerServices.DisableRuntimeMarshalling]
+
 namespace ScientificCalculator.Services.Calculation;
 
 public partial class DllCalculationService : ICalculationService, ICreditCalculationService, IDepositCalculationService

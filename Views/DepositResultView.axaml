@@ -40,9 +40,9 @@
         <TextBlock Grid.Row="2" Grid.Column="0" Margin="0 5 0 5" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="Total Tax Paid:"/>
         <TextBlock Grid.Row="3" Grid.Column="0" Margin="0 5 0 5" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="Total Amount:"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.Income}"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.TaxAmount}"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.TotalAmount}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.Income, StringFormat={}{0:$0.00}}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.TaxAmount, StringFormat={}{0:$0.00}}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0 5 0 5" HorizontalAlignment="Center" FontWeight="Medium" FontSize="20" Classes="TextBlockColorStyle" Text="{Binding Result.TotalAmount, StringFormat={}{0:$0.00}}"/>
 
         <Button Grid.Row="4" Grid.ColumnSpan="2" Content="Ok" Margin="0 5 0 5" Classes="BtnColorStyle" FontWeight="Bold"
                 x:CompileBindings="false" Command="{Binding $parent[Window].DataContext.OnBackToMainView}"/>

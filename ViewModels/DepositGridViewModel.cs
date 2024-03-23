@@ -16,4 +16,9 @@ public class DepositGridViewModel : ViewModelBase
     {
         Items = new ObservableCollection<DepositGridItem>();
     }
+
+    public void OnClear()
+    {
+        Items.Clear();
+    }
 }
