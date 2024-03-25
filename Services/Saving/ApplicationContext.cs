@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using ScientificCalculator.Models;
 
@@ -10,7 +11,8 @@ namespace ScientificCalculator.Services.Saving
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=data.db");
+            var dir = Directory.CreateDirectory($"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/ScientificCalculator");
+            optionsBuilder.UseSqlite($"Data Source={dir.FullName}/sc_data.db");
         }
     }
 }

@@ -34,7 +34,7 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
     {
         if (!Enabled) return;
 
-        var dir = Directory.CreateDirectory("./logs");
+        var dir = Directory.CreateDirectory($"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/ScientificCalculator/logs");
         var last_file = dir.GetFiles($"logs_*.log").OrderByDescending(x => x.CreationTime).FirstOrDefault();
 
         var x_part = string.IsNullOrEmpty(record.XValue) ? "" : $" | X = \"{record.XValue}\"";
@@ -43,7 +43,7 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
 
         if (last_file is null || DateTime.Now >= GetLogExpireTime(last_file.CreationTime))
         {
-            using StreamWriter writer = File.CreateText($"{dir.Name}/logs_{DateTime.Now:dd-MM-yy-hh-mm-ss}.log");
+            using StreamWriter writer = File.CreateText($"{dir.FullName}/logs_{DateTime.Now:dd-MM-yy-hh-mm-ss}.log");
                 await writer.WriteLineAsync(formatted_out);
         }
         else
@@ -51,7 +51,6 @@ public class FileCalculatorLogger : ICalculatorLogger, ICalculatorLoggerWithRota
             using StreamWriter writer = last_file.AppendText();
                 await writer.WriteLineAsync(formatted_out);
         }
-
     }
 
     private DateTime GetLogExpireTime(DateTime last)
